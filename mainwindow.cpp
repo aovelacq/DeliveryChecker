@@ -1,8 +1,12 @@
 #include "MainWindow.h"
+#include "globals/globals.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
+    createLogFile(CSV_LOG_PATH);
+    MainWindow::appendLogFile(CSV_LOG_PATH,"blblbl. CODE 12345");
+    MainWindow::appendLogFile(CSV_LOG_PATH,"Unable to create ITEMS table. CODE : 12345");
 
     setWindowTitle("VELEC SYSTEMS - Delivery Checker - v1.0");
     setObjectName("MainWindow");
@@ -93,4 +97,56 @@ void MainWindow::setFinRepportPage()
     {
         stackedWidget->setCurrentIndex(setIndex);
     }
+}
+
+
+bool MainWindow::createLogFile(const QString path)
+{
+    bool res;
+    QString pathName = path + "LogFile.txt";
+    QFile file (pathName);
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&file);
+        out << "FILE LOG\n";
+        file.close();
+        res = true;
+        qDebug() << "Success creating file " << pathName;
+    }
+    else
+    {
+        res = false;
+        qDebug() << "Error : could not open file " << pathName ;
+    }
+
+    return res;
+}
+
+void MainWindow::appendLogFile(const QString path, const QString data)
+{
+    QString pathName = path + "LogFile.txt";
+    QFile file (pathName);
+
+    if (!file.exists())
+    {
+        qDebug() << "Error : file " << pathName << " does not exist";
+        return;
+    }
+
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QString date = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm:ss:zzz");//"dddd dd MMMM yyyy hh:mm:ss.zzz"
+
+        QTextStream out(&file);
+        out << "\n" << date << " | " << data;
+        file.close();
+
+        qDebug() << "Success writting in file " << pathName;
+    }
+    else
+    {
+        qDebug() << "Error : could not open file " << pathName;
+    }
+    return;
 }

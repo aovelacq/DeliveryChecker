@@ -3,6 +3,8 @@
 
 #include <QtGlobal>
 #include <QColor>
+#include <QDir>
+#include <QStandardPaths>
 
 extern bool CONSOLE_DEBUG;
 extern bool GRAPHICAL_DEBUG;
@@ -17,6 +19,9 @@ extern QColor MENU_FONT_COLOR;
 
 extern QColor INFO_BACKGROUND_COLOR;
 extern QColor INFO_FONT_COLOR;
+
+//LOG//
+extern QString CSV_LOG_PATH;
 
 // CSV //
 extern QString CSV_FOLDER_PATH;
