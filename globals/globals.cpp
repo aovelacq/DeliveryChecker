@@ -15,7 +15,7 @@ QColor  MENU_FONT_COLOR         (255,255,255);
 QColor  INFO_BACKGROUND_COLOR   (0,130,200);
 QColor  INFO_FONT_COLOR         (255,255,255);
 
-//LOG
+//LOG//
 QString CSV_LOG_PATH                            = QDir::homePath()+"/"+QStandardPaths::displayName(QStandardPaths::DesktopLocation)+"/";
 
 // CSV //
