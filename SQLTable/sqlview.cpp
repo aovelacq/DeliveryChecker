@@ -31,6 +31,9 @@ SQLView::SQLView(QWidget *parent)
 void SQLView::setResults(QSqlQueryModel *Results)
 {
     this->setModel(Results);
-    qDebug() << "Nb of rows : " << this->model()->rowCount();
-    qDebug() << "Nb of rows test 2: " << this->model()->rowCount();
+<<<<<<< HEAD
+
+=======
+    qDebug() << "Nb of rows test : " << this->model()->rowCount();
+>>>>>>> 209b8882ecd1c327fb83154dc0d8c2213183a0de
 }
