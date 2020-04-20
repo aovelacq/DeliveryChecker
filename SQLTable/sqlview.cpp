@@ -1,6 +1,7 @@
 #include "sqlview.h"
 #include <QHeaderView>
 #include "globals/globals.h"
+#include <QString>
 
 
 SQLView::SQLView(QWidget *parent)
