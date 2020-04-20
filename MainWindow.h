@@ -13,6 +13,7 @@
 #include <QSpacerItem>
 #include <QStackedWidget>
 #include <QDebug>
+#include <QDateTime>
 
 class MainWindow : public QWidget
 {
@@ -21,6 +22,8 @@ class MainWindow : public QWidget
     public:
        explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
+        bool createLogFile(const QString);
+        static void appendLogFile (const QString path, const QString data);
 
     public slots:
         void setImportPage();
