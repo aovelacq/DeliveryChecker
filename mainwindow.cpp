@@ -4,9 +4,16 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
-    createLogFile(CSV_LOG_PATH);
-    MainWindow::appendLogFile(CSV_LOG_PATH,"blblbl. CODE 12345");
-    MainWindow::appendLogFile(CSV_LOG_PATH,"Unable to create ITEMS table. CODE : 12345");
+    if(!createLogFile(LOG_PATH))
+    {
+        QMessageBox::critical(nullptr, QObject::tr("Main error"),
+                    QObject::tr("Unable to create log file at path : %1\n"
+                                "CODE : 12345\n\n"
+                                "Click OK to exit.").arg(LOG_PATH), QMessageBox::Ok);
+        QApplication::quit();
+    }
+    MainWindow::appendLogFile(LOG_PATH,"blblbl. CODE 12345");
+    MainWindow::appendLogFile(LOG_PATH,"Unable to create ITEMS table. CODE : 12345");
 
     setWindowTitle("VELEC SYSTEMS - Delivery Checker - v1.0");
     setObjectName("MainWindow");
@@ -102,25 +109,18 @@ void MainWindow::setFinRepportPage()
 
 bool MainWindow::createLogFile(const QString path)
 {
-    bool res;
     QString pathName = path + "LogFile.txt";
     QFile file (pathName);
 
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        QTextStream out(&file);
-        out << "FILE LOG\n";
-        file.close();
-        res = true;
-        qDebug() << "Success creating file " << pathName;
-    }
-    else
-    {
-        res = false;
         qDebug() << "Error : could not open file " << pathName ;
+        return false;
     }
 
-    return res;
+    file.close();
+    qDebug() << "Success creating file " << pathName;
+    return true;
 }
 
 void MainWindow::appendLogFile(const QString path, const QString data)
@@ -128,25 +128,16 @@ void MainWindow::appendLogFile(const QString path, const QString data)
     QString pathName = path + "LogFile.txt";
     QFile file (pathName);
 
-    if (!file.exists())
+    if (!file.exists() || !file.open(QIODevice::Append | QIODevice::Text))
     {
-        qDebug() << "Error : file " << pathName << " does not exist";
+        qDebug() << "Error : file " << pathName << " does not exist or is unable to be opened";
         return;
     }
 
-    if (file.open(QIODevice::Append | QIODevice::Text))
-    {
-        QString date = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm:ss:zzz");//"dddd dd MMMM yyyy hh:mm:ss.zzz"
+    QString date = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm:ss:zzz");//"dddd dd MMMM yyyy hh:mm:ss.zzz"
+    QTextStream out(&file);
+    out << "\n" << date << " | " << data;
+    file.close();
 
-        QTextStream out(&file);
-        out << "\n" << date << " | " << data;
-        file.close();
-
-        qDebug() << "Success writting in file " << pathName;
-    }
-    else
-    {
-        qDebug() << "Error : could not open file " << pathName;
-    }
-    return;
+    qDebug() << "Success writting in file " << pathName;
 }

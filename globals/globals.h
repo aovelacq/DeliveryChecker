@@ -21,7 +21,7 @@ extern QColor INFO_BACKGROUND_COLOR;
 extern QColor INFO_FONT_COLOR;
 
 //LOG//
-extern QString CSV_LOG_PATH;
+extern QString LOG_PATH;
 
 // CSV //
 extern QString CSV_FOLDER_PATH;

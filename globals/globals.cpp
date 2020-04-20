@@ -16,8 +16,8 @@ QColor  INFO_BACKGROUND_COLOR   (0,130,200);
 QColor  INFO_FONT_COLOR         (255,255,255);
 
 //LOG//
-QString CSV_LOG_PATH                            = QDir::homePath()+"/"+QStandardPaths::displayName(QStandardPaths::DesktopLocation)+"/";
-
+QString LOG_PATH                                = QDir::homePath()+"/"+QStandardPaths::displayName(QStandardPaths::DesktopLocation)+"/";
+                                                  //QDir::tempPath()/VELEC SYSTEMS/DeliveryChecker/Logfile
 // CSV //
 const QString CSV_DELIMITER                     = ";";
 const QString CSV_ITEMS_NAME                    = "ITEMS";

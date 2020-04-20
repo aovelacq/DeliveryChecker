@@ -14,6 +14,8 @@
 #include <QStackedWidget>
 #include <QDebug>
 #include <QDateTime>
+#include <QMessageBox>
+
 
 class MainWindow : public QWidget
 {
