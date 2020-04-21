@@ -10,7 +10,7 @@ DataBase::DataBase(QWidget *parent)
     for(int i = 0; i < IOFieldsList.size() ; ++i)
     {
         if (IOFieldsList.at(i)->objectName()=="LineEdit_deliveryName")  m_ImportPage_DeliveryName   = IOFieldsList.at(i);
-        if (IOFieldsList.at(i)->objectName()=="LineEdit_palletQty")     m_ImportPage_PalletQty       = IOFieldsList.at(i);
+        if (IOFieldsList.at(i)->objectName()=="LineEdit_palletQty")     m_ImportPage_PalletQty      = IOFieldsList.at(i);
         if (IOFieldsList.at(i)->objectName()=="LineEdit_boxQty")        m_ImportPage_BoxQty         = IOFieldsList.at(i);
         if (IOFieldsList.at(i)->objectName()=="LineEdit_packQty")       m_ImportPage_PackQty        = IOFieldsList.at(i);
     }
@@ -18,6 +18,12 @@ DataBase::DataBase(QWidget *parent)
     for(int i = 0; i < TableList.size() ; ++i)
     {
         if (TableList.at(i)->objectName()=="TableView_Table")           m_ImportPage_Table   = TableList.at(i);
+    }
+    QList<PillsPushButton*> PillsPushButtonList = this->parent()->findChildren<PillsPushButton*>();
+    for(int i = 0; i < PillsPushButtonList.size() ; ++i)
+    {
+        if (PillsPushButtonList.at(i)->objectName()=="pillsButton_Check") m_ImportPage_CheckBox = PillsPushButtonList.at(i);
+        qDebug() << "Found";
     }
 
 
@@ -27,6 +33,7 @@ DataBase::DataBase(QWidget *parent)
     QObject::connect(this, SIGNAL(sendBoxQty(const QString)),       m_ImportPage_BoxQty,        SLOT(setText(const QString)));
     QObject::connect(this, SIGNAL(sendPackQty(const QString)),      m_ImportPage_PackQty,       SLOT(setText(const QString)));
     QObject::connect(this, SIGNAL(sendTableData(QSqlQueryModel*)),  m_ImportPage_Table,         SLOT(setResults(QSqlQueryModel*)));
+    QObject::connect(this, SIGNAL(sendDone(bool)),                  m_ImportPage_CheckBox,      SLOT(setVisible(bool)));
 }
 
 bool DataBase::createConnection()
@@ -378,7 +385,7 @@ bool DataBase::fillItemsTable()
             ts.readLine();
             while (!ts.atEnd())
             {
-                QString qry = "INSERT OR ABORT INTO ITEMSM VALUES(";
+                QString qry = "INSERT OR ABORT INTO ITEMS VALUES(";
                 QString element;
                 // Split lines with serapartor
                 QStringList line = ts.readLine().split(CSV_DELIMITER);
@@ -912,6 +919,7 @@ void DataBase::sendInformations()
     emit sendBoxQty(getBoxQty());
     emit sendPackQty(getPackQty());
     emit sendTableData(getTableData());
+    emit sendDone(true);
 }
 
 
@@ -970,7 +978,6 @@ const QString DataBase::getPackQty()
     query.first();
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
-
 
 QSqlQueryModel* DataBase::getTableData()
 {

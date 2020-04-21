@@ -21,6 +21,7 @@
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
+#include "importPage/pillspushbutton.h"
 
 class DataBase : public QObject
 {
@@ -56,6 +57,7 @@ class DataBase : public QObject
         void sendBoxQty(const QString data);
         void sendPackQty(const QString data);
         void sendTableData(QSqlQueryModel* data);
+        void sendDone(bool ok);
 
     private:
         QSqlDatabase    m_DB;
@@ -64,6 +66,7 @@ class DataBase : public QObject
         QLineEdit       *m_ImportPage_BoxQty;
         QLineEdit       *m_ImportPage_PackQty;
         QTableView      *m_ImportPage_Table;
+        PillsPushButton *m_ImportPage_CheckBox;
 
 };
 

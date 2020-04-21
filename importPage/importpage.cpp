@@ -18,9 +18,13 @@ ImportPage::ImportPage(QWidget *parent)
     // Creates all children
     m_layout        = new QVBoxLayout(this);
     m_plusButton    = new RoundPushButton("+", this);
-    m_addButton     = new PillsPushButton("Import\nData", this);
+    m_addButton     = new PillsPushButton("Import\nData", this, "Add");
     m_deliveryInfo  = new DeliveryInfo(this);
-    m_checkBox      = new PillsPushButton("Check boxes", this);
+    m_checkBox      = new PillsPushButton("Check boxes", this, "Check");
+    QSizePolicy sp_retain = m_checkBox->sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    m_checkBox->setSizePolicy(sp_retain);
+    m_checkBox      ->setVisible(false);
 
     // Signal & slot connection
     QList<MenuButton *> menuButtons = this->parent()->findChildren<MenuButton *>();

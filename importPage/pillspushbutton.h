@@ -9,7 +9,7 @@ class PillsPushButton : public QPushButton
 {
     Q_OBJECT
 public:
-    PillsPushButton(const QString &text, QWidget *parent);
+    PillsPushButton(const QString &text, QWidget *parent = nullptr, const QString &objectName = "");
 };
 
 #endif // PILLSPUSHBUTTON_H
