@@ -18,21 +18,22 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("VELEC SYSTEMS - Delivery Checker - v1.0");
     setObjectName("MainWindow");
 
+    m_menu          = new SideMenu(this);
+    m_infobar       = new InfoBar(this);
+    importPage      = new ImportPage(this);
+    identifyPage    = new IdentifyPage(this);
+    scanPage        = new ScanPage(this);
+    intRepportPage  = new IntRepportPage(this);
+    finRepportPage  = new FinRepportPage(this);
+    stackedWidget   = new QStackedWidget(this);
+    DB              = new DataBase(this);
 
-    temp = new QPushButton(this);
-
-    m_menu = new SideMenu(this);
-    m_infobar = new InfoBar(this);
-    m_spacer = new QSpacerItem(20,20,QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-
-    importPage = new ImportPage(this);
-    identifyPage = new IdentifyPage(this);
-    stackedWidget = new QStackedWidget(this);
-    DB = new DataBase(this);
     if (!DB->createConnection()) return;
     stackedWidget->addWidget(importPage);
     stackedWidget->addWidget(identifyPage);
-
+    stackedWidget->addWidget(scanPage);
+    stackedWidget->addWidget(intRepportPage);
+    stackedWidget->addWidget(finRepportPage);
 
     m_mainLayout = new QHBoxLayout;
     m_mainLayout->setSpacing(0);

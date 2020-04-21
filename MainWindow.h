@@ -5,6 +5,9 @@
 #include "info/infobar.h"
 #include "importPage/importpage.h"
 #include "identifyPage/identifypage.h"
+#include "scanPage/scanpage.h"
+#include "intRepport/intrepportpage.h"
+#include "finRepport/finrepportpage.h"
 #include "DB/database.h"
 
 #include <QPushButton>
@@ -40,14 +43,12 @@ class MainWindow : public QWidget
         QStackedWidget      *stackedWidget;
 
         QVBoxLayout         *m_infoLayout;              // Layout for info bar
-        QPushButton         *temp;                      // TEMPORARY
-        QSpacerItem         *m_spacer;
 
         ImportPage          *importPage;
         IdentifyPage        *identifyPage;
-        QWidget             *scanPage;
-        QWidget             *intermediaryRepportPage;
-        QWidget             *finalRepportPage;
+        ScanPage            *scanPage;
+        IntRepportPage      *intRepportPage;
+        FinRepportPage      *finRepportPage;
         InfoBar             *m_infobar;                 // infobar
 
         DataBase            *DB;
