@@ -6,12 +6,13 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QDialog>
 
 #include <info/infobar.h>
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
 
-class DataBaseWindow : public QWidget
+class DataBaseWindow : public QDialog
 {
     Q_OBJECT
 

@@ -1,7 +1,7 @@
 #include "databasewindow.h"
 
 DataBaseWindow::DataBaseWindow(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
 {
     QPalette pal;
     QFont font;
