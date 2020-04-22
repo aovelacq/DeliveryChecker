@@ -54,6 +54,7 @@ SideMenu::SideMenu(QWidget *parent)
     m_Layout->addWidget(m_boutonScan);
     m_Layout->addWidget(m_boutonIntRepport);
     m_Layout->addWidget(m_boutonFinRepport);
+    m_Layout->addSpacing(40);
     m_Layout->addStretch();
     m_Layout->setSpacing(0);
     m_Layout->setMargin(0);

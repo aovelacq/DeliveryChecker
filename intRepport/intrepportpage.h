@@ -13,6 +13,10 @@ class IntRepportPage : public QWidget
     private:
          QLabel *temp;
 
+    public slots:
+         void settempvalue();
+
+
 };
 
 #endif // INTREPPORT_H
