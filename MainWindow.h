@@ -9,6 +9,7 @@
 #include "intRepport/intrepportpage.h"
 #include "finRepport/finrepportpage.h"
 #include "DB/database.h"
+#include "databasewindow.h"
 
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -52,6 +53,8 @@ class MainWindow : public QWidget
         InfoBar             *m_infobar;                 // infobar
 
         DataBase            *DB;
+
+        DataBaseWindow      *m_windowDB;
 };
 
 #endif // MAINWINDOW_H

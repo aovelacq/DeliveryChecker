@@ -23,7 +23,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_cancelButton  = new RoundPushButton("x", this);
     m_cancelLabel   = new QLabel ("Cancel",this);
 
-    m_continueButton= new RoundPushButton("->", this);
+    m_continueButton= new RoundPushButton(">", this);
     m_continueLabel = new QLabel ("Continue",this);
 
     QGridLayout * m_layoutPallet = new QGridLayout();
@@ -32,6 +32,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_boxIdLabel     = new QLabel("Box ID", this);
     m_boxIdIO        = new QLineEdit(this);
     m_boxIdIO        ->setObjectName("LineEdit_boxID");
+    m_boxIdIO       ->setText("1");
 
     m_palletIdLabel  = new QLabel("Pallet ID", this);
     m_palletIdIO     = new QLineEdit(this);
@@ -39,7 +40,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     m_boxQtyLabel    = new QLabel("Box quantity", this);
     m_boxQtyIO       = new QLineEdit(this);
-    m_boxQtyIO       ->setObjectName("LineEdit_boxQty");
+    m_boxQtyIO       ->setObjectName("LineEdit_boxQtyOnPallet");
 
     m_totalValueLabel= new QLabel("Total value", this);
     m_totalValueIO   = new QLineEdit(this);
@@ -179,6 +180,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     }
     QObject::connect(m_boxIdIO,  SIGNAL(returnPressed()),    this,   SLOT(accessContinue()));
     QObject::connect(m_boxIdIO,  SIGNAL(textChanged(QString)),    this,   SLOT(noaccessContinue(QString)));
+    QObject::connect(m_boxIdIO,  SIGNAL(returnPressed()),    this,   SLOT(getData()));
 
     // Layout management
     m_rectangle->setLayout(m_layoutPallet);
@@ -201,16 +203,34 @@ void IdentifyPage::accessContinue()
     m_continueLabel->setVisible(true);
 }
 
-void IdentifyPage::noaccessContinue(const QString i)
+void IdentifyPage::noaccessContinue(const QString)
 {
     m_continueButton->setVisible(false);
     m_continueLabel->setVisible(false);
+
+    //m_boxIdIO        ->setText("");
+    m_palletIdIO     ->setText("");
+    m_boxQtyIO       ->setText("");
+    m_totalValueIO   ->setText("");
 }
 
-void IdentifyPage::fillData(QString palletId, QString boxQty, QString totalValue)
+bool IdentifyPage::getData()
 {
-    m_palletIdIO->setText(palletId);
-    m_boxQtyIO->setText(boxQty);
-    m_totalValueIO->setText(totalValue);
+    bool success = false;
+    //do
+    {
+        QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
+        if (dataBase.count()!=1)
+        {
+            QMessageBox::critical(nullptr, QObject::tr("Database error"),
+                                  QObject::tr("Unable to access database\n"
+                                              "CODE : 12345\n\n"
+                                              "Click OK to exit."), QMessageBox::Ok);
+            return false;
+        }
+        success = dataBase.first()->fillTables();
+    } //while (!success);
 
+
+    return true;
 }

@@ -18,6 +18,7 @@
 #include <QLineEdit>
 #include <QTableView>
 #include <QSqlQueryModel>
+#include <QComboBox>
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
@@ -45,7 +46,11 @@ class DataBase : public QObject
         const QString getPalletQty();
         const QString getBoxQty();
         const QString getPackQty();
+        const QString getPalletId();
+        const QString getBoxQtyOnPallet();
+        const QString getPalletValue();
         QSqlQueryModel* getTableData();
+        QSqlQueryModel* getDBTableData(int index);
 
     private slots:
         void sendInformations();
@@ -56,8 +61,13 @@ class DataBase : public QObject
         void sendPalletQty(const QString data);
         void sendBoxQty(const QString data);
         void sendPackQty(const QString data);
+        void sendPalletId (QString data);
+        void sendBoxQtyOnPallet (QString data);
+        void sendPalletValue (QString data);
         void sendTableData(QSqlQueryModel* data);
+        void sendDBTableData(QSqlQueryModel* data);
         void sendDone(bool ok);
+
 
     private:
         QSqlDatabase    m_DB;
@@ -72,11 +82,15 @@ class DataBase : public QObject
         QLineEdit       *m_IdentifyPage_PalletID;
         QLineEdit       *m_IdentifyPage_BoxID;
         QLineEdit       *m_IdentifyPage_TotalValue;
+        QLineEdit       *m_IdentifyPage_BoxQty;
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
+        //Pointers to dataBaseWindow elements
+        SQLView         *m_DBWindow_Table;
+        QComboBox       *m_selectTable;
 
 
 

@@ -8,17 +8,18 @@
 #include "globals/globals.h"
 #include "sideMenu/MenuButton.h"
 #include "importPage/roundpushbutton.h"
+#include "DB/database.h"
 
 class IdentifyPage : public QWidget
 {
     Q_OBJECT
 public:
     IdentifyPage(QWidget *parent = nullptr);
-    void fillData(QString palletId, QString boxQty, QString totalValue);
 
 public slots :
     void accessContinue();
     void noaccessContinue(const QString i);
+    bool getData();
 
 private:
      //QLabel *temp;
