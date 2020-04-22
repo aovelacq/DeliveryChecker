@@ -19,31 +19,37 @@ DeliveryInfo::DeliveryInfo(QWidget *parent)
 
     // Creates all children
     m_layout                = new QGridLayout(this);
+    m_layout                ->setObjectName("ImportPage_GridLayout");
 
-    m_deliveryNameLabel     = new QLabel("Delivery Name", this);
+    m_deliveryNameLabel     = new QLabel("Delivery name", this);
+    m_deliveryNameLabel     ->setObjectName("ImportPage_Label_deliveryName");
 
     m_deliveryNameIO        = new QLineEdit(this);
-    m_deliveryNameIO        ->setObjectName("LineEdit_deliveryName");
+    m_deliveryNameIO        ->setObjectName("ImportPage_LineEdit_deliveryName");
 
     m_palletIdLabel         = new QLabel("Pallet quantity", this);
+    m_palletIdLabel         ->setObjectName("ImportPage_Label_palletQuantity");
 
     m_palletIdIO            = new QLineEdit(this);
-    m_palletIdIO            ->setObjectName("LineEdit_palletQty");
+    m_palletIdIO            ->setObjectName("ImportPage_LineEdit_palletQty");
 
     m_boxQtyLabel           = new QLabel("Box quantity", this);
+    m_boxQtyLabel           ->setObjectName("ImportPage_Label_boxQuantity");
 
     m_boxQtyIO              = new QLineEdit(this);
-    m_boxQtyIO              ->setObjectName("LineEdit_boxQty");
+    m_boxQtyIO              ->setObjectName("ImportPage_LineEdit_boxQty");
 
     m_packQtyLabel          = new QLabel("Pack quantity", this);
+    m_packQtyLabel          ->setObjectName("ImportPage_Label_packQuantity");
 
     m_packQtyIO             = new QLineEdit(this);
-    m_packQtyIO             ->setObjectName("LineEdit_packQty");
+    m_packQtyIO             ->setObjectName("ImportPage_LineEdit_packQty");
 
     m_deliveryDetailsLabel  = new QLabel("Delivery details", this);
+    m_deliveryDetailsLabel  ->setObjectName("ImportPage_Label_deliveryDetails");
 
     m_Table                  = new SQLView(this);
-    m_Table                  ->setObjectName("TableView_Table");
+    m_Table                  ->setObjectName("ImportPage_SQLView_Table");
 
 
     pal = m_deliveryNameLabel->palette();

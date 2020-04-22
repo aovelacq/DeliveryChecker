@@ -10,34 +10,34 @@ DataBase::DataBase(QWidget *parent)
     QList<QLineEdit*> ImportPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
     for(int i = 0; i < ImportPageIOFieldsList.size() ; ++i)
     {
-        if (ImportPageIOFieldsList.at(i)->objectName()=="LineEdit_deliveryName")
+        if (ImportPageIOFieldsList.at(i)->objectName()=="ImportPage_LineEdit_deliveryName")
         {
             m_ImportPage_DeliveryName   = ImportPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendDeliveryName(const QString)), m_ImportPage_DeliveryName,  SLOT(setText(const QString)));
+            QObject::connect(this, SIGNAL(sendImportPageDeliveryName(const QString)), m_ImportPage_DeliveryName,  SLOT(setText(const QString)));
         }
-        if (ImportPageIOFieldsList.at(i)->objectName()=="LineEdit_palletQty")
+        if (ImportPageIOFieldsList.at(i)->objectName()=="ImportPage_LineEdit_palletQty")
         {
             m_ImportPage_PalletQty      = ImportPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendPalletQty(const QString)), m_ImportPage_PalletQty, SLOT(setText(const QString)));
+            QObject::connect(this, SIGNAL(sendImportPagePalletQty(const QString)), m_ImportPage_PalletQty, SLOT(setText(const QString)));
         }
-        if (ImportPageIOFieldsList.at(i)->objectName()=="LineEdit_boxQty")
+        if (ImportPageIOFieldsList.at(i)->objectName()=="ImportPage_LineEdit_boxQty")
         {
             m_ImportPage_BoxQty         = ImportPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendBoxQty(const QString)), m_ImportPage_BoxQty, SLOT(setText(const QString)));
+            QObject::connect(this, SIGNAL(sendImportPageBoxQty(const QString)), m_ImportPage_BoxQty, SLOT(setText(const QString)));
         }
-        if (ImportPageIOFieldsList.at(i)->objectName()=="LineEdit_packQty")
+        if (ImportPageIOFieldsList.at(i)->objectName()=="ImportPage_LineEdit_packQty")
         {
             m_ImportPage_PackQty        = ImportPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendPackQty(const QString)), m_ImportPage_PackQty, SLOT(setText(const QString)));
+            QObject::connect(this, SIGNAL(sendImportPagePackQty(const QString)), m_ImportPage_PackQty, SLOT(setText(const QString)));
         }
     }
     QList<SQLView*> ImportPageTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < ImportPageTableList.size() ; ++i)
     {
-        if (ImportPageTableList.at(i)->objectName()=="TableView_Table")
+        if (ImportPageTableList.at(i)->objectName()=="ImportPage_SQLView_Table")
         {
             m_ImportPage_Table   = ImportPageTableList.at(i);
-            QObject::connect(this, SIGNAL(sendTableData(QSqlQueryModel*)), m_ImportPage_Table, SLOT(setResults(QSqlQueryModel*)));
+            QObject::connect(this, SIGNAL(sendImportPageTableData(QSqlQueryModel*)), m_ImportPage_Table, SLOT(setResults(QSqlQueryModel*)));
         }
     }
     QList<PillsPushButton*> ImportPagePillsPushButtonList = this->parent()->findChildren<PillsPushButton*>();
@@ -46,12 +46,21 @@ DataBase::DataBase(QWidget *parent)
         if (ImportPagePillsPushButtonList.at(i)->objectName()=="pillsButton_Check")
         {
             m_ImportPage_CheckBox = ImportPagePillsPushButtonList.at(i);
-            QObject::connect(this, SIGNAL(sendDone(bool)), m_ImportPage_CheckBox, SLOT(setVisible(bool)));
+            QObject::connect(this, SIGNAL(sendImportPageDone(bool)), m_ImportPage_CheckBox, SLOT(setVisible(bool)));
         }
     }
 
     // Pointers to IdentifyPage elements
     // Pointers to ScanPage elements
+//    QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
+//    for(int i = 0; i < ScanPageTableList.size() ; ++i)
+//    {
+//        if (ScanPageTableList.at(i)->objectName()=="ScanPage_SQLView_Table")
+//        {
+//            m_ScanPage_Table   = ScanPageTableList.at(i);
+//            QObject::connect(this, SIGNAL(sendImportPageTableData(QSqlQueryModel*)), m_ScanPage_Table, SLOT(setResults(QSqlQueryModel*)));
+//        }
+//    }
     // Pointers to IntRepportPage elements
     // Pointers to FinRepportPage elements
 
@@ -937,14 +946,13 @@ QString DataBase::convertDate(QString date)
 
 void DataBase::sendInformations()
 {
-    emit sendDeliveryName(getDeliveryName());
-    emit sendPalletQty(getPalletQty());
-    emit sendBoxQty(getBoxQty());
-    emit sendPackQty(getPackQty());
-    emit sendTableData(getTableData());
-    emit sendDone(true);
+    emit sendImportPageDeliveryName(getDeliveryName());
+    emit sendImportPagePalletQty(getPalletQty());
+    emit sendImportPageBoxQty(getBoxQty());
+    emit sendImportPagePackQty(getPackQty());
+    emit sendImportPageTableData(getTableData());
+    emit sendImportPageDone(true);
 }
-
 
 const QString DataBase::getDeliveryName()
 {

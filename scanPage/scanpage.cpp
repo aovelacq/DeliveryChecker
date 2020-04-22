@@ -28,20 +28,20 @@ ScanPage::ScanPage(QWidget *parent)
     m_ContinueButton        = new RoundPushButton(">", this);
     m_ContinueButtonText    = new QLabel("Continue", this);
 
-    m_layout                ->setObjectName("GridLayout_mainLayout");
-    m_layoutTextQR          ->setObjectName("HBoxLayout_TextQR");
-    m_TextQR                ->setObjectName("Label_TextQR");
-    m_ImageQR               ->setObjectName("Label_ImageQR");
-    m_layoutTextIO          ->setObjectName("HBoxLayout_IOLayout");
-    m_TextIO                ->setObjectName("Label_TextIO");
-    m_BoxRef                ->setObjectName("LineEdit_BoxRef");
-    m_Table                 ->setObjectName("SQLView_Table");
-    m_CancelButtonLayout    ->setObjectName("VBoxLayout_CancelLayout");
-    m_CancelButton          ->setObjectName("RoundPushButton_Cancel");
-    m_CancelButtonText      ->setObjectName("Label_Cancel");
-    m_ContinueButtonLayout  ->setObjectName("VBoxLayout_ContinueLayout");
-    m_ContinueButton        ->setObjectName("RoundPushButton_Continue");
-    m_ContinueButtonText    ->setObjectName("Label_Continue");
+    m_layout                ->setObjectName("ScanPage_GridLayout_mainLayout");
+    m_layoutTextQR          ->setObjectName("ScanPage_HBoxLayout_TextQR");
+    m_TextQR                ->setObjectName("ScanPage_Label_TextQR");
+    m_ImageQR               ->setObjectName("ScanPage_Label_ImageQR");
+    m_layoutTextIO          ->setObjectName("ScanPage_HBoxLayout_IOLayout");
+    m_TextIO                ->setObjectName("ScanPage_Label_TextIO");
+    m_BoxRef                ->setObjectName("ScanPage_LineEdit_BoxRef");
+    m_Table                 ->setObjectName("ScanPage_SQLView_Table");
+    m_CancelButtonLayout    ->setObjectName("ScanPage_VBoxLayout_CancelLayout");
+    m_CancelButton          ->setObjectName("ScanPage_RoundPushButton_Cancel");
+    m_CancelButtonText      ->setObjectName("ScanPage_Label_Cancel");
+    m_ContinueButtonLayout  ->setObjectName("ScanPage_VBoxLayout_ContinueLayout");
+    m_ContinueButton        ->setObjectName("ScanPage_RoundPushButton_Continue");
+    m_ContinueButtonText    ->setObjectName("ScanPage_Label_Continue");
 
     pal                 = m_TextQR->palette();
     pal.setColor(m_TextQR->foregroundRole(), MENU_BACKGROUND_COLOR);

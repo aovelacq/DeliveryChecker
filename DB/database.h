@@ -52,12 +52,12 @@ class DataBase : public QObject
 
     signals:
         void tableFillingDone();
-        void sendDeliveryName(const QString data);
-        void sendPalletQty(const QString data);
-        void sendBoxQty(const QString data);
-        void sendPackQty(const QString data);
-        void sendTableData(QSqlQueryModel* data);
-        void sendDone(bool ok);
+        void sendImportPageDeliveryName(const QString data);
+        void sendImportPagePalletQty(const QString data);
+        void sendImportPageBoxQty(const QString data);
+        void sendImportPagePackQty(const QString data);
+        void sendImportPageTableData(QSqlQueryModel* data);
+        void sendImportPageDone(bool ok);
 
     private:
         QSqlDatabase    m_DB;
@@ -74,6 +74,7 @@ class DataBase : public QObject
         QLineEdit       *m_IdentifyPage_TotalValue;
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
+        int             palletScanned = 3;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
