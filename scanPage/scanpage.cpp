@@ -106,6 +106,7 @@ ScanPage::ScanPage(QWidget *parent)
     m_ContinueButtonLayout  ->setAlignment(Qt::AlignHCenter);
     m_TextIO->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     this->update();
+
 //    for (int i = 0 ; i < m_layout->count()-1 ; ++i)
 //    {
 //        qDebug() << "Element " << i << " ) " << m_layout->itemAt(i)->widget()->objectName();
