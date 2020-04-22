@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPushButton>
 
 #include <info/infobar.h>
 #include "globals/globals.h"
@@ -26,6 +27,7 @@ public:
     QComboBox           *m_tableChoice;
     SQLView             *m_table;
     QLineEdit           *m_filter;
+    QPushButton         *m_okButton;
 
 
 };
