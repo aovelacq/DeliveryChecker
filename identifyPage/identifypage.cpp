@@ -193,8 +193,6 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     //m_boxIdIO       ->setFocus(Qt::TabFocusReason);
     //QTest::keyClick(m_boxIdIO, Qt::Key_Tab);
-
-    setLayout(m_layout);
 }
 
 void IdentifyPage::accessContinue()
