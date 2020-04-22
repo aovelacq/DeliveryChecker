@@ -112,6 +112,7 @@ ScanPage::ScanPage(QWidget *parent)
 //        qDebug() << "Element " << i << " ) " << m_layout->itemAt(i)->widget()->size();
 //    }
 
+
     qDebug() << m_ImageQR->size();
     qDebug() << m_ImageQR->height();
     qDebug() << m_ImageQR->width();
