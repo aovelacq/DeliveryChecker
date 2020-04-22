@@ -70,8 +70,6 @@ ScanPage::ScanPage(QWidget *parent)
     m_ImageQR->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     m_ImageQR -> setAlignment(Qt::AlignCenter);
     m_ImageQR->setContentsMargins(0,0,0,0);
-    m_ImageQR -> setStyleSheet("border: 1px solid black; padding : 0 0 0 0;");
-
 
     m_CancelButtonLayout->addWidget(m_CancelButton);
     m_CancelButtonLayout->addWidget(m_CancelButtonText);
@@ -105,22 +103,10 @@ ScanPage::ScanPage(QWidget *parent)
     m_CancelButtonLayout    ->setAlignment(Qt::AlignHCenter);
     m_ContinueButtonLayout  ->setAlignment(Qt::AlignHCenter);
     m_TextIO->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    this->update();
-
-//    for (int i = 0 ; i < m_layout->count()-1 ; ++i)
-//    {
-//        qDebug() << "Element " << i << " ) " << m_layout->itemAt(i)->widget()->objectName();
-//        qDebug() << "Element " << i << " ) " << m_layout->itemAt(i)->widget()->size();
-//    }
-
-
-    qDebug() << m_ImageQR->size();
-    qDebug() << m_ImageQR->height();
-    qDebug() << m_ImageQR->width();
     m_TextQR->setAlignment(Qt::AlignHCenter);
     if (pix.load(":/img/img/label.png"))
     {
-        pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
+        //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
         m_ImageQR->setPixmap(pix);
     }
 
