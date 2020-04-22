@@ -69,15 +69,15 @@ DeliveryInfo::DeliveryInfo(QWidget *parent)
     m_boxQtyIO              ->setFont(font);
     m_packQtyIO             ->setFont(font);
 
-    m_deliveryNameLabel     ->setMinimumHeight(40);
-    m_deliveryNameIO        ->setMinimumHeight(40);
-    m_palletIdLabel         ->setMinimumHeight(40);
-    m_palletIdIO            ->setMinimumHeight(40);
-    m_boxQtyLabel           ->setMinimumHeight(40);
-    m_boxQtyIO              ->setMinimumHeight(40);
-    m_packQtyLabel          ->setMinimumHeight(40);
-    m_packQtyIO             ->setMinimumHeight(40);
-    m_deliveryDetailsLabel  ->setMinimumHeight(40);
+    m_deliveryNameLabel     ->setFixedHeight(40);
+    m_deliveryNameIO        ->setFixedHeight(40);
+    m_palletIdLabel         ->setFixedHeight(40);
+    m_palletIdIO            ->setFixedHeight(40);
+    m_boxQtyLabel           ->setFixedHeight(40);
+    m_boxQtyIO              ->setFixedHeight(40);
+    m_packQtyLabel          ->setFixedHeight(40);
+    m_packQtyIO             ->setFixedHeight(40);
+    m_deliveryDetailsLabel  ->setFixedHeight(40);
 
     m_deliveryNameLabel     ->setAlignment(Qt::AlignCenter);
     m_deliveryNameIO        ->setAlignment(Qt::AlignCenter);

@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QStackedWidget>
 
-MenuButton::MenuButton(const QString &index, const QString &text, QWidget *parent = nullptr, const QString &objName = "")
+MenuButton::MenuButton(const QString &index, const QString &text, QWidget *parent, const QString &objName)
     : QPushButton(parent)
 {
     QFont font;

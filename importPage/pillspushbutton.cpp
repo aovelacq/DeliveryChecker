@@ -1,6 +1,6 @@
 #include "pillspushbutton.h"
 
-PillsPushButton::PillsPushButton(const QString &text, QWidget *parent = nullptr)
+PillsPushButton::PillsPushButton(const QString &text, QWidget *parent, const QString &objectName)
     : QPushButton(parent)
 {
     QFont font;
@@ -14,9 +14,9 @@ PillsPushButton::PillsPushButton(const QString &text, QWidget *parent = nullptr)
     setFixedSize(300,80);
     setSizePolicy(QSizePolicy ::Fixed, QSizePolicy ::Fixed);
     // Set element name
-    setObjectName("pillsButton");
+    setObjectName("pillsButton_"+objectName);
     // Set style of the button
-    styleSheet = QString("#pillsButton{ ")
+    styleSheet = QString("PillsPushButton{ ")
                 + "background-color: %1 ;"
                 + "color : white;"
                 + "border: none;"
@@ -25,10 +25,10 @@ PillsPushButton::PillsPushButton(const QString &text, QWidget *parent = nullptr)
                 + "padding : 0 0 0 0;"
                 + "margin-top -15 px"
                 + "}"
-                + "#pillsButton:hover {"
+                + "PillsPushButton:hover {"
                 + "background-color: %2 ;"
                 + "}"
-                + "#pillsButton:pressed {"
+                + "PillsPushButton:pressed {"
                 + "background-color: %2 ;"
                 + "color : %1;"
                 + "}";

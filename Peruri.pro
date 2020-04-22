@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     SQLTable/sqlview.cpp \
+    finRepport/finrepportpage.cpp \
     databasewindow.cpp \
     identifyPage/identifypage.cpp \
     importPage/deliveryinfo.cpp \
@@ -29,9 +30,11 @@ SOURCES += \
     importPage/pillspushbutton.cpp \
     importPage/roundpushbutton.cpp \
     info/infobar.cpp \
+    intRepport/intrepportpage.cpp \
     main.cpp \
     MainWindow.cpp \
     globals/globals.cpp \
+    scanPage/scanpage.cpp \
     sideMenu/MenuButton.cpp \
     sideMenu/SideMenu.cpp \
     DB/database.cpp
@@ -39,6 +42,7 @@ SOURCES += \
 HEADERS += \
     MainWindow.h \
     SQLTable/sqlview.h \
+    finRepport/finrepportpage.h \
     databasewindow.h \
     globals/globals.h \
     identifyPage/identifypage.h \
@@ -47,6 +51,8 @@ HEADERS += \
     importPage/pillspushbutton.h \
     importPage/roundpushbutton.h \
     info/infobar.h \
+    intRepport/intrepportpage.h \
+    scanPage/scanpage.h \
     sideMenu/MenuButton.h \
     sideMenu/SideMenu.h \
     DB/database.h
@@ -62,4 +68,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RC_ICONS = logo.ico
 
 RESOURCES += \
-    Ressources.qrc
+    Res.qrc

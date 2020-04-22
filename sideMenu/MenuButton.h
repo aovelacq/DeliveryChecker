@@ -11,7 +11,7 @@ class MenuButton : public QPushButton
     Q_OBJECT
 
     public:
-        MenuButton(const QString &, const QString &, QWidget *, const QString &);
+        MenuButton(const QString &index = "", const QString &text = "", QWidget *parent = nullptr, const QString &objName = "");
         ~MenuButton();
 
     public slots:

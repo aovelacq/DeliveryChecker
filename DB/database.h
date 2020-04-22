@@ -21,13 +21,14 @@
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
+#include "importPage/pillspushbutton.h"
 
 class DataBase : public QObject
 {
     Q_OBJECT
 
     public:
-        explicit DataBase(QWidget *parent);
+        explicit DataBase(QWidget *parent = nullptr);
         bool createConnection();
         bool fillTables();
         bool deleteAllData();
@@ -56,14 +57,28 @@ class DataBase : public QObject
         void sendBoxQty(const QString data);
         void sendPackQty(const QString data);
         void sendTableData(QSqlQueryModel* data);
+        void sendDone(bool ok);
 
     private:
         QSqlDatabase    m_DB;
+        // Pointers to ImportPage elements
         QLineEdit       *m_ImportPage_DeliveryName;
         QLineEdit       *m_ImportPage_PalletQty;
         QLineEdit       *m_ImportPage_BoxQty;
         QLineEdit       *m_ImportPage_PackQty;
-        QTableView      *m_ImportPage_Table;
+        SQLView         *m_ImportPage_Table;
+        PillsPushButton *m_ImportPage_CheckBox;
+        // Pointers to IdentifyPage elements
+        QLineEdit       *m_IdentifyPage_PalletID;
+        QLineEdit       *m_IdentifyPage_BoxID;
+        QLineEdit       *m_IdentifyPage_TotalValue;
+        // Pointers to ScanPage elements
+        SQLView         *m_ScanPage_Table;
+        // Pointers to IntRepportPage elements
+        // Pointers to FinRepportPage elements
+
+
+
 
 };
 
