@@ -41,23 +41,35 @@ class DataBase : public QObject
         bool fillDeliveryListTable();
         QString convertDate(QString date);
 
-        const QString getDeliveryName();
-        const QString getPalletQty();
-        const QString getBoxQty();
-        const QString getPackQty();
-        QSqlQueryModel* getTableData();
+        const QString   getImportPageDeliveryName();
+        const QString   getImportPagePalletQty();
+        const QString   getImportPageBoxQty();
+        const QString   getImportPagePackQty();
+        QSqlQueryModel* getImportPageTableData();
 
     private slots:
         void sendInformations();
 
     signals:
+        //Internal
         void tableFillingDone();
+        // Related to Import Page
         void sendImportPageDeliveryName(const QString data);
         void sendImportPagePalletQty(const QString data);
         void sendImportPageBoxQty(const QString data);
         void sendImportPagePackQty(const QString data);
         void sendImportPageTableData(QSqlQueryModel* data);
         void sendImportPageDone(bool ok);
+        //Related to Identify Page
+
+        //Related to Scan Page
+        void sendScanPageTableData(QSqlQueryModel* data);
+
+        //Related to Intermediary Repport Page
+
+        //Related to Final Repport Page
+
+
 
     private:
         QSqlDatabase    m_DB;

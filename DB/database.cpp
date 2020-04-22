@@ -52,15 +52,15 @@ DataBase::DataBase(QWidget *parent)
 
     // Pointers to IdentifyPage elements
     // Pointers to ScanPage elements
-//    QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
-//    for(int i = 0; i < ScanPageTableList.size() ; ++i)
-//    {
-//        if (ScanPageTableList.at(i)->objectName()=="ScanPage_SQLView_Table")
-//        {
-//            m_ScanPage_Table   = ScanPageTableList.at(i);
-//            QObject::connect(this, SIGNAL(sendImportPageTableData(QSqlQueryModel*)), m_ScanPage_Table, SLOT(setResults(QSqlQueryModel*)));
-//        }
-//    }
+    QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
+    for(int i = 0; i < ScanPageTableList.size() ; ++i)
+    {
+        if (ScanPageTableList.at(i)->objectName()=="ScanPage_SQLView_Table")
+        {
+            m_ScanPage_Table   = ScanPageTableList.at(i);
+            QObject::connect(this, SIGNAL(sendScanPageTableData(QSqlQueryModel*)), m_ScanPage_Table, SLOT(setResults(QSqlQueryModel*)));
+        }
+    }
     // Pointers to IntRepportPage elements
     // Pointers to FinRepportPage elements
 
@@ -946,15 +946,15 @@ QString DataBase::convertDate(QString date)
 
 void DataBase::sendInformations()
 {
-    emit sendImportPageDeliveryName(getDeliveryName());
-    emit sendImportPagePalletQty(getPalletQty());
-    emit sendImportPageBoxQty(getBoxQty());
-    emit sendImportPagePackQty(getPackQty());
-    emit sendImportPageTableData(getTableData());
+    emit sendImportPageDeliveryName(getImportPageDeliveryName());
+    emit sendImportPagePalletQty(getImportPagePalletQty());
+    emit sendImportPageBoxQty(getImportPageBoxQty());
+    emit sendImportPagePackQty(getImportPagePackQty());
+    emit sendImportPageTableData(getImportPageTableData());
     emit sendImportPageDone(true);
 }
 
-const QString DataBase::getDeliveryName()
+const QString DataBase::getImportPageDeliveryName()
 {
     QSqlQuery query;
     QString qry = "SELECT DE_NAME "
@@ -964,7 +964,7 @@ const QString DataBase::getDeliveryName()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString DataBase::getPalletQty()
+const QString DataBase::getImportPagePalletQty()
 {
     QSqlQuery query;
     QString qry = "SELECT COUNT(DL_PA_ID) "
@@ -974,7 +974,7 @@ const QString DataBase::getPalletQty()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString DataBase::getBoxQty()
+const QString DataBase::getImportPageBoxQty()
 {
     QSqlQuery query;
     QString qry = "SELECT COUNT(BO_ID) "
@@ -990,7 +990,7 @@ const QString DataBase::getBoxQty()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString DataBase::getPackQty()
+const QString DataBase::getImportPagePackQty()
 {
     QSqlQuery query;
     QString qry = "SELECT COUNT(TR_BA_ID) "
@@ -1010,7 +1010,7 @@ const QString DataBase::getPackQty()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-QSqlQueryModel* DataBase::getTableData()
+QSqlQueryModel* DataBase::getImportPageTableData()
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
