@@ -378,7 +378,7 @@ bool DataBase::fillItemsTable()
             ts.readLine();
             while (!ts.atEnd())
             {
-                QString qry = "INSERT OR ABORT INTO ITEMSM VALUES(";
+                QString qry = "INSERT OR ABORT INTO ITEMS VALUES(";
                 QString element;
                 // Split lines with serapartor
                 QStringList line = ts.readLine().split(CSV_DELIMITER);
