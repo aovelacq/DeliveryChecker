@@ -1,6 +1,6 @@
 #include "roundpushbutton.h"
 
-RoundPushButton::RoundPushButton(const QString &text, QWidget *parent = nullptr)
+RoundPushButton::RoundPushButton(const QString &text, QWidget *parent)
     : QPushButton(parent)
 {
     QFont font;
@@ -16,7 +16,7 @@ RoundPushButton::RoundPushButton(const QString &text, QWidget *parent = nullptr)
     // Set element name
     setObjectName("roundButton");
     // Set style of the button
-    styleSheet = QString("#roundButton{ ")
+    styleSheet = QString("RoundPushButton{ ")
                 + "background-color: %1 ;"
                 + "color : white;"
                 + "border: none;"
@@ -25,10 +25,10 @@ RoundPushButton::RoundPushButton(const QString &text, QWidget *parent = nullptr)
                 + "padding : -15 0 0 0;"
                 + "margin-top -15 px"
                 + "}"
-                + "#roundButton:hover {"
+                + "RoundPushButton:hover {"
                 + "background-color: %2 ;"
                 + "}"
-                + "#roundButton:pressed {"
+                + "RoundPushButton:pressed {"
                 + "background-color: %2 ;"
                 + "color : %1;"
                 + "}";

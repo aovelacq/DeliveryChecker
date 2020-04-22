@@ -6,10 +6,6 @@ QString CSV_FOLDER_PATH;
 ImportPage::ImportPage(QWidget *parent)
     : QWidget(parent)
 {
-    QFont font;
-    QPalette pal;
-    QString styleSheet;
-
     // Set element name
     setObjectName("ImportPage");
     // Set elements size policy

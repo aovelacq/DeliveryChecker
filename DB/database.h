@@ -28,7 +28,7 @@ class DataBase : public QObject
     Q_OBJECT
 
     public:
-        explicit DataBase(QWidget *parent);
+        explicit DataBase(QWidget *parent = nullptr);
         bool createConnection();
         bool fillTables();
         bool deleteAllData();
@@ -61,12 +61,24 @@ class DataBase : public QObject
 
     private:
         QSqlDatabase    m_DB;
+        // Pointers to ImportPage elements
         QLineEdit       *m_ImportPage_DeliveryName;
         QLineEdit       *m_ImportPage_PalletQty;
         QLineEdit       *m_ImportPage_BoxQty;
         QLineEdit       *m_ImportPage_PackQty;
-        QTableView      *m_ImportPage_Table;
+        SQLView         *m_ImportPage_Table;
         PillsPushButton *m_ImportPage_CheckBox;
+        // Pointers to IdentifyPage elements
+        QLineEdit       *m_IdentifyPage_PalletID;
+        QLineEdit       *m_IdentifyPage_BoxID;
+        QLineEdit       *m_IdentifyPage_TotalValue;
+        // Pointers to ScanPage elements
+        SQLView         *m_ScanPage_Table;
+        // Pointers to IntRepportPage elements
+        // Pointers to FinRepportPage elements
+
+
+
 
 };
 

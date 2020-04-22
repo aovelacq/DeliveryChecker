@@ -14,7 +14,7 @@ class SideMenu : public QWidget
     Q_OBJECT
 
     public:
-        SideMenu(QWidget *parent);
+        SideMenu(QWidget *parent  = nullptr);
         ~SideMenu();
 
     private:

@@ -23,7 +23,7 @@ class ImportPage : public QWidget
 {
     Q_OBJECT
     public:
-        ImportPage(QWidget *parent);
+        ImportPage(QWidget *parent = nullptr);
         void getPath();
         bool checkFilesExists();
         bool fillDatabase();
