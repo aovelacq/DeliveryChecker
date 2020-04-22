@@ -19,6 +19,10 @@ public:
     DataBaseWindow(QWidget *parent = nullptr);
     //~DataBaseWindow();
 
+public slots:
+    void changeTable(int index);
+    void filterTable();
+
     private:
     InfoBar             *m_infobar;
 

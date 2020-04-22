@@ -17,6 +17,8 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
 
     m_dbLayout      = new QVBoxLayout(this);
 
+    QVBoxLayout * m_contentLayout = new QVBoxLayout();
+
     m_infobar       = new InfoBar(this);
 
     m_tableChoice   = new QComboBox(this);
@@ -45,12 +47,10 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_tableChoice->insertItem(6,CSV_DELIVERY_LIST_NAME);
 
 
+    //Set style filter line and combo box
+
     m_filterLayout->addWidget(m_filter,90);
     m_filterLayout->addWidget(m_okButton,10);
-    setLayout(m_filterLayout);
-
-
-    //Design
 
     font = m_filter ->font();
     font.setPointSize(16);
@@ -62,7 +62,6 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_filter        ->setMinimumHeight(40);
     m_okButton      ->setMinimumHeight(40);
 
-    //m_tableChoice->setAlignment(Qt::AlignLeft);
     m_filter        ->setAlignment(Qt::AlignLeft);
 
     pal = m_filter  ->palette();
@@ -79,6 +78,7 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     pal = lineComboBox->palette();
     pal.setColor(QPalette::Base, MENU_BACKGROUND_COLOR);
     lineComboBox->setPalette(pal);
+    lineComboBox->setReadOnly(true);
 
     // Set style of the button
     styleSheet = QString("#okButton{ ")
@@ -100,13 +100,40 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
                 + "}";
     setStyleSheet( styleSheet.arg(MENU_BACKGROUND_COLOR.name(), MENU_FONT_COLOR.name(), MENU_BACKGROUND_ACTIVE.name()));
 
+
+    //Signal and Slots connexions
+    QObject::connect(m_tableChoice,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(changeTable(int)));
+    QObject::connect(m_okButton,  SIGNAL(clicked()),    this,   SLOT(filterTable()));
+
+
     //Layout Management
 
-    m_dbLayout->addWidget(m_tableChoice,Qt::AlignCenter);
-    m_dbLayout->addWidget(m_table,Qt::AlignCenter);
-    m_dbLayout->addLayout(m_filterLayout,Qt::AlignCenter);
+    m_contentLayout->addWidget(m_tableChoice,Qt::AlignCenter);
+    m_contentLayout->addWidget(m_table,Qt::AlignCenter);
+    m_contentLayout->addLayout(m_filterLayout,Qt::AlignCenter);
+
+    m_dbLayout->addLayout(m_contentLayout,Qt::AlignCenter);
     m_dbLayout->addWidget(m_infobar,Qt::AlignCenter);
 
-    setLayout(m_dbLayout);
+    m_contentLayout->setMargin(10);
+    m_dbLayout->setMargin(0);
 
+}
+
+void DataBaseWindow::changeTable(int index)
+{
+    m_filter->setText("PERSONALIZED SQL STATEMENT");
+    // fill table with appropriate index
+
+}
+
+void DataBaseWindow::filterTable()
+{
+    QString statement = m_filter->text();
+    /*
+    si statement est valide
+    alors appliquer le filtre à la table
+    sinon
+    */
+    m_filter->setText("WRONG PERSONALIZED SQL STATEMENT");
 }
