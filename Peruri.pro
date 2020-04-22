@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     SQLTable/sqlview.cpp \
     finRepport/finrepportpage.cpp \
+    databasewindow.cpp \
     identifyPage/identifypage.cpp \
     importPage/deliveryinfo.cpp \
     importPage/importpage.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     MainWindow.h \
     SQLTable/sqlview.h \
     finRepport/finrepportpage.h \
+    databasewindow.h \
     globals/globals.h \
     identifyPage/identifypage.h \
     importPage/deliveryinfo.h \
