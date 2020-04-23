@@ -65,7 +65,7 @@ DataBase::DataBase(QWidget *parent)
     // Pointers to FinRepportPage elements
 
 
-    QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendInformations()));
+    QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendImportPageInformations()));
 }
 
 bool DataBase::createConnection()
@@ -944,7 +944,7 @@ QString DataBase::convertDate(QString date)
     return Result;
 }
 
-void DataBase::sendInformations()
+void DataBase::sendImportPageInformations()
 {
     emit sendImportPageDeliveryName(getImportPageDeliveryName());
     emit sendImportPagePalletQty(getImportPagePalletQty());

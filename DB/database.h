@@ -48,7 +48,7 @@ class DataBase : public QObject
         QSqlQueryModel* getImportPageTableData();
 
     private slots:
-        void sendInformations();
+        void sendImportPageInformations();
 
     signals:
         //Internal
@@ -60,6 +60,7 @@ class DataBase : public QObject
         void sendImportPagePackQty(const QString data);
         void sendImportPageTableData(QSqlQueryModel* data);
         void sendImportPageDone(bool ok);
+
         //Related to Identify Page
 
         //Related to Scan Page
