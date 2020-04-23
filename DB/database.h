@@ -19,10 +19,13 @@
 #include <QTableView>
 #include <QSqlQueryModel>
 #include <QComboBox>
+#include <QLabel>
+#include <QStackedWidget>
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
 #include "importPage/pillspushbutton.h"
+#include "importPage/roundpushbutton.h"
 
 class DataBase : public QObject
 {
@@ -47,13 +50,18 @@ class DataBase : public QObject
         const QString   getImportPageBoxQty();
         const QString   getImportPagePackQty();
         QSqlQueryModel* getImportPageTableData();
-        const QString getPalletId();
-        const QString getBoxQtyOnPallet();
-        const QString getPalletValue();
-        QSqlQueryModel* getDBTableData(int index);
+
+        const QString   getIdentifyPagePalletId();
+        const QString   getIdentifyPageBoxQtyOnPallet();
+        const QString   getIdentifyPagePalletValue();
+
+        QSqlQueryModel* getDBWindowTableData(int index);
 
     private slots:
         void sendImportPageInformations();
+        void sendIdentifyPageInformations();
+        void resetIdentifyPage(QString);
+        void sendDBWindowInformations(int);
 
     signals:
         //Internal
@@ -68,6 +76,10 @@ class DataBase : public QObject
         void sendImportPageDone(bool ok);
 
         //Related to Identify Page
+        void sendIdentifyPagePalletId (QString data);
+        void sendIdentifyPageBoxQtyOnPallet (QString data);
+        void sendIdentifyPagePalletValue (QString data);
+        void sendIdentifyPageDone(bool ok);
 
         //Related to Scan Page
         void sendScanPageTableData(QSqlQueryModel* data);
@@ -76,10 +88,8 @@ class DataBase : public QObject
 
         //Related to Final Repport Page
 
-        void sendPalletId (QString data);
-        void sendBoxQtyOnPallet (QString data);
-        void sendPalletValue (QString data);
-        void sendDBTableData(QSqlQueryModel* data);
+        //Related to DataBaseWindow
+        void sendDBWindowTableData(QSqlQueryModel* data);
 
 
     private:
@@ -96,6 +106,8 @@ class DataBase : public QObject
         QLineEdit       *m_IdentifyPage_BoxID;
         QLineEdit       *m_IdentifyPage_TotalValue;
         QLineEdit       *m_IdentifyPage_BoxQty;
+        RoundPushButton *m_IdentifyPage_continueButton;
+        QLabel          *m_IdentifyPage_continueLabel;
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
         int             palletScanned = 3;
@@ -104,7 +116,9 @@ class DataBase : public QObject
 
         //Pointers to dataBaseWindow elements
         SQLView         *m_DBWindow_Table;
-        QComboBox       *m_selectTable;
+        QComboBox       *m_DBWindow_selectTable;
+        QPushButton     *m_DBWindow_okButton;
+        QLineEdit       *m_DBWindow_filter;
 
 
 

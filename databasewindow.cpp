@@ -18,25 +18,23 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_dbLayout      = new QVBoxLayout(this);
 
     QVBoxLayout * m_contentLayout = new QVBoxLayout();
-
     m_infobar       = new InfoBar(this);
-
     m_selectTable   = new QComboBox(this);
-    m_selectTable->setObjectName("TableIndex");
-
     m_table         = new SQLView;
-    m_table->setObjectName("TableDataBase");
 
     QHBoxLayout * m_filterLayout = new QHBoxLayout();
-
     m_filter        = new QLineEdit(this);
-    m_filter->setObjectName("Filter");
-    m_filter->setText("PERSONALIZED SQL STATEMENT");
-
+    m_filter        ->setText("PERSONALIZED SQL STATEMENT");
+    m_filter        ->setClearButtonEnabled(true);
     m_okButton      = new QPushButton(this);
-    m_okButton->setObjectName("okButton");
-    m_okButton->setText("OK");
+    m_okButton      ->setText("OK");
 
+    m_dbLayout      ->setObjectName("DataBaseWindow_Layout_dbLayout");
+    m_infobar       ->setObjectName("DataBaseWindow_infobar_InfoBar");
+    m_selectTable   ->setObjectName("DataBaseWindow_ComboBox_TableIndex");
+    m_table         ->setObjectName("DataBaseWindow_SQLView_TableDataBase");
+    m_filter        ->setObjectName("DataBaseWindow_LineEdit_Filter");
+    m_okButton      ->setObjectName("DataBaseWindow_PushButton_okButton");
 
     m_selectTable->insertItem(0,CSV_ITEMS_NAME);
     m_selectTable->insertItem(1,CSV_JOBORDER_NAME);
@@ -103,7 +101,7 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
 
     //Signal and Slots connexions
     //QObject::connect(m_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(getData(int)));
-    QObject::connect(m_okButton,  SIGNAL(clicked()),    this,   SLOT(filterTable()));
+    //QObject::connect(m_okButton,  SIGNAL(clicked()),    this,   SLOT(filterTable()));
 
 
     //Layout Management
@@ -118,27 +116,6 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_contentLayout->setMargin(10);
     m_dbLayout->setMargin(0);
 
-}
-
-bool DataBaseWindow::getData(int)
-{
-    bool success = false;
-    //do
-    {
-        QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
-        if (dataBase.count()!=1)
-        {
-            QMessageBox::critical(nullptr, QObject::tr("Database error"),
-                                  QObject::tr("Unable to access database\n"
-                                              "CODE : 12345\n\n"
-                                              "Click OK to exit."), QMessageBox::Ok);
-            return false;
-        }
-        success = dataBase.first()->fillTables();
-    } //while (!success);
-
-
-    return true;
 }
 
 

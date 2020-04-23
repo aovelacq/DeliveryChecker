@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPixmap>
 
 #include "globals/globals.h"
 #include "sideMenu/MenuButton.h"
@@ -16,11 +17,6 @@ class IdentifyPage : public QWidget
 public:
     IdentifyPage(QWidget *parent = nullptr);
 
-public slots :
-    void accessContinue();
-    void noaccessContinue(const QString i);
-    bool getData();
-
 private:
      //QLabel *temp;
 
@@ -30,6 +26,7 @@ private:
      RoundPushButton     *m_continueButton;
      QLabel              *m_continueLabel;
      QLabel              *m_scanText;
+     QLabel              *m_ImageQR;
      QLabel              *m_boxIdLabel;
      QLineEdit           *m_boxIdIO;
      QLabel              *m_palletIdLabel;

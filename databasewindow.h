@@ -22,7 +22,6 @@ public:
     //~DataBaseWindow();
 
 public slots:
-    bool getData(int);
     void filterTable();
 
     private:

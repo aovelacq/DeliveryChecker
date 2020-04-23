@@ -6,23 +6,23 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     QPalette pal;
     QFont font;
     QString styleSheet;
+    QPixmap pix;
 
     // Set element name
     setObjectName("IdentifyPage");
     // Set element size policy
-    setMinimumWidth(1100);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     // Creates all children
     m_layout        = new QVBoxLayout(this);
 
+    QGridLayout *m_layoutInstructions = new QGridLayout(this);
     m_scanText      = new QLabel("Scan the QR code on a box to identify the pallet",this);
+    m_ImageQR               = new QLabel(this);
 
     QGridLayout * m_layoutButton = new QGridLayout();
-
     m_cancelButton  = new RoundPushButton("x", this);
     m_cancelLabel   = new QLabel ("Cancel",this);
-
     m_continueButton= new RoundPushButton(">", this);
     m_continueLabel = new QLabel ("Continue",this);
 
@@ -31,21 +31,29 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     m_boxIdLabel     = new QLabel("Box ID", this);
     m_boxIdIO        = new QLineEdit(this);
-    m_boxIdIO        ->setObjectName("LineEdit_boxID");
-    m_boxIdIO       ->setText("1");
-
+    m_boxIdIO->setClearButtonEnabled(true);
     m_palletIdLabel  = new QLabel("Pallet ID", this);
     m_palletIdIO     = new QLineEdit(this);
-    m_palletIdIO     ->setObjectName("LineEdit_palletID");
-
     m_boxQtyLabel    = new QLabel("Box quantity", this);
     m_boxQtyIO       = new QLineEdit(this);
-    m_boxQtyIO       ->setObjectName("LineEdit_boxQtyOnPallet");
-
     m_totalValueLabel= new QLabel("Total value", this);
     m_totalValueIO   = new QLineEdit(this);
-    m_totalValueIO   ->setObjectName("LineEdit_totalValue");
 
+    m_layout            ->setObjectName("IdentifyPage_VBoxLayout_mainLayout");
+    m_scanText          ->setObjectName("IdentifyPage_Label_scanText");
+    m_ImageQR           ->setObjectName("IdentifyPage_Label_ImageQR");
+    m_cancelButton      ->setObjectName("IdentifyPage_RoundPushButton_cancelButton");
+    m_cancelLabel       ->setObjectName("IdentifyPage_Label_cancelLabel");
+    m_continueButton    ->setObjectName("IdentifyPage_RoundPushButton_continueButton");
+    m_continueLabel     ->setObjectName("IdentifyPage_Label_continueLabel");
+    m_boxIdLabel        ->setObjectName("IdentifyPage_Label_boxIdLabel");
+    m_boxIdIO           ->setObjectName("IdentifyPage_LineEdit_boxID");
+    m_palletIdLabel     ->setObjectName("IdentifyPage_Label_palletIdLabel");
+    m_palletIdIO        ->setObjectName("IdentifyPage_LineEdit_palletID");
+    m_boxQtyLabel       ->setObjectName("IdentifyPage_Label_boxQtyOnPalletLabel");
+    m_boxQtyIO          ->setObjectName("IdentifyPage_LineEdit_boxQtyOnPallet");
+    m_totalValueLabel   ->setObjectName("IdentifyPage_Label_totalValueLabel");
+    m_totalValueIO      ->setObjectName("IdentifyPage_LineEdit_totalValue");
 
     //PalletInfo Design
     pal.setColor(QPalette::Background, MENU_BACKGROUND_COLOR);
@@ -128,8 +136,6 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_layoutPallet->setColumnStretch(4,28);
 
 
-
-
     //Design Buttons
     pal.setColor(m_cancelLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
     m_continueLabel     ->setPalette(pal);
@@ -159,6 +165,28 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_continueButton->setVisible(false);
     m_continueLabel ->setVisible(false);
 
+    m_ImageQR->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    m_ImageQR -> setAlignment(Qt::AlignCenter);
+    m_ImageQR->setContentsMargins(0,0,0,0);
+
+    m_layoutInstructions  ->addWidget(m_ImageQR,                0, 2, 1, 1);
+    m_layoutInstructions  ->addWidget(m_scanText,               0, 0, 1, 1);
+
+    m_layoutInstructions  ->setColumnStretch(0,2);
+    m_layoutInstructions  ->setColumnStretch(1,1);
+    m_layoutInstructions  ->setColumnStretch(2,1);
+
+    m_layoutInstructions  ->setRowStretch(0,2);
+    m_layoutInstructions  ->setRowStretch(1,1);
+
+    setLayout(m_layoutInstructions);
+    m_scanText->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    if (pix.load(":/img/img/label.png"))
+    {
+        //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
+        m_ImageQR->setPixmap(pix);
+    }
+
 
     // Signal & slot connection
     QList<MenuButton *> menuButtons = this->parent()->findChildren<MenuButton *>();
@@ -169,7 +197,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
         {
             button = menuButtons.at(i);
             QObject::connect(m_continueButton,  SIGNAL(clicked()),    button,   SLOT(enable()));
-            QObject::connect(m_continueButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setScanPage()));
+            //QObject::connect(m_continueButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setScanPage()));
         }
         else if (menuButtons.at(i)->objectName()=="menuButton_Import")
         {
@@ -178,59 +206,21 @@ IdentifyPage::IdentifyPage(QWidget *parent)
             QObject::connect(m_cancelButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setImportPage()));
         }
     }
-    QObject::connect(m_boxIdIO,  SIGNAL(returnPressed()),    this,   SLOT(accessContinue()));
-    QObject::connect(m_boxIdIO,  SIGNAL(textChanged(QString)),    this,   SLOT(noaccessContinue(QString)));
-    QObject::connect(m_boxIdIO,  SIGNAL(returnPressed()),    this,   SLOT(getData()));
+
 
     // Layout management
-    m_rectangle->setLayout(m_layoutPallet);
+    m_rectangle     ->setLayout(m_layoutPallet);
 
-    m_layout        ->addWidget(m_scanText);
+    m_layout        ->addLayout(m_layoutInstructions);
     m_layout        ->addWidget(m_rectangle);
     m_layout        ->addSpacing(180);
     m_layout        ->addLayout(m_layoutButton);
 
-    m_layout        ->setAlignment(m_scanText, Qt::AlignHCenter);
+    m_layout        ->setAlignment(m_layoutInstructions, Qt::AlignHCenter);
     m_layout        ->setAlignment(m_layoutButton, Qt::AlignHCenter);
 
     //m_boxIdIO       ->setFocus(Qt::TabFocusReason);
     //QTest::keyClick(m_boxIdIO, Qt::Key_Tab);
 }
 
-void IdentifyPage::accessContinue()
-{
-    m_continueButton->setVisible(true);
-    m_continueLabel->setVisible(true);
-}
 
-void IdentifyPage::noaccessContinue(const QString)
-{
-    m_continueButton->setVisible(false);
-    m_continueLabel->setVisible(false);
-
-    //m_boxIdIO        ->setText("");
-    m_palletIdIO     ->setText("");
-    m_boxQtyIO       ->setText("");
-    m_totalValueIO   ->setText("");
-}
-
-bool IdentifyPage::getData()
-{
-    bool success = false;
-    //do
-    {
-        QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
-        if (dataBase.count()!=1)
-        {
-            QMessageBox::critical(nullptr, QObject::tr("Database error"),
-                                  QObject::tr("Unable to access database\n"
-                                              "CODE : 12345\n\n"
-                                              "Click OK to exit."), QMessageBox::Ok);
-            return false;
-        }
-        success = dataBase.first()->fillTables();
-    } //while (!success);
-
-
-    return true;
-}

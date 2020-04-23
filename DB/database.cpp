@@ -7,7 +7,7 @@ DataBase::DataBase(QWidget *parent)
     setObjectName("DataBase");
 
     // Pointers to ImportPage elements
-    QList<QLineEdit*> ImportPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
+   { QList<QLineEdit*> ImportPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
     for(int i = 0; i < ImportPageIOFieldsList.size() ; ++i)
     {
         if (ImportPageIOFieldsList.at(i)->objectName()=="ImportPage_LineEdit_deliveryName")
@@ -49,34 +49,54 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this, SIGNAL(sendImportPageDone(bool)), m_ImportPage_CheckBox, SLOT(setVisible(bool)));
         }
     }
-
+}
 
     // Pointers to IdentifyPage elements
-    QList<QLineEdit*> IdentifyPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
-    for(int i = 0; i < IdentifyPageIOFieldsList.size() ; ++i)
+   { QList<RoundPushButton*> IdentifyPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
+    for(int i = 0; i < IdentifyPageRoundPushButtonList.size() ; ++i)
     {
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_boxID")
+        if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="IdentifyPage_RoundPushButton_continueButton")
         {
-            m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
-           // QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendInformations()));
-            //QObject::connect(this, SIGNAL(sendBoxId(const QString)), m_IdentifyPage_BoxID,  SLOT(setText(const QString)));
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_palletID")
-        {
-            m_IdentifyPage_PalletID      = IdentifyPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendPalletId(const QString)), m_IdentifyPage_PalletID, SLOT(setText(const QString)));
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_boxQtyOnPallet")
-        {
-            m_IdentifyPage_BoxQty         = IdentifyPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendBoxQtyOnPallet(const QString)), m_IdentifyPage_BoxQty, SLOT(setText(const QString)));
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_totalValue")
-        {
-            m_IdentifyPage_TotalValue        = IdentifyPageIOFieldsList.at(i);
-            QObject::connect(this, SIGNAL(sendPalletValue(const QString)), m_IdentifyPage_TotalValue, SLOT(setText(const QString)));
+            m_IdentifyPage_continueButton = IdentifyPageRoundPushButtonList.at(i);
+            QObject::connect(this, SIGNAL(sendIdentifyPageDone(bool)), m_IdentifyPage_continueButton, SLOT(setVisible(bool)));
         }
     }
+    QList<QLabel*> IdentifyPageLabelList = this->parent()->findChildren<QLabel*>();
+    for(int i = 0; i < IdentifyPageLabelList.size() ; ++i)
+    {
+        if (IdentifyPageLabelList.at(i)->objectName()=="IdentifyPage_Label_continueLabel")
+        {
+            m_IdentifyPage_continueLabel = IdentifyPageLabelList.at(i);
+            QObject::connect(this, SIGNAL(sendIdentifyPageDone(bool)), m_IdentifyPage_continueLabel, SLOT(setVisible(bool)));
+        }
+    }
+    QList<QLineEdit*> IdentifyPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
+    for(int i = 0; i < IdentifyPageIOFieldsList.size() ; ++i)
+    {      
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_palletID")
+        {
+            m_IdentifyPage_PalletID      = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendIdentifyPagePalletId(const QString)), m_IdentifyPage_PalletID, SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxQtyOnPallet")
+        {
+            m_IdentifyPage_BoxQty         = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendIdentifyPageBoxQtyOnPallet(const QString)), m_IdentifyPage_BoxQty, SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_totalValue")
+        {
+            m_IdentifyPage_TotalValue        = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendIdentifyPagePalletValue(const QString)), m_IdentifyPage_TotalValue, SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxID")
+        {
+            m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
+            //QWidget *widg = new QWidget();
+            //widg = QStackedWidget::currentWidget();
+            QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendIdentifyPageInformations()));
+            QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
+        }
+    }}
 
     // Pointers to ScanPage elements
     QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
@@ -92,24 +112,42 @@ DataBase::DataBase(QWidget *parent)
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
-    QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+  {  QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
-        if (DataBaseWindowTableList.at(i)->objectName()=="TableDataBase")
+        if (DataBaseWindowTableList.at(i)->objectName()=="DataBaseWindow_SQLView_TableDataBase")
         {
             m_DBWindow_Table   = DataBaseWindowTableList.at(i);
-            QObject::connect(this, SIGNAL(sendDBTableData(QSqlQueryModel*)), m_DBWindow_Table, SLOT(setResults(QSqlQueryModel*)));
+            QObject::connect(this, SIGNAL(sendDBWindowTableData(QSqlQueryModel*)), m_DBWindow_Table, SLOT(setResults(QSqlQueryModel*)));
         }
     }
     QList<QComboBox*> DataBaseWindowComboBox = this->parent()->findChildren<QComboBox*>();
     for(int i = 0; i < DataBaseWindowComboBox.size() ; ++i)
     {
-        if (DataBaseWindowComboBox.at(i)->objectName()=="TableIndex")
+        if (DataBaseWindowComboBox.at(i)->objectName()=="DataBaseWindow_ComboBox_TableIndex")
         {
-            m_selectTable   = DataBaseWindowComboBox.at(i);
-            //QObject::connect(m_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(getDBTableData(int)));
-            //QObject::connect(this, SIGNAL(sendDBTableData(QSqlQueryModel*)), m_selectTable, SLOT(setResults(QSqlQueryModel*)));
+            m_DBWindow_selectTable   = DataBaseWindowComboBox.at(i);
+            QObject::connect(m_DBWindow_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(sendDBWindowInformations(int)));
         }
+    }
+    QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
+    for(int i = 0; i < DataBaseWindowPushButton.size() ; ++i)
+    {
+        if (DataBaseWindowPushButton.at(i)->objectName()=="DataBaseWindow_PushButtun_okButton")
+        {
+            m_DBWindow_okButton   = DataBaseWindowPushButton.at(i);
+            //QObject::connect(m_DBWindow_okButton,  SIGNAL(clicked()),    this,   SLOT(_______()));
+        }
+    }
+    QList<QLineEdit*> DataBaseWindowLineEdit = this->parent()->findChildren<QLineEdit*>();
+    for(int i = 0; i < DataBaseWindowLineEdit.size() ; ++i)
+    {
+        if (DataBaseWindowLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
+        {
+            m_DBWindow_filter   = DataBaseWindowLineEdit.at(i);
+            //QObject::connect(m_DBWindow_filter,  SIGNAL(clicked()),    m_DBWindow_filter,   SLOT(clear()));
+        }
+    }
     }
 
 
@@ -1000,10 +1038,38 @@ void DataBase::sendImportPageInformations()
     emit sendImportPagePackQty(getImportPagePackQty());
     emit sendImportPageTableData(getImportPageTableData());
     emit sendImportPageDone(true);
-    emit sendPalletId(getPalletId());
-    emit sendBoxQtyOnPallet(getBoxQtyOnPallet());
-    emit sendPalletValue(getPalletValue());
-    emit sendDBTableData(getDBTableData(m_selectTable->currentIndex()));
+}
+
+void DataBase::sendIdentifyPageInformations()
+{
+    emit sendIdentifyPagePalletId(getIdentifyPagePalletId());
+    emit sendIdentifyPageBoxQtyOnPallet(getIdentifyPageBoxQtyOnPallet());
+    emit sendIdentifyPagePalletValue(getIdentifyPagePalletValue());
+    if ((getIdentifyPagePalletId()=="Error") || (getIdentifyPageBoxQtyOnPallet()=="Error") || (getIdentifyPagePalletValue()=="Error"))
+    {
+        emit sendIdentifyPageDone(false);
+    }
+    else
+    {
+        emit sendIdentifyPageDone(true);
+    }
+}
+
+void DataBase::resetIdentifyPage(QString)
+{
+   m_IdentifyPage_continueButton->setVisible(false);
+   m_IdentifyPage_continueLabel ->setVisible(false);
+
+   m_IdentifyPage_PalletID     ->setText("");
+   m_IdentifyPage_BoxQty       ->setText("");
+   m_IdentifyPage_TotalValue   ->setText("");
+
+}
+
+void DataBase::sendDBWindowInformations(int)
+{
+    emit sendDBWindowTableData(getDBWindowTableData(m_DBWindow_selectTable->currentIndex()));
+
 }
 
 const QString DataBase::getImportPageDeliveryName()
@@ -1064,7 +1130,7 @@ const QString DataBase::getImportPagePackQty()
 
 
 
-const QString DataBase::getPalletId()
+const QString DataBase::getIdentifyPagePalletId()
 {
     QSqlQuery query;
     QString qry = "SELECT TRACEABILITY_PALLET.PA_ID "
@@ -1086,7 +1152,7 @@ const QString DataBase::getPalletId()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString DataBase::getBoxQtyOnPallet()
+const QString DataBase::getIdentifyPageBoxQtyOnPallet()
 {
     QSqlQuery query;
     QString qry = "SELECT Count(TRACEABILITY_BOX.BO_ID) AS CompteDeBO_ID "
@@ -1108,7 +1174,7 @@ const QString DataBase::getBoxQtyOnPallet()
 }
 
 
-const QString DataBase::getPalletValue()
+const QString DataBase::getIdentifyPagePalletValue()
 {
     QSqlQuery query;
     QString qry = "SELECT Sum(ITEMS.IT_ROLL_Q*ITEMS.IT_BA_Q*ITEMS.IT_VALUE) AS Total "
@@ -1159,54 +1225,44 @@ QSqlQueryModel* DataBase::getImportPageTableData()
     return Results;
 }
 
-QSqlQueryModel* DataBase::getDBTableData(int index)
+QSqlQueryModel* DataBase::getDBWindowTableData(int index)
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
-    QString qry = "";
+    QString qry = "SELECT * FROM ";
 
     switch(index)
     {
         case 0:
-        qry ="SELECT * FROM "
-                + CSV_ITEMS_NAME
-                + ";";
+        qry += CSV_ITEMS_NAME;
         break;
+
         case 1:
-        qry ="SELECT * FROM "
-                + CSV_JOBORDER_NAME
-                + ";";
+        qry += CSV_JOBORDER_NAME;
         break;
 
         case 2:
-        qry ="SELECT * FROM "
-                + CSV_TRACEABILITY_BATCH_NAME
-                + ";";
+        qry += CSV_TRACEABILITY_BATCH_NAME;
         break;
 
         case 3:
-        qry ="SELECT * FROM "
-                + CSV_TRACEABILITY_BOX_NAME
-                + ";";
+        qry += CSV_TRACEABILITY_BOX_NAME;
         break;
 
         case 4:
-        qry ="SELECT * FROM "
-                + CSV_TRACEABILITY_PALLET_NAME
-                + ";";
+        qry += CSV_TRACEABILITY_PALLET_NAME;
         break;
+
         case 5:
-        qry ="SELECT * FROM "
-                + CSV_DELIVERY_NAME
-                + ";";
+        qry += CSV_DELIVERY_NAME;
         break;
+
         case 6:
-        qry ="SELECT * FROM "
-                + CSV_DELIVERY_LIST_NAME
-                + ";";
+        qry += CSV_DELIVERY_LIST_NAME;
+
         break;
     }
-
+    qry += ";";
     if(!query->exec(qry))
     {
         qDebug() << query->lastError().text();
