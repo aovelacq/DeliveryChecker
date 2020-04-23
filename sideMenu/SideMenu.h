@@ -7,7 +7,10 @@
 #include <QSpacerItem>
 #include <QStackedWidget>
 #include <QtDebug>
+
 #include "globals/globals.h"
+#include "importPage/pillspushbutton.h"
+#include "importPage/roundpushbutton.h"
 
 class SideMenu : public QWidget
 {
@@ -25,6 +28,11 @@ class SideMenu : public QWidget
         MenuButton  *m_boutonScan;          // Button Scan
         MenuButton  *m_boutonIntRepport;       // Button Repport
         MenuButton  *m_boutonFinRepport;         // Button Print
+
+        PillsPushButton *m_ImportPage_checkBox;
+        RoundPushButton *m_IdentifyPage_continueButton;
+        RoundPushButton *m_IdentifyPage_cancelButton;
+
 
     signals:
 };

@@ -55,13 +55,14 @@ class DataBase : public QObject
         const QString   getIdentifyPageBoxQtyOnPallet();
         const QString   getIdentifyPagePalletValue();
 
-        QSqlQueryModel* getDBWindowTableData(int index);
+        QSqlQueryModel* getDBWindowFilter();
 
     private slots:
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
         void resetIdentifyPage(QString);
         void sendDBWindowInformations(int);
+        void sendDBWindowNewFilter();
 
     signals:
         //Internal
@@ -90,6 +91,7 @@ class DataBase : public QObject
 
         //Related to DataBaseWindow
         void sendDBWindowTableData(QSqlQueryModel* data);
+        void sendDBWindowFilter(QSqlQueryModel* data);
 
 
     private:

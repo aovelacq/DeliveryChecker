@@ -98,12 +98,6 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
                 + "}";
     setStyleSheet( styleSheet.arg(MENU_BACKGROUND_COLOR.name(), MENU_FONT_COLOR.name(), MENU_BACKGROUND_ACTIVE.name()));
 
-
-    //Signal and Slots connexions
-    //QObject::connect(m_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(getData(int)));
-    //QObject::connect(m_okButton,  SIGNAL(clicked()),    this,   SLOT(filterTable()));
-
-
     //Layout Management
 
     m_contentLayout->addWidget(m_selectTable,Qt::AlignCenter);
@@ -116,16 +110,4 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_contentLayout->setMargin(10);
     m_dbLayout->setMargin(0);
 
-}
-
-
-void DataBaseWindow::filterTable()
-{
-    QString statement = m_filter->text();
-    /*
-    si statement est valide
-    alors appliquer le filtre à la table
-    sinon
-    */
-    m_filter->setText("WRONG PERSONALIZED SQL STATEMENT");
 }

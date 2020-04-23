@@ -21,9 +21,6 @@ public:
     DataBaseWindow(QWidget *parent = nullptr);
     //~DataBaseWindow();
 
-public slots:
-    void filterTable();
-
     private:
     InfoBar             *m_infobar;
 

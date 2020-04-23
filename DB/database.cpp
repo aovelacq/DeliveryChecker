@@ -91,8 +91,6 @@ DataBase::DataBase(QWidget *parent)
         if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxID")
         {
             m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
-            //QWidget *widg = new QWidget();
-            //widg = QStackedWidget::currentWidget();
             QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendIdentifyPageInformations()));
             QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
         }
@@ -130,22 +128,24 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(m_DBWindow_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(sendDBWindowInformations(int)));
         }
     }
-    QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
-    for(int i = 0; i < DataBaseWindowPushButton.size() ; ++i)
-    {
-        if (DataBaseWindowPushButton.at(i)->objectName()=="DataBaseWindow_PushButtun_okButton")
-        {
-            m_DBWindow_okButton   = DataBaseWindowPushButton.at(i);
-            //QObject::connect(m_DBWindow_okButton,  SIGNAL(clicked()),    this,   SLOT(_______()));
-        }
-    }
     QList<QLineEdit*> DataBaseWindowLineEdit = this->parent()->findChildren<QLineEdit*>();
     for(int i = 0; i < DataBaseWindowLineEdit.size() ; ++i)
     {
         if (DataBaseWindowLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
         {
             m_DBWindow_filter   = DataBaseWindowLineEdit.at(i);
-            //QObject::connect(m_DBWindow_filter,  SIGNAL(clicked()),    m_DBWindow_filter,   SLOT(clear()));
+
+        }
+    }
+    QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
+    for(int i = 0; i < DataBaseWindowPushButton.size() ; ++i)
+    {
+        if (DataBaseWindowPushButton.at(i)->objectName()=="DataBaseWindow_PushButton_okButton")
+        {
+            m_DBWindow_okButton   = DataBaseWindowPushButton.at(i);
+            QObject::connect(m_DBWindow_okButton,  SIGNAL(clicked()),    this,   SLOT(sendDBWindowNewFilter()));
+            QObject::connect(this,  SIGNAL(sendDBWindowFilter(QSqlQueryModel*)),    m_DBWindow_Table,   SLOT(setResults(QSqlQueryModel*)));
+
         }
     }
     }
@@ -1068,8 +1068,13 @@ void DataBase::resetIdentifyPage(QString)
 
 void DataBase::sendDBWindowInformations(int)
 {
-    emit sendDBWindowTableData(getDBWindowTableData(m_DBWindow_selectTable->currentIndex()));
+    m_DBWindow_filter->setText("PERSONALIZED SQL STATEMENT");
+    emit sendDBWindowTableData(getDBWindowFilter());
+}
 
+void DataBase::sendDBWindowNewFilter()
+{
+    emit sendDBWindowFilter(getDBWindowFilter());
 }
 
 const QString DataBase::getImportPageDeliveryName()
@@ -1225,11 +1230,13 @@ QSqlQueryModel* DataBase::getImportPageTableData()
     return Results;
 }
 
-QSqlQueryModel* DataBase::getDBWindowTableData(int index)
+QSqlQueryModel* DataBase::getDBWindowFilter()
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
     QString qry = "SELECT * FROM ";
+    QString Filter = m_DBWindow_filter->text();
+    int index = m_DBWindow_selectTable->currentIndex();
 
     switch(index)
     {
@@ -1262,7 +1269,15 @@ QSqlQueryModel* DataBase::getDBWindowTableData(int index)
 
         break;
     }
-    qry += ";";
+    if (Filter == "PERSONALIZED SQL STATEMENT")
+    {
+        qry+=";";
+    }
+    else
+    {
+        qry += " " + Filter + ";";
+
+    }
     if(!query->exec(qry))
     {
         qDebug() << query->lastError().text();

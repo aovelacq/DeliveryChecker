@@ -187,27 +187,6 @@ IdentifyPage::IdentifyPage(QWidget *parent)
         m_ImageQR->setPixmap(pix);
     }
 
-
-    // Signal & slot connection
-    QList<MenuButton *> menuButtons = this->parent()->findChildren<MenuButton *>();
-    MenuButton *button;
-    for(int i = 0; i < menuButtons.size() ; ++i)
-    {
-        if (menuButtons.at(i)->objectName()=="menuButton_Scan")
-        {
-            button = menuButtons.at(i);
-            QObject::connect(m_continueButton,  SIGNAL(clicked()),    button,   SLOT(enable()));
-            //QObject::connect(m_continueButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setScanPage()));
-        }
-        else if (menuButtons.at(i)->objectName()=="menuButton_Import")
-        {
-            button = menuButtons.at(i);
-            QObject::connect(m_cancelButton,  SIGNAL(clicked()),    button,   SLOT(enable()));
-            QObject::connect(m_cancelButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setImportPage()));
-        }
-    }
-
-
     // Layout management
     m_rectangle     ->setLayout(m_layoutPallet);
 
