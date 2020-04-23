@@ -18,6 +18,7 @@
 #include <QLineEdit>
 #include <QTableView>
 #include <QSqlQueryModel>
+#include <QComboBox>
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
@@ -46,6 +47,10 @@ class DataBase : public QObject
         const QString   getImportPageBoxQty();
         const QString   getImportPagePackQty();
         QSqlQueryModel* getImportPageTableData();
+        const QString getPalletId();
+        const QString getBoxQtyOnPallet();
+        const QString getPalletValue();
+        QSqlQueryModel* getDBTableData(int index);
 
     private slots:
         void sendImportPageInformations();
@@ -53,6 +58,7 @@ class DataBase : public QObject
     signals:
         //Internal
         void tableFillingDone();
+
         // Related to Import Page
         void sendImportPageDeliveryName(const QString data);
         void sendImportPagePalletQty(const QString data);
@@ -70,6 +76,10 @@ class DataBase : public QObject
 
         //Related to Final Repport Page
 
+        void sendPalletId (QString data);
+        void sendBoxQtyOnPallet (QString data);
+        void sendPalletValue (QString data);
+        void sendDBTableData(QSqlQueryModel* data);
 
 
     private:
@@ -85,12 +95,16 @@ class DataBase : public QObject
         QLineEdit       *m_IdentifyPage_PalletID;
         QLineEdit       *m_IdentifyPage_BoxID;
         QLineEdit       *m_IdentifyPage_TotalValue;
+        QLineEdit       *m_IdentifyPage_BoxQty;
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
         int             palletScanned = 3;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
+        //Pointers to dataBaseWindow elements
+        SQLView         *m_DBWindow_Table;
+        QComboBox       *m_selectTable;
 
 
 

@@ -10,9 +10,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     MainWindow Window;
-    //DataBaseWindow Window;
  //   Window.showMaximized();
     Window.show();
-
     return app.exec();
 }

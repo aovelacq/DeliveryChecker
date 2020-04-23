@@ -50,7 +50,34 @@ DataBase::DataBase(QWidget *parent)
         }
     }
 
+
     // Pointers to IdentifyPage elements
+    QList<QLineEdit*> IdentifyPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
+    for(int i = 0; i < IdentifyPageIOFieldsList.size() ; ++i)
+    {
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_boxID")
+        {
+            m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
+           // QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendInformations()));
+            //QObject::connect(this, SIGNAL(sendBoxId(const QString)), m_IdentifyPage_BoxID,  SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_palletID")
+        {
+            m_IdentifyPage_PalletID      = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendPalletId(const QString)), m_IdentifyPage_PalletID, SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_boxQtyOnPallet")
+        {
+            m_IdentifyPage_BoxQty         = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendBoxQtyOnPallet(const QString)), m_IdentifyPage_BoxQty, SLOT(setText(const QString)));
+        }
+        if (IdentifyPageIOFieldsList.at(i)->objectName()=="LineEdit_totalValue")
+        {
+            m_IdentifyPage_TotalValue        = IdentifyPageIOFieldsList.at(i);
+            QObject::connect(this, SIGNAL(sendPalletValue(const QString)), m_IdentifyPage_TotalValue, SLOT(setText(const QString)));
+        }
+    }
+
     // Pointers to ScanPage elements
     QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < ScanPageTableList.size() ; ++i)
@@ -63,6 +90,27 @@ DataBase::DataBase(QWidget *parent)
     }
     // Pointers to IntRepportPage elements
     // Pointers to FinRepportPage elements
+
+    //Pointers to DataBaseWindow elements
+    QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+    for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
+    {
+        if (DataBaseWindowTableList.at(i)->objectName()=="TableDataBase")
+        {
+            m_DBWindow_Table   = DataBaseWindowTableList.at(i);
+            QObject::connect(this, SIGNAL(sendDBTableData(QSqlQueryModel*)), m_DBWindow_Table, SLOT(setResults(QSqlQueryModel*)));
+        }
+    }
+    QList<QComboBox*> DataBaseWindowComboBox = this->parent()->findChildren<QComboBox*>();
+    for(int i = 0; i < DataBaseWindowComboBox.size() ; ++i)
+    {
+        if (DataBaseWindowComboBox.at(i)->objectName()=="TableIndex")
+        {
+            m_selectTable   = DataBaseWindowComboBox.at(i);
+            //QObject::connect(m_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(getDBTableData(int)));
+            //QObject::connect(this, SIGNAL(sendDBTableData(QSqlQueryModel*)), m_selectTable, SLOT(setResults(QSqlQueryModel*)));
+        }
+    }
 
 
     QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendImportPageInformations()));
@@ -101,7 +149,7 @@ bool DataBase::createConnection()
                    "IT_WEIGHT           REAL            NOT NULL, "
                    "IT_VALUE            REAL            NOT NULL, "
                    "IT_ROLL_Q           INT             NOT NULL, "
-                   "IT_PACK_Q           INT             NOT NULL, "
+                   "IT_BA_Q             INT             NOT NULL, "
                    "IT_BOX_Q            INT             NOT NULL, "
                    "IT_PALLET_Q         INT             NOT NULL, "
                    "IT_BA_WEIGHT        REAL            NOT NULL, "
@@ -952,6 +1000,10 @@ void DataBase::sendImportPageInformations()
     emit sendImportPagePackQty(getImportPagePackQty());
     emit sendImportPageTableData(getImportPageTableData());
     emit sendImportPageDone(true);
+    emit sendPalletId(getPalletId());
+    emit sendBoxQtyOnPallet(getBoxQtyOnPallet());
+    emit sendPalletValue(getPalletValue());
+    emit sendDBTableData(getDBTableData(m_selectTable->currentIndex()));
 }
 
 const QString DataBase::getImportPageDeliveryName()
@@ -1010,6 +1062,80 @@ const QString DataBase::getImportPagePackQty()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
+
+
+const QString DataBase::getPalletId()
+{
+    QSqlQuery query;
+    QString qry = "SELECT TRACEABILITY_PALLET.PA_ID "
+                   "FROM "
+                    "(TRACEABILITY_PALLET INNER JOIN TRACEABILITY_BOX "
+                        "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                            "INNER JOIN DELIVERY_LIST "
+                                "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID "
+                                    "WHERE (((TRACEABILITY_BOX.TR_BO_ID)=\""
+                                        + m_IdentifyPage_BoxID->text()
+                                            +"\"));";
+
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return "Error";
+    }
+    query.first();
+    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+}
+
+const QString DataBase::getBoxQtyOnPallet()
+{
+    QSqlQuery query;
+    QString qry = "SELECT Count(TRACEABILITY_BOX.BO_ID) AS CompteDeBO_ID "
+                    "FROM "
+                        "(TRACEABILITY_PALLET INNER JOIN TRACEABILITY_BOX "
+                            "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                                "INNER JOIN DELIVERY_LIST "
+                                    "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID "
+                                        "GROUP BY TRACEABILITY_PALLET.PA_ID "
+                                            "HAVING (((TRACEABILITY_PALLET.PA_ID)=" + m_IdentifyPage_PalletID->text() + "));";
+
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return "Error";
+    }
+    query.first();
+    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+}
+
+
+const QString DataBase::getPalletValue()
+{
+    QSqlQuery query;
+    QString qry = "SELECT Sum(ITEMS.IT_ROLL_Q*ITEMS.IT_BA_Q*ITEMS.IT_VALUE) AS Total "
+                    "FROM "
+                        "ITEMS INNER JOIN "
+                            "(JOBORDER INNER JOIN "
+                                  "(((TRACEABILITY_PALLET INNER JOIN DELIVERY_LIST "
+                                        "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID) "
+                                            "INNER JOIN TRACEABILITY_BOX "
+                                                "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                                                    "INNER JOIN TRACEABILITY_BATCH "
+                                                        "ON TRACEABILITY_BOX.BO_ID = TRACEABILITY_BATCH.BO_ID) "
+                                  "ON (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BATCH.JO_ID)) "
+                            "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
+                                "GROUP BY TRACEABILITY_PALLET.PA_ID "
+                                    "HAVING (((TRACEABILITY_PALLET.PA_ID)=" + m_IdentifyPage_PalletID->text() + "));";
+
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return "Error";
+    }
+    query.first();
+    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+}
+
+
 QSqlQueryModel* DataBase::getImportPageTableData()
 {
     QSqlQuery *query = new QSqlQuery;
@@ -1025,6 +1151,62 @@ QSqlQueryModel* DataBase::getImportPageTableData()
                         "ON (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID)) "
                     "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
                  "GROUP BY TRACEABILITY_PALLET.PA_ID, ITEMS.IT_VALUE;";
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    return Results;
+}
+
+QSqlQueryModel* DataBase::getDBTableData(int index)
+{
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry = "";
+
+    switch(index)
+    {
+        case 0:
+        qry ="SELECT * FROM "
+                + CSV_ITEMS_NAME
+                + ";";
+        break;
+        case 1:
+        qry ="SELECT * FROM "
+                + CSV_JOBORDER_NAME
+                + ";";
+        break;
+
+        case 2:
+        qry ="SELECT * FROM "
+                + CSV_TRACEABILITY_BATCH_NAME
+                + ";";
+        break;
+
+        case 3:
+        qry ="SELECT * FROM "
+                + CSV_TRACEABILITY_BOX_NAME
+                + ";";
+        break;
+
+        case 4:
+        qry ="SELECT * FROM "
+                + CSV_TRACEABILITY_PALLET_NAME
+                + ";";
+        break;
+        case 5:
+        qry ="SELECT * FROM "
+                + CSV_DELIVERY_NAME
+                + ";";
+        break;
+        case 6:
+        qry ="SELECT * FROM "
+                + CSV_DELIVERY_LIST_NAME
+                + ";";
+        break;
+    }
+
     if(!query->exec(qry))
     {
         qDebug() << query->lastError().text();

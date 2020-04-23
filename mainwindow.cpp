@@ -26,7 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
     intRepportPage  = new IntRepportPage(this);
     finRepportPage  = new FinRepportPage(this);
     stackedWidget   = new QStackedWidget(this);
+    m_windowDB      = new DataBaseWindow(this);
     DB              = new DataBase(this);
+
 
     if (!DB->createConnection()) return;
     stackedWidget->addWidget(importPage);
@@ -49,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     setLayout(m_mainLayout);
 
     stackedWidget->setCurrentIndex(0);
+    m_windowDB->show();
 }
 
 MainWindow::~MainWindow()
