@@ -56,10 +56,10 @@ class MainWindow : public QWidget
 
         DataBaseWindow      *m_windowDB;
 
-        QLineEdit       *m_IdentifyPage_PalletID;
-        QLineEdit       *m_IdentifyPage_BoxID;
-        QLineEdit       *m_IdentifyPage_TotalValue;
-        QLineEdit       *m_IdentifyPage_BoxQty;
+        QLineEdit           *m_IdentifyPage_PalletID;
+        QLineEdit           *m_IdentifyPage_BoxID;
+        QLineEdit           *m_IdentifyPage_TotalValue;
+        QLineEdit           *m_IdentifyPage_BoxQty;
 };
 
 #endif // MAINWINDOW_H

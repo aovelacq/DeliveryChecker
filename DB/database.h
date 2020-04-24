@@ -21,11 +21,14 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QDateTime>
 
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
 #include "importPage/pillspushbutton.h"
 #include "importPage/roundpushbutton.h"
+#include "ImprovedLineEdit.h"
+#include "databasewindow.h"
 
 class DataBase : public QObject
 {
@@ -56,6 +59,7 @@ class DataBase : public QObject
         const QString   getIdentifyPagePalletValue();
 
         QSqlQueryModel* getDBWindowFilter();
+        bool checkDBWindowFilter();
 
     private slots:
         void sendImportPageInformations();
@@ -63,6 +67,9 @@ class DataBase : public QObject
         void resetIdentifyPage(QString);
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
+        void sendDBWindowCheckFilter(QString);
+        void setDBWindowQueryValidLabel(bool valid);
+        void resetDBWindowFilter(bool reset);
 
     signals:
         //Internal
@@ -92,6 +99,7 @@ class DataBase : public QObject
         //Related to DataBaseWindow
         void sendDBWindowTableData(QSqlQueryModel* data);
         void sendDBWindowFilter(QSqlQueryModel* data);
+        void isDBWindowQueryValid(bool);
 
 
     private:
@@ -120,7 +128,8 @@ class DataBase : public QObject
         SQLView         *m_DBWindow_Table;
         QComboBox       *m_DBWindow_selectTable;
         QPushButton     *m_DBWindow_okButton;
-        QLineEdit       *m_DBWindow_filter;
+        ImprovedLineEdit*m_DBWindow_filter;
+        QLabel          *m_DBWindow_queryLabel;
 
 
 

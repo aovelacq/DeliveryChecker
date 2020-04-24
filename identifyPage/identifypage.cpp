@@ -166,21 +166,11 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_continueLabel ->setVisible(false);
 
     m_ImageQR->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    m_ImageQR -> setAlignment(Qt::AlignCenter);
     m_ImageQR->setContentsMargins(0,0,0,0);
 
-    m_layoutInstructions  ->addWidget(m_ImageQR,                0, 2, 1, 1);
-    m_layoutInstructions  ->addWidget(m_scanText,               0, 0, 1, 1);
+    m_layoutInstructions  ->addWidget(m_ImageQR,                0, 1, 1, 1, Qt::AlignCenter);
+    m_layoutInstructions  ->addWidget(m_scanText,               0, 0, 1, 1, Qt::AlignCenter);
 
-    m_layoutInstructions  ->setColumnStretch(0,2);
-    m_layoutInstructions  ->setColumnStretch(1,1);
-    m_layoutInstructions  ->setColumnStretch(2,1);
-
-    m_layoutInstructions  ->setRowStretch(0,2);
-    m_layoutInstructions  ->setRowStretch(1,1);
-
-    setLayout(m_layoutInstructions);
-    m_scanText->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     if (pix.load(":/img/img/label.png"))
     {
         //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
@@ -197,9 +187,6 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     m_layout        ->setAlignment(m_layoutInstructions, Qt::AlignHCenter);
     m_layout        ->setAlignment(m_layoutButton, Qt::AlignHCenter);
-
-    //m_boxIdIO       ->setFocus(Qt::TabFocusReason);
-    //QTest::keyClick(m_boxIdIO, Qt::Key_Tab);
 }
 
 

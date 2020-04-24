@@ -29,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
     DB              = new DataBase(this);
     m_menu          = new SideMenu(this);
 
+    //WindowMaximizeButtonHint
+    m_windowDB->setWindowFlag(Qt::WindowMaximizeButtonHint);
+    m_windowDB->setWindowFlag(Qt::WindowMinimizeButtonHint);
+
     if (!DB->createConnection()) return;
     stackedWidget->addWidget(importPage);
     stackedWidget->addWidget(identifyPage);

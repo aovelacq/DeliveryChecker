@@ -77,6 +77,7 @@ DataBase::DataBase(QWidget *parent)
         {
             m_IdentifyPage_PalletID      = IdentifyPageIOFieldsList.at(i);
             QObject::connect(this, SIGNAL(sendIdentifyPagePalletId(const QString)), m_IdentifyPage_PalletID, SLOT(setText(const QString)));
+
         }
         if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxQtyOnPallet")
         {
@@ -110,7 +111,7 @@ DataBase::DataBase(QWidget *parent)
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
-  {  QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+  { QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
         if (DataBaseWindowTableList.at(i)->objectName()=="DataBaseWindow_SQLView_TableDataBase")
@@ -128,13 +129,24 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(m_DBWindow_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(sendDBWindowInformations(int)));
         }
     }
-    QList<QLineEdit*> DataBaseWindowLineEdit = this->parent()->findChildren<QLineEdit*>();
-    for(int i = 0; i < DataBaseWindowLineEdit.size() ; ++i)
+    QList<ImprovedLineEdit*> DataBaseWindowImprovedLineEdit = this->parent()->findChildren<ImprovedLineEdit*>();
+    for(int i = 0; i < DataBaseWindowImprovedLineEdit.size() ; ++i)
     {
-        if (DataBaseWindowLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
+        if (DataBaseWindowImprovedLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
         {
-            m_DBWindow_filter   = DataBaseWindowLineEdit.at(i);
+            m_DBWindow_filter   = DataBaseWindowImprovedLineEdit.at(i);
+            QObject::connect(m_DBWindow_filter,  SIGNAL(focussed(bool)),    this,   SLOT(resetDBWindowFilter(bool)));
 
+        }
+    }
+    QList<QLabel*> DataBaseWindowLabel = this->parent()->findChildren<QLabel*>();
+    for(int i = 0; i < DataBaseWindowLabel.size() ; ++i)
+    {
+        if (DataBaseWindowLabel.at(i)->objectName()=="DataBaseWindow_Label_FilterCheck")
+        {
+            m_DBWindow_queryLabel   = DataBaseWindowLabel.at(i);
+            QObject::connect(m_DBWindow_filter,  SIGNAL(textChanged(QString)),    this,   SLOT(sendDBWindowCheckFilter(QString)));
+            QObject::connect(this,  SIGNAL(isDBWindowQueryValid(bool)),    this,   SLOT(setDBWindowQueryValidLabel(bool)));
         }
     }
     QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
@@ -200,7 +212,7 @@ bool DataBase::createConnection()
                    "IT_PA_CFG           INT             NOT NULL, "
                    "IT_LA_CFG           INT             NOT NULL, "
                    "IT_YEAR             INT             NOT NULL, "
-//               "IT_DATE             DATETIME, "
+//                 "IT_DATE             DATETIME, "
                "PRIMARY KEY(IT_ID)"
                ")"))
     {
@@ -220,7 +232,7 @@ bool DataBase::createConnection()
                    "JO_NAME             VARCHAR(40)     NOT NULL, "
                    "JO_IT_ID            INT             NOT NULL, "
                    "JO_DESC             VARCHAR(80),              "
-                   "JO_WEIGHT           REAL            NOT NULL, "
+                   "JO_Q                LONG INT        NOT NULL, "
                    "JO_STATUS           SMALLINT,                 "
                    "JO_STATUS_S         VARCHAR(40),              "
                    "JO_DATE_EDITION     DATETIME,                 "
@@ -1052,6 +1064,7 @@ void DataBase::sendIdentifyPageInformations()
     else
     {
         emit sendIdentifyPageDone(true);
+        palletScanned = m_IdentifyPage_PalletID->text().toInt(nullptr,10);
     }
 }
 
@@ -1076,6 +1089,42 @@ void DataBase::sendDBWindowNewFilter()
 {
     emit sendDBWindowFilter(getDBWindowFilter());
 }
+
+void DataBase::sendDBWindowCheckFilter(QString)
+{
+    emit isDBWindowQueryValid(checkDBWindowFilter());
+}
+
+void DataBase::setDBWindowQueryValidLabel(bool valid)
+{
+    QPalette pal;
+    if (valid)
+    {
+        m_DBWindow_queryLabel->setText("QUERY OK");
+
+        pal = m_DBWindow_queryLabel  ->palette();
+        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::darkGreen);
+        m_DBWindow_queryLabel->setPalette(pal);
+    }
+    else
+    {
+        m_DBWindow_queryLabel->setText("QUERY NOT OK");
+
+        pal = m_DBWindow_queryLabel  ->palette();
+        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::red);
+        m_DBWindow_queryLabel->setPalette(pal);
+    }
+}
+
+void DataBase::resetDBWindowFilter(bool reset)
+{
+    if (reset)
+    {
+        m_DBWindow_filter->clear();
+    }
+
+}
+
 
 const QString DataBase::getImportPageDeliveryName()
 {
@@ -1203,7 +1252,14 @@ const QString DataBase::getIdentifyPagePalletValue()
         return "Error";
     }
     query.first();
-    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    if (query.value(0).toString().length()<1)
+    {
+        return "Error";
+    }
+    else
+    {
+        return QString::number(query.value(0).toString().toDouble(),'f',2);
+    }
 }
 
 
@@ -1234,42 +1290,78 @@ QSqlQueryModel* DataBase::getDBWindowFilter()
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
-    QString qry = "SELECT * FROM ";
+
+    QString qry = "";
     QString Filter = m_DBWindow_filter->text();
     int index = m_DBWindow_selectTable->currentIndex();
 
     switch(index)
     {
         case 0:
-        qry += CSV_ITEMS_NAME;
+        qry="";
         break;
 
         case 1:
-        qry += CSV_JOBORDER_NAME;
+        // CSV_ITEMS_NAME;
+        qry = "SELECT "
+                "ITEMS.IT_NAME AS [Name], ITEMS.IT_WEIGHT || \" kg\" AS [Weight], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
+                        "ITEMS.IT_ROLL_Q AS [Roll Q], ITEMS.IT_BA_Q AS [Batch Q], ITEMS.IT_BOX_Q AS [Box Q], "
+                        "ITEMS.IT_COLOR AS [Color], ITEMS.IT_YEAR AS [Year] "
+                            "FROM ITEMS";
         break;
 
         case 2:
-        qry += CSV_TRACEABILITY_BATCH_NAME;
+        //CSV_JOBORDER_NAME;
+        qry = "SELECT "
+                "JOBORDER.JO_ID AS [ID], JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description], "
+                    "JOBORDER.JO_Q [Coin Qty], JOBORDER.JO_STATUS_S AS [Status], "
+                        "JOBORDER.JO_DATE_EDITION AS [Date Edition], JOBORDER.JO_DATE_START AS [Date Start], JOBORDER.JO_DATE_STOP AS [Date Stop] "
+                            "FROM JOBORDER";
         break;
 
         case 3:
-        qry += CSV_TRACEABILITY_BOX_NAME;
+        // CSV_TRACEABILITY_BATCH_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_BATCH.TR_BA_ID AS [ID], TRACEABILITY_BATCH.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_BATCH.BO_ID AS [Box ID], TRACEABILITY_BATCH.TR_BA_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_BATCH";
         break;
 
         case 4:
-        qry += CSV_TRACEABILITY_PALLET_NAME;
+        //CSV_TRACEABILITY_BOX_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_BOX.TR_BO_ID AS [ID], TRACEABILITY_BOX.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_BOX.PA_ID AS [Pallet ID], TRACEABILITY_BOX.TR_BO_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_BOX";
         break;
 
         case 5:
-        qry += CSV_DELIVERY_NAME;
+        //CSV_TRACEABILITY_PALLET_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_PALLET.PA_ID AS [ID], TRACEABILITY_PALLET.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_PALLET.TR_PA_EXIT AS [Exit], TRACEABILITY_PALLET.TR_PA_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_PALLET";
+
         break;
 
         case 6:
-        qry += CSV_DELIVERY_LIST_NAME;
+        //CSV_DELIVERY_NAME;
+        qry = "SELECT "
+                "DELIVERY.DE_ID AS [ID], DELIVERY.DE_NAME AS [Name], DELIVERY.DE_CUSTOMER AS [Customer], "
+                    "DELIVERY.DE_STATUS_S AS [Status], DELIVERY.DE_DATE AS [Date] "
+                        "FROM DELIVERY";
+        break;
+
+        case 7:
+        //CSV_DELIVERY_LIST_NAME;
+        qry = "SELECT "
+                "DELIVERY_LIST.DL_ID AS [ID], DELIVERY_LIST.DL_DE_ID AS [Delivery ID], "
+                    "DELIVERY_LIST.DL_PA_ID AS [Pallet ID], DELIVERY_LIST.DL_DATE AS [Date] "
+                     "FROM DELIVERY_LIST";
 
         break;
     }
-    if (Filter == "PERSONALIZED SQL STATEMENT")
+   if (Filter == "PERSONALIZED SQL STATEMENT")
     {
         qry+=";";
     }
@@ -1284,4 +1376,90 @@ QSqlQueryModel* DataBase::getDBWindowFilter()
     }
     Results->setQuery(*query);
     return Results;
+}
+
+bool DataBase::checkDBWindowFilter()
+{
+    QSqlQuery *query = new QSqlQuery;
+
+    QString qry = "";
+    QString Filter = m_DBWindow_filter->text();
+    int index = m_DBWindow_selectTable->currentIndex();
+
+    if (Filter == "PERSONALIZED SQL STATEMENT")
+     {
+        return true;
+     }
+    switch(index)
+    {
+        case 0:
+        break;
+
+        case 1:
+        // CSV_ITEMS_NAME;
+        qry = "SELECT "
+                "ITEMS.IT_NAME AS [Name], ITEMS.IT_WEIGHT || \" kg\" AS [Weight], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
+                        "ITEMS.IT_ROLL_Q AS [Roll Q], ITEMS.IT_BA_Q AS [Batch Q], ITEMS.IT_BOX_Q AS [Box Q], "
+                        "ITEMS.IT_COLOR AS [Color], ITEMS.IT_YEAR AS [Year] "
+                            "FROM ITEMS";
+        break;
+
+        case 2:
+        //CSV_JOBORDER_NAME;
+        qry = "SELECT "
+                "JOBORDER.JO_ID AS [ID], JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description], "
+                    "JOBORDER.JO_Q AS [Coin Qty], JOBORDER.JO_STATUS_S AS [Status], "
+                        "JOBORDER.JO_DATE_EDITION AS [Date Edition], JOBORDER.JO_DATE_START AS [Date Start], JOBORDER.JO_DATE_STOP AS [Date Stop] "
+                            "FROM JOBORDER";
+        break;
+
+        case 3:
+        // CSV_TRACEABILITY_BATCH_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_BATCH.TR_BA_ID AS [ID], TRACEABILITY_BATCH.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_BATCH.BO_ID AS [Box ID], TRACEABILITY_BATCH.TR_BA_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_BATCH";
+        break;
+
+        case 4:
+        //CSV_TRACEABILITY_BOX_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_BOX.TR_BO_ID AS [ID], TRACEABILITY_BOX.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_BOX.PA_ID AS [Pallet ID], TRACEABILITY_BOX.TR_BO_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_BOX";
+        break;
+
+        case 5:
+        //CSV_TRACEABILITY_PALLET_NAME;
+        qry = "SELECT "
+                "TRACEABILITY_PALLET.PA_ID AS [ID], TRACEABILITY_PALLET.JO_ID AS [Job Order ID], "
+                    "TRACEABILITY_PALLET.TR_PA_EXIT AS [Exit], TRACEABILITY_PALLET.TR_PA_STATUS_S AS [Status] "
+                        "FROM TRACEABILITY_PALLET";
+
+        break;
+
+        case 6:
+        //CSV_DELIVERY_NAME;
+        qry = "SELECT "
+                "DELIVERY.DE_ID AS [ID], DELIVERY.DE_NAME AS [Name], DELIVERY.DE_CUSTOMER AS [Customer], "
+                    "DELIVERY.DE_STATUS_S AS [Status], DELIVERY.DE_DATE AS [Date] "
+                        "FROM DELIVERY";
+        break;
+
+        case 7:
+        //CSV_DELIVERY_LIST_NAME;
+        qry = "SELECT "
+                "DELIVERY_LIST.DL_ID AS [ID], DELIVERY_LIST.DL_DE_ID AS [Delivery ID], "
+                    "DELIVERY_LIST.DL_PA_ID AS [Pallet ID], DELIVERY_LIST.DL_DATE AS [Date] "
+                     "FROM DELIVERY_LIST";
+
+        break;
+    }
+
+    qry += " " + Filter + ";";
+    if(!query->exec(qry))
+    {
+        return false;
+    }
+    return true;
 }

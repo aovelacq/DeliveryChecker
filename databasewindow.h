@@ -7,11 +7,13 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QDialog>
+#include <QLabel>
 
 #include <info/infobar.h>
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
 #include "DB/database.h"
+#include "ImprovedLineEdit.h"
 
 class DataBaseWindow : public QDialog
 {
@@ -28,7 +30,8 @@ public:
 
     QComboBox           *m_selectTable;
     SQLView             *m_table;
-    QLineEdit           *m_filter;
+    ImprovedLineEdit    *m_filter;
+    QLabel              *m_filterCheck;
     QPushButton         *m_okButton;
 
 
