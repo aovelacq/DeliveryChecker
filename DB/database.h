@@ -118,6 +118,7 @@ class DataBase : public QObject
         QLineEdit       *m_IdentifyPage_BoxQty;
         RoundPushButton *m_IdentifyPage_continueButton;
         QLabel          *m_IdentifyPage_continueLabel;
+        RoundPushButton *m_IdentifyPage_closePopUp;
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
         int             palletScanned = 3;

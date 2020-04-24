@@ -1,10 +1,14 @@
 #include "database.h"
 
+#include "ProductNotFound.h"
+
 DataBase::DataBase(QWidget *parent)
     :QObject(parent)
 {
     // Set element name
     setObjectName("DataBase");
+
+    ProductNotFound *m_IdentifyPage_productNotFound = new ProductNotFound();
 
     // Pointers to ImportPage elements
    { QList<QLineEdit*> ImportPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
@@ -52,13 +56,26 @@ DataBase::DataBase(QWidget *parent)
 }
 
     // Pointers to IdentifyPage elements
-   { QList<RoundPushButton*> IdentifyPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
+   { QList<ProductNotFound*> IdentifyPageProductNotFoundList = this->parent()->findChildren<ProductNotFound*>();
+        for(int i = 0; i < IdentifyPageProductNotFoundList.size() ; ++i)
+        {
+            if (IdentifyPageProductNotFoundList.at(i)->objectName()=="IdentifyPage_ProductNotFound")
+            {
+                m_IdentifyPage_productNotFound = IdentifyPageProductNotFoundList.at(i);
+            }
+        }
+    QList<RoundPushButton*> IdentifyPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
     for(int i = 0; i < IdentifyPageRoundPushButtonList.size() ; ++i)
     {
         if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="IdentifyPage_RoundPushButton_continueButton")
         {
             m_IdentifyPage_continueButton = IdentifyPageRoundPushButtonList.at(i);
             QObject::connect(this, SIGNAL(sendIdentifyPageDone(bool)), m_IdentifyPage_continueButton, SLOT(setVisible(bool)));
+        }
+        if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="ProductNotFound_RoundPushButton_errorProductButton")
+        {
+            m_IdentifyPage_closePopUp = IdentifyPageRoundPushButtonList.at(i);
+            //QObject::connect(m_IdentifyPage_closePopUp, SIGNAL(clicked()), m_IdentifyPage_productNotFound, SLOT(done()));
         }
     }
     QList<QLabel*> IdentifyPageLabelList = this->parent()->findChildren<QLabel*>();

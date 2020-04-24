@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ImprovedLineEdit.cpp \
+    ProductNotFound.cpp \
     SQLTable/sqlview.cpp \
     finRepport/finrepportpage.cpp \
     databasewindow.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
 HEADERS += \
     ImprovedLineEdit.h \
     MainWindow.h \
+    ProductNotFound.h \
     SQLTable/sqlview.h \
     finRepport/finrepportpage.h \
     databasewindow.h \

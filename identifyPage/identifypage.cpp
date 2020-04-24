@@ -39,6 +39,10 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_totalValueLabel= new QLabel("Total value", this);
     m_totalValueIO   = new QLineEdit(this);
 
+    m_productNotFound = new ProductNotFound(this);
+    m_productNotFound->setObjectName("IdentifyPage_ProductNotFound");
+    m_productNotFound->show();
+
     m_layout            ->setObjectName("IdentifyPage_VBoxLayout_mainLayout");
     m_scanText          ->setObjectName("IdentifyPage_Label_scanText");
     m_ImageQR           ->setObjectName("IdentifyPage_Label_ImageQR");
@@ -137,7 +141,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
 
     //Design Buttons
-    pal.setColor(m_cancelLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
+    {pal.setColor(m_cancelLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
     m_continueLabel     ->setPalette(pal);
     m_cancelLabel       ->setPalette(pal);
     m_scanText          ->setPalette(pal);
@@ -176,6 +180,11 @@ IdentifyPage::IdentifyPage(QWidget *parent)
         //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
         m_ImageQR->setPixmap(pix);
     }
+    }
+
+
+
+
 
     // Layout management
     m_rectangle     ->setLayout(m_layoutPallet);

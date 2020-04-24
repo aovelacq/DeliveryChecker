@@ -5,11 +5,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPixmap>
+#include <QDialog>
 
 #include "globals/globals.h"
 #include "sideMenu/MenuButton.h"
 #include "importPage/roundpushbutton.h"
 #include "DB/database.h"
+#include "ProductNotFound.h"
 
 class IdentifyPage : public QWidget
 {
@@ -36,6 +38,7 @@ private:
      QLabel              *m_totalValueLabel;
      QLineEdit           *m_totalValueIO;
 
+     ProductNotFound    *m_productNotFound;
 };
 
 #endif // IDENTIFYPAGE_H

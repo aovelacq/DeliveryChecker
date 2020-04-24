@@ -13,6 +13,10 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     setWindowTitle("DataBase");
     setObjectName("DataBaseWindow");
 
+    //WindowFlags
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlag(Qt::WindowMinimizeButtonHint);
+
     //Creates all children
 
     m_dbLayout      = new QVBoxLayout(this);
