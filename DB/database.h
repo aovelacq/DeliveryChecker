@@ -29,6 +29,7 @@
 #include "importPage/roundpushbutton.h"
 #include "ImprovedLineEdit.h"
 #include "databasewindow.h"
+#include "ProductNotFound.h"
 
 class DataBase : public QObject
 {
@@ -111,6 +112,7 @@ class DataBase : public QObject
         QLineEdit       *m_ImportPage_PackQty;
         SQLView         *m_ImportPage_Table;
         PillsPushButton *m_ImportPage_CheckBox;
+
         // Pointers to IdentifyPage elements
         QLineEdit       *m_IdentifyPage_PalletID;
         QLineEdit       *m_IdentifyPage_BoxID;
@@ -119,6 +121,8 @@ class DataBase : public QObject
         RoundPushButton *m_IdentifyPage_continueButton;
         QLabel          *m_IdentifyPage_continueLabel;
         RoundPushButton *m_IdentifyPage_closePopUp;
+        ProductNotFound *m_IdentifyPage_productNotFound;
+
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
         int             palletScanned = 3;

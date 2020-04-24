@@ -12,7 +12,7 @@ ProductNotFound::ProductNotFound(QWidget *parent)
     QString styleSheet;
 
     //this->setWindowModality ( Qt::WindowModal );
-    this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
+    //this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
 
 
     m_mainLayout         = new QVBoxLayout(this);

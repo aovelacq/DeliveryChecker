@@ -8,8 +8,6 @@ DataBase::DataBase(QWidget *parent)
     // Set element name
     setObjectName("DataBase");
 
-    ProductNotFound *m_IdentifyPage_productNotFound = new ProductNotFound();
-
     // Pointers to ImportPage elements
    { QList<QLineEdit*> ImportPageIOFieldsList = this->parent()->findChildren<QLineEdit*>();
     for(int i = 0; i < ImportPageIOFieldsList.size() ; ++i)
@@ -1077,6 +1075,7 @@ void DataBase::sendIdentifyPageInformations()
     if ((getIdentifyPagePalletId()=="Error") || (getIdentifyPageBoxQtyOnPallet()=="Error") || (getIdentifyPagePalletValue()=="Error"))
     {
         emit sendIdentifyPageDone(false);
+        m_IdentifyPage_productNotFound->exec();
     }
     else
     {

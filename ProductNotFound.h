@@ -1,7 +1,7 @@
 #ifndef PRODUCTNOTFOUND_H
 #define PRODUCTNOTFOUND_H
 
-#endif // PRODUCTNOTFOUND_H
+
 #include <QObject>
 #include <QWidget>
 #include <QDialog>
@@ -21,3 +21,4 @@ private:
     RoundPushButton     *m_errorProductButton;
     QLabel              *m_errorProductLabel;
 };
+#endif // PRODUCTNOTFOUND_H

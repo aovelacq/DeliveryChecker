@@ -41,7 +41,6 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     m_productNotFound = new ProductNotFound(this);
     m_productNotFound->setObjectName("IdentifyPage_ProductNotFound");
-    m_productNotFound->show();
 
     m_layout            ->setObjectName("IdentifyPage_VBoxLayout_mainLayout");
     m_scanText          ->setObjectName("IdentifyPage_Label_scanText");

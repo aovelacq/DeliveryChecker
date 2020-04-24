@@ -12,7 +12,6 @@
 #include <info/infobar.h>
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
-#include "DB/database.h"
 #include "ImprovedLineEdit.h"
 
 class DataBaseWindow : public QDialog
