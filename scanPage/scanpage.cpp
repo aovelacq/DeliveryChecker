@@ -22,10 +22,10 @@ ScanPage::ScanPage(QWidget *parent)
     m_BoxRef                = new QLineEdit(this);
     m_Table                 = new SQLView(this);
     m_CancelButtonLayout    = new QVBoxLayout(this);
-    m_CancelButton          = new RoundPushButton("x", this);
+    m_CancelButton          = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
     m_CancelButtonText      = new QLabel("Cancel", this);
     m_ContinueButtonLayout  = new QVBoxLayout(this);
-    m_ContinueButton        = new RoundPushButton(">", this);
+    m_ContinueButton        = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
     m_ContinueButtonText    = new QLabel("Continue", this);
 
     m_layout                ->setObjectName("ScanPage_GridLayout_mainLayout");

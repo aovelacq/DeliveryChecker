@@ -17,8 +17,8 @@ ProductNotFound::ProductNotFound(QWidget *parent)
 
     m_mainLayout         = new QVBoxLayout(this);
     QVBoxLayout *m_elementLayout = new QVBoxLayout(this);
-    m_errorProductButton = new RoundPushButton("x",this);
-    m_errorProductLabel  = new QLabel("No Product Found",this);
+    m_errorProductButton = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_errorProductLabel  = new QLabel("Product not found !",this);
     QWidget * m_rectangle = new QWidget();
 
     m_errorProductButton    ->setObjectName("ProductNotFound_RoundPushButton_errorProductButton");
@@ -47,8 +47,10 @@ ProductNotFound::ProductNotFound(QWidget *parent)
 
     //Layout management
 
+    m_elementLayout   ->addStretch(1);
     m_elementLayout   ->addWidget(m_errorProductButton);
     m_elementLayout   ->addWidget(m_errorProductLabel);
+    m_elementLayout   ->addStretch(1);
 
     m_elementLayout   ->setAlignment(m_errorProductLabel,Qt::AlignCenter);
     m_elementLayout   ->setAlignment(m_errorProductButton,Qt::AlignCenter);

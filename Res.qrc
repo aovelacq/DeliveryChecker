@@ -1,5 +1,13 @@
 <RCC>
     <qresource prefix="/img">
         <file>img/label.png</file>
+        <file>img/ArrowOff.png</file>
+        <file>img/ArrowOn.png</file>
+        <file>img/BackOff.png</file>
+        <file>img/BackOn.png</file>
+        <file>img/NewOff.png</file>
+        <file>img/NewOn.png</file>
+        <file>img/PlusOff.png</file>
+        <file>img/PlusOn.png</file>
     </qresource>
 </RCC>

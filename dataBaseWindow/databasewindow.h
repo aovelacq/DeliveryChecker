@@ -12,7 +12,7 @@
 #include <info/infobar.h>
 #include "globals/globals.h"
 #include "SQLTable/sqlview.h"
-#include "ImprovedLineEdit.h"
+#include "dataBaseWindow/ImprovedLineEdit.h"
 
 class DataBaseWindow : public QDialog
 {

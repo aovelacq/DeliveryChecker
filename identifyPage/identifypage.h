@@ -11,7 +11,7 @@
 #include "sideMenu/MenuButton.h"
 #include "importPage/roundpushbutton.h"
 #include "DB/database.h"
-#include "ProductNotFound.h"
+#include "popUpWindows/ProductNotFound.h"
 
 class IdentifyPage : public QWidget
 {
@@ -38,7 +38,7 @@ private:
      QLabel              *m_totalValueLabel;
      QLineEdit           *m_totalValueIO;
 
-     ProductNotFound    *m_productNotFound;
+     ProductNotFound     *m_productNotFound;
 };
 
 #endif // IDENTIFYPAGE_H

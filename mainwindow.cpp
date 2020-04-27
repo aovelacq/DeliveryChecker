@@ -52,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->setCurrentIndex(0);
     m_windowDB->show();
 
+    m_popUp = new SureToCancel(this);
+    m_popUp->show();
+
 
     //looking for QLineEdit in IdentifyPage
     QList<QLineEdit*> IdentifyPageIOFieldsList = this->findChildren<QLineEdit*>();

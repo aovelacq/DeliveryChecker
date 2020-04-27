@@ -13,7 +13,7 @@ ImportPage::ImportPage(QWidget *parent)
 
     // Creates all children
     m_layout        = new QVBoxLayout(this);
-    m_plusButton    = new RoundPushButton("+", this);
+    m_plusButton    = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
     m_addButton     = new PillsPushButton("Import\nData", this, "Add");
     m_deliveryInfo  = new DeliveryInfo(this);
     m_checkBox      = new PillsPushButton("Check boxes", this, "Check");

@@ -1,6 +1,6 @@
 #include "database.h"
 
-#include "ProductNotFound.h"
+#include "popUpWindows/ProductNotFound.h"
 
 DataBase::DataBase(QWidget *parent)
     :QObject(parent)
@@ -210,12 +210,12 @@ bool DataBase::createConnection()
     // Create ITEMS TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS ITEMS ("
                    "IT_ID               INT             NOT NULL, "
-                   "IT_NAME             VARCHAR(40)     NOT NULL, "
+                   "IT_NAME             VARCHAR(40)     NOT NULL, "//!
                    "IT_WEIGHT           REAL            NOT NULL, "
-                   "IT_VALUE            REAL            NOT NULL, "
-                   "IT_ROLL_Q           INT             NOT NULL, "
-                   "IT_BA_Q             INT             NOT NULL, "
-                   "IT_BOX_Q            INT             NOT NULL, "
+                   "IT_VALUE            REAL            NOT NULL, "//!
+                   "IT_ROLL_Q           INT             NOT NULL, "//qty per roll
+                   "IT_BA_Q             INT             NOT NULL, "//ty per oack
+                   "IT_BOX_Q            INT             NOT NULL, "//qty per box
                    "IT_PALLET_Q         INT             NOT NULL, "
                    "IT_BA_WEIGHT        REAL            NOT NULL, "
                    "IT_BA_TO            REAL            NOT NULL, "
@@ -226,7 +226,7 @@ bool DataBase::createConnection()
                    "IT_BO_CFG           INT             NOT NULL, "
                    "IT_PA_CFG           INT             NOT NULL, "
                    "IT_LA_CFG           INT             NOT NULL, "
-                   "IT_YEAR             INT             NOT NULL, "
+                   "IT_YEAR             INT             NOT NULL, "//!!!!
 //                 "IT_DATE             DATETIME, "
                "PRIMARY KEY(IT_ID)"
                ")"))
@@ -1076,6 +1076,7 @@ void DataBase::sendIdentifyPageInformations()
     {
         emit sendIdentifyPageDone(false);
         m_IdentifyPage_productNotFound->exec();
+
     }
     else
     {

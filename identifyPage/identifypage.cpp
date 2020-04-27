@@ -21,9 +21,9 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_ImageQR               = new QLabel(this);
 
     QGridLayout * m_layoutButton = new QGridLayout();
-    m_cancelButton  = new RoundPushButton("x", this);
+    m_cancelButton  = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
     m_cancelLabel   = new QLabel ("Cancel",this);
-    m_continueButton= new RoundPushButton(">", this);
+    m_continueButton= new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
     m_continueLabel = new QLabel ("Continue",this);
 
     QGridLayout * m_layoutPallet = new QGridLayout();
@@ -187,9 +187,13 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     // Layout management
     m_rectangle     ->setLayout(m_layoutPallet);
+    m_rectangle     ->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
+    m_layout        ->addStretch(1);
     m_layout        ->addLayout(m_layoutInstructions);
+    m_layout        ->addStretch(1);
     m_layout        ->addWidget(m_rectangle);
+    m_layout        ->addStretch(2);
     m_layout        ->addSpacing(180);
     m_layout        ->addLayout(m_layoutButton);
 

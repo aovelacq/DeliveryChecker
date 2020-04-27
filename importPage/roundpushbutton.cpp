@@ -1,14 +1,12 @@
 #include "roundpushbutton.h"
 
-RoundPushButton::RoundPushButton(const QString &text, QWidget *parent)
+RoundPushButton::RoundPushButton(const QString &imgURLOff, const QString &imgURLOn, QWidget *parent)
     : QPushButton(parent)
 {
     QFont font;
     QPalette palette;
     QString styleSheet;
 
-    // Set element text
-    setText(text);
     // Set element size policy
     setContentsMargins(0,0,0,0);
     setFixedSize(100,100);
@@ -18,23 +16,19 @@ RoundPushButton::RoundPushButton(const QString &text, QWidget *parent)
     // Set style of the button
     styleSheet = QString("RoundPushButton{ ")
                 + "background-color: %1 ;"
-                + "color : white;"
+                + "background-image: url(%3);"
+                + "background-position: center;"
                 + "border: none;"
                 + "border-radius : 50px;"
-                + "text-align: center center;"
-                + "padding : -15 0 0 0;"
-                + "margin-top -15 px"
                 + "}"
                 + "RoundPushButton:hover {"
                 + "background-color: %2 ;"
                 + "}"
                 + "RoundPushButton:pressed {"
                 + "background-color: %2 ;"
-                + "color : %1;"
+                + "background-image: url(%4);"
+                + "background-position: center;"
                 + "}";
-    setStyleSheet( styleSheet.arg(MENU_BACKGROUND_COLOR.name(), MENU_BACKGROUND_ACTIVE.name()) );
-    // Set element font
-    font = this->font();
-    font.setPointSize(80);
-    setFont(font);
+    setStyleSheet( styleSheet.arg(MENU_BACKGROUND_COLOR.name(), MENU_BACKGROUND_ACTIVE.name(),imgURLOff,imgURLOn));
+
 }

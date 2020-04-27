@@ -27,9 +27,9 @@
 #include "SQLTable/sqlview.h"
 #include "importPage/pillspushbutton.h"
 #include "importPage/roundpushbutton.h"
-#include "ImprovedLineEdit.h"
-#include "databasewindow.h"
-#include "ProductNotFound.h"
+#include "dataBaseWindow/ImprovedLineEdit.h"
+#include "dataBaseWindow/databasewindow.h"
+#include "popUpWindows/ProductNotFound.h"
 
 class DataBase : public QObject
 {

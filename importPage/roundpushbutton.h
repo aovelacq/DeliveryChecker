@@ -9,7 +9,7 @@ class RoundPushButton : public QPushButton
 {
     Q_OBJECT
 public:
-    RoundPushButton(const QString &text = "", QWidget *parent = nullptr);
+    RoundPushButton(const QString &imgURLOff, const QString &imgURLOn, QWidget *parent = nullptr);
 };
 
 #endif // ROUNDPUSHBUTTON_H

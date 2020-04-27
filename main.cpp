@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include "DB/database.h"
-#include "databasewindow.h"
 
 #include <QApplication>
 #include <QFile>

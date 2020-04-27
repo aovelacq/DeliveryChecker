@@ -9,7 +9,9 @@
 #include "intRepport/intrepportpage.h"
 #include "finRepport/finrepportpage.h"
 #include "DB/database.h"
-#include "databasewindow.h"
+#include "dataBaseWindow/databasewindow.h"
+
+#include "popUpWindows/SureToCancel.h"
 
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -55,6 +57,7 @@ class MainWindow : public QWidget
         DataBase            *DB;
 
         DataBaseWindow      *m_windowDB;
+        SureToCancel        *m_popUp;
 
         QLineEdit           *m_IdentifyPage_PalletID;
         QLineEdit           *m_IdentifyPage_BoxID;

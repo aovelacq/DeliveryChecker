@@ -21,11 +21,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    ImprovedLineEdit.cpp \
-    ProductNotFound.cpp \
     SQLTable/sqlview.cpp \
+    dataBaseWindow/ImprovedLineEdit.cpp \
+    dataBaseWindow/databasewindow.cpp \
     finRepport/finrepportpage.cpp \
-    databasewindow.cpp \
     identifyPage/identifypage.cpp \
     importPage/deliveryinfo.cpp \
     importPage/importpage.cpp \
@@ -36,18 +35,20 @@ SOURCES += \
     main.cpp \
     MainWindow.cpp \
     globals/globals.cpp \
+    popUpWindows/ProductNotFound.cpp \
+    popUpWindows/SureToCancel.cpp \
+    popUpWindows/SureToContinue.cpp \
     scanPage/scanpage.cpp \
     sideMenu/MenuButton.cpp \
     sideMenu/SideMenu.cpp \
     DB/database.cpp
 
 HEADERS += \
-    ImprovedLineEdit.h \
     MainWindow.h \
-    ProductNotFound.h \
     SQLTable/sqlview.h \
+    dataBaseWindow/ImprovedLineEdit.h \
+    dataBaseWindow/databasewindow.h \
     finRepport/finrepportpage.h \
-    databasewindow.h \
     globals/globals.h \
     identifyPage/identifypage.h \
     importPage/deliveryinfo.h \
@@ -56,6 +57,9 @@ HEADERS += \
     importPage/roundpushbutton.h \
     info/infobar.h \
     intRepport/intrepportpage.h \
+    popUpWindows/ProductNotFound.h \
+    popUpWindows/SureToCancel.h \
+    popUpWindows/SureToContinue.h \
     scanPage/scanpage.h \
     sideMenu/MenuButton.h \
     sideMenu/SideMenu.h \
