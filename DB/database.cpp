@@ -74,7 +74,7 @@ DataBase::DataBase(QWidget *parent)
         if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="ProductNotFound_RoundPushButton_errorProductButton")
         {
             m_IdentifyPage_closePopUp = IdentifyPageRoundPushButtonList.at(i);
-            //QObject::connect(m_IdentifyPage_closePopUp, SIGNAL(clicked()), m_IdentifyPage_productNotFound, SLOT(done()));
+            QObject::connect(m_IdentifyPage_closePopUp, SIGNAL(clicked()), this, SLOT(resetProductNotFound()));
         }
     }
     QList<QLabel*> IdentifyPageLabelList = this->parent()->findChildren<QLabel*>();
@@ -1301,8 +1301,8 @@ QSqlQueryModel* DataBase::getScanPageTableData()
 
 void DataBase::sendDBWindowInformations(int)
 {
-    m_DBWindow_filter->setText("PERSONALIZED SQL STATEMENT");
-    emit sendDBWindowTableData(getDBWindowFilter());
+  m_DBWindow_filter->setText("PERSONALIZED SQL STATEMENT");
+  emit sendDBWindowTableData(getDBWindowFilter());
 }
 
 void DataBase::sendDBWindowNewFilter()
@@ -1523,6 +1523,12 @@ bool DataBase::checkDBWindowFilter()
     return true;
 }
 
+void DataBase::resetProductNotFound()
+{
+  m_IdentifyPage_productNotFound->done(1);
+  m_IdentifyPage_BoxID        ->setText("");
+  resetIdentifyPage("");
+}
 /////////////////////////////////////////////////////////
 
 

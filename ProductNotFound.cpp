@@ -11,8 +11,8 @@ ProductNotFound::ProductNotFound(QWidget *parent)
     QPalette pal;
     QString styleSheet;
 
-    //this->setWindowModality ( Qt::WindowModal );
-    //this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
+    this->setWindowModality ( Qt::WindowModal );
+    this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
 
 
     m_mainLayout         = new QVBoxLayout(this);

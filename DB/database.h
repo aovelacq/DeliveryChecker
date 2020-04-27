@@ -84,6 +84,7 @@ class DataBase : public QObject
         void sendDBWindowCheckFilter(QString);
         void setDBWindowQueryValidLabel(bool valid);
         void resetDBWindowFilter(bool reset);
+        void resetProductNotFound();
 
     signals:
         //Internal
