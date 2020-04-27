@@ -212,21 +212,13 @@ bool DataBase::createConnection()
     // Create ITEMS TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS ITEMS ("
                    "IT_ID               INT             NOT NULL, "
-<<<<<<< HEAD
-                   "IT_NAME             VARCHAR(40)     NOT NULL, "//!
-                   "IT_WEIGHT           REAL            NOT NULL, "
-                   "IT_VALUE            REAL            NOT NULL, "//!
-                   "IT_ROLL_Q           INT             NOT NULL, "//qty per roll
-                   "IT_BA_Q             INT             NOT NULL, "//ty per oack
-                   "IT_BOX_Q            INT             NOT NULL, "//qty per box
-=======
+
                    "IT_NAME             VARCHAR(40)     NOT NULL, " //
                    "IT_WEIGHT           REAL            NOT NULL, "
                    "IT_VALUE            REAL            NOT NULL, " //
                    "IT_ROLL_Q           INT             NOT NULL, " //Qty per roll
                    "IT_BA_Q             INT             NOT NULL, " //Qty per pack
                    "IT_BOX_Q            INT             NOT NULL, " //
->>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
                    "IT_PALLET_Q         INT             NOT NULL, "
                    "IT_BA_WEIGHT        REAL            NOT NULL, "
                    "IT_BA_TO            REAL            NOT NULL, "
@@ -237,11 +229,7 @@ bool DataBase::createConnection()
                    "IT_BO_CFG           INT             NOT NULL, "
                    "IT_PA_CFG           INT             NOT NULL, "
                    "IT_LA_CFG           INT             NOT NULL, "
-<<<<<<< HEAD
-                   "IT_YEAR             INT             NOT NULL, "//!!!!
-=======
                    "IT_YEAR             INT             NOT NULL, "//
->>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
 //                 "IT_DATE             DATETIME, "
                "PRIMARY KEY(IT_ID)"
                ")"))
@@ -1084,92 +1072,6 @@ void DataBase::sendImportPageInformations()
     emit sendImportPageDone(true);
 }
 
-<<<<<<< HEAD
-void DataBase::sendIdentifyPageInformations()
-{
-    emit sendIdentifyPagePalletId(getIdentifyPagePalletId());
-    emit sendIdentifyPageBoxQtyOnPallet(getIdentifyPageBoxQtyOnPallet());
-    emit sendIdentifyPagePalletValue(getIdentifyPagePalletValue());
-    if ((getIdentifyPagePalletId()=="Error") || (getIdentifyPageBoxQtyOnPallet()=="Error") || (getIdentifyPagePalletValue()=="Error"))
-    {
-        emit sendIdentifyPageDone(false);
-        m_IdentifyPage_productNotFound->exec();
-
-    }
-    else
-    {
-        emit sendIdentifyPageDone(true);
-        palletScanned = m_IdentifyPage_PalletID->text().toInt(nullptr,10);
-    }
-}
-
-void DataBase::resetIdentifyPage(QString)
-{
-   m_IdentifyPage_continueButton->setVisible(false);
-   m_IdentifyPage_continueLabel ->setVisible(false);
-
-   m_IdentifyPage_PalletID     ->setText("");
-   m_IdentifyPage_BoxQty       ->setText("");
-   m_IdentifyPage_TotalValue   ->setText("");
-
-}
-
-void DataBase::sendDBWindowInformations(int)
-{
-    m_DBWindow_filter->setText("PERSONALIZED SQL STATEMENT");
-    emit sendDBWindowTableData(getDBWindowFilter());
-}
-
-void DataBase::sendDBWindowNewFilter()
-{
-    emit sendDBWindowFilter(getDBWindowFilter());
-}
-
-void DataBase::sendDBWindowCheckFilter(QString)
-{
-    emit isDBWindowQueryValid(checkDBWindowFilter());
-}
-
-void DataBase::setDBWindowQueryValidLabel(bool valid)
-{
-    QPalette pal;
-    if (valid)
-    {
-        m_DBWindow_queryLabel->setText("QUERY OK");
-
-        pal = m_DBWindow_queryLabel  ->palette();
-        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::darkGreen);
-        m_DBWindow_queryLabel->setPalette(pal);
-    }
-    else
-    {
-        m_DBWindow_queryLabel->setText("QUERY NOT OK");
-
-        pal = m_DBWindow_queryLabel  ->palette();
-        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::red);
-        m_DBWindow_queryLabel->setPalette(pal);
-    }
-}
-
-void DataBase::resetDBWindowFilter(bool reset)
-{
-    if (reset)
-    {
-        m_DBWindow_filter->clear();
-    }
-
-}
-
-void DataBase::resetProductNotFound()
-{
-    m_IdentifyPage_productNotFound->done(1);
-    m_IdentifyPage_BoxID        ->setText("");
-    resetIdentifyPage("");
-}
-
-
-=======
->>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
 const QString DataBase::getImportPageDeliveryName()
 {
     QSqlQuery query;
