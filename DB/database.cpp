@@ -51,7 +51,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this, SIGNAL(sendImportPageDone(bool)), m_ImportPage_CheckBox, SLOT(setVisible(bool)));
         }
     }
-}
+    }
 
     // Pointers to IdentifyPage elements
    { QList<ProductNotFound*> IdentifyPageProductNotFoundList = this->parent()->findChildren<ProductNotFound*>();
@@ -69,6 +69,7 @@ DataBase::DataBase(QWidget *parent)
         {
             m_IdentifyPage_continueButton = IdentifyPageRoundPushButtonList.at(i);
             QObject::connect(this, SIGNAL(sendIdentifyPageDone(bool)), m_IdentifyPage_continueButton, SLOT(setVisible(bool)));
+            QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()), this, SLOT(sendScanPageInformations()));
         }
         if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="ProductNotFound_RoundPushButton_errorProductButton")
         {
@@ -120,6 +121,7 @@ DataBase::DataBase(QWidget *parent)
         {
             m_ScanPage_Table   = ScanPageTableList.at(i);
             QObject::connect(this, SIGNAL(sendScanPageTableData(QSqlQueryModel*)), m_ScanPage_Table, SLOT(setResults(QSqlQueryModel*)));
+            QObject::connect(this, SIGNAL(hideScanPageTableColumn(int)), m_ScanPage_Table, SLOT(hideColumn(int)));
         }
     }
     // Pointers to IntRepportPage elements
@@ -210,12 +212,21 @@ bool DataBase::createConnection()
     // Create ITEMS TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS ITEMS ("
                    "IT_ID               INT             NOT NULL, "
+<<<<<<< HEAD
                    "IT_NAME             VARCHAR(40)     NOT NULL, "//!
                    "IT_WEIGHT           REAL            NOT NULL, "
                    "IT_VALUE            REAL            NOT NULL, "//!
                    "IT_ROLL_Q           INT             NOT NULL, "//qty per roll
                    "IT_BA_Q             INT             NOT NULL, "//ty per oack
                    "IT_BOX_Q            INT             NOT NULL, "//qty per box
+=======
+                   "IT_NAME             VARCHAR(40)     NOT NULL, " //
+                   "IT_WEIGHT           REAL            NOT NULL, "
+                   "IT_VALUE            REAL            NOT NULL, " //
+                   "IT_ROLL_Q           INT             NOT NULL, " //Qty per roll
+                   "IT_BA_Q             INT             NOT NULL, " //Qty per pack
+                   "IT_BOX_Q            INT             NOT NULL, " //
+>>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
                    "IT_PALLET_Q         INT             NOT NULL, "
                    "IT_BA_WEIGHT        REAL            NOT NULL, "
                    "IT_BA_TO            REAL            NOT NULL, "
@@ -226,7 +237,11 @@ bool DataBase::createConnection()
                    "IT_BO_CFG           INT             NOT NULL, "
                    "IT_PA_CFG           INT             NOT NULL, "
                    "IT_LA_CFG           INT             NOT NULL, "
+<<<<<<< HEAD
                    "IT_YEAR             INT             NOT NULL, "//!!!!
+=======
+                   "IT_YEAR             INT             NOT NULL, "//
+>>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
 //                 "IT_DATE             DATETIME, "
                "PRIMARY KEY(IT_ID)"
                ")"))
@@ -244,9 +259,9 @@ bool DataBase::createConnection()
     // Create JOBORDER TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS JOBORDER ("
                    "JO_ID               INT             NOT NULL, "
-                   "JO_NAME             VARCHAR(40)     NOT NULL, "
+                   "JO_NAME             VARCHAR(40)     NOT NULL, "//
                    "JO_IT_ID            INT             NOT NULL, "
-                   "JO_DESC             VARCHAR(80),              "
+                   "JO_DESC             VARCHAR(80),              "//
                    "JO_Q                LONG INT        NOT NULL, "
                    "JO_STATUS           SMALLINT,                 "
                    "JO_STATUS_S         VARCHAR(40),              "
@@ -271,7 +286,7 @@ bool DataBase::createConnection()
 
     // Create TRACEABILITY_PALLET TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS TRACEABILITY_PALLET ("
-                   "PA_ID               INT             NOT NULL, "
+                   "PA_ID               INT             NOT NULL, "//
                    "JO_ID               INT             NOT NULL, "
                    "TR_PA_EXIT          SMALLINT,                 "
                    "TR_PA_STATUS        SMALLINT,                 "
@@ -1057,6 +1072,8 @@ QString DataBase::convertDate(QString date)
     return Result;
 }
 
+/////////////////////////////////////////////////////////
+
 void DataBase::sendImportPageInformations()
 {
     emit sendImportPageDeliveryName(getImportPageDeliveryName());
@@ -1067,6 +1084,7 @@ void DataBase::sendImportPageInformations()
     emit sendImportPageDone(true);
 }
 
+<<<<<<< HEAD
 void DataBase::sendIdentifyPageInformations()
 {
     emit sendIdentifyPagePalletId(getIdentifyPagePalletId());
@@ -1150,6 +1168,8 @@ void DataBase::resetProductNotFound()
 }
 
 
+=======
+>>>>>>> 9bfb295b6638db6c2fa2459c8c12c42cef1753b7
 const QString DataBase::getImportPageDeliveryName()
 {
     QSqlQuery query;
@@ -1206,7 +1226,47 @@ const QString DataBase::getImportPagePackQty()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
+QSqlQueryModel* DataBase::getImportPageTableData()
+{
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry ="SELECT TRACEABILITY_PALLET.PA_ID AS [Pallet ID], ROUND(IT_VALUE) || \" Rp\" AS Denomination, COUNT(TRACEABILITY_BOX.BO_ID) AS [Box quantity] "
+                 "FROM "
+                    "ITEMS INNER JOIN "
+                        "(JOBORDER INNER JOIN "
+                            "((TRACEABILITY_PALLET INNER JOIN DELIVERY_LIST "
+                            "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID) "
+                                "INNER JOIN TRACEABILITY_BOX "
+                                "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                        "ON (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID)) "
+                    "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
+                 "GROUP BY TRACEABILITY_PALLET.PA_ID, ITEMS.IT_VALUE;";
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    return Results;
+}
 
+/////////////////////////////////////////////////////////
+
+void DataBase::sendIdentifyPageInformations()
+{
+    emit sendIdentifyPagePalletId(getIdentifyPagePalletId());
+    emit sendIdentifyPageBoxQtyOnPallet(getIdentifyPageBoxQtyOnPallet());
+    emit sendIdentifyPagePalletValue(getIdentifyPagePalletValue());
+    if ((getIdentifyPagePalletId()=="Error") || (getIdentifyPageBoxQtyOnPallet()=="Error") || (getIdentifyPagePalletValue()=="Error"))
+    {
+        emit sendIdentifyPageDone(false);
+        m_IdentifyPage_productNotFound->exec();
+    }
+    else
+    {
+        emit sendIdentifyPageDone(true);
+        palletScanned = m_IdentifyPage_PalletID->text().toInt(nullptr,10);
+    }
+}
 
 const QString DataBase::getIdentifyPagePalletId()
 {
@@ -1251,7 +1311,6 @@ const QString DataBase::getIdentifyPageBoxQtyOnPallet()
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-
 const QString DataBase::getIdentifyPagePalletValue()
 {
     QSqlQuery query;
@@ -1286,28 +1345,103 @@ const QString DataBase::getIdentifyPagePalletValue()
     }
 }
 
+void DataBase::resetIdentifyPage(QString)
+{
+   m_IdentifyPage_continueButton->setVisible(false);
+   m_IdentifyPage_continueLabel ->setVisible(false);
 
-QSqlQueryModel* DataBase::getImportPageTableData()
+   m_IdentifyPage_PalletID     ->setText("");
+   m_IdentifyPage_BoxQty       ->setText("");
+   m_IdentifyPage_TotalValue   ->setText("");
+
+}
+
+/////////////////////////////////////////////////////////
+
+void DataBase::sendScanPageInformations()
+{
+    emit sendScanPageTableData(getScanPageTableData());
+    emit hideScanPageTableColumn(0);
+    emit hideScanPageTableColumn(1);
+}
+
+QSqlQueryModel* DataBase::getScanPageTableData()
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
-    QString qry ="SELECT TRACEABILITY_PALLET.PA_ID AS [Pallet ID], ROUND(IT_VALUE) || \" Rp\" AS Denomination, COUNT(TRACEABILITY_BOX.BO_ID) AS [Box quantity] "
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED, TRACEABILITY_PALLET.PA_ID AS [Pallet ID], TRACEABILITY_BOX.TR_BO_ID AS [Box Reference], ITEMS.IT_VALUE || \" Rp\" AS Denomination, COUNT(TRACEABILITY_BATCH.TR_BA_ID) AS [Pack Qty], (COUNT(TRACEABILITY_BATCH.TR_BA_ID)*ITEMS.IT_BA_Q) AS [Roll Qty], (COUNT(TRACEABILITY_BATCH.TR_BA_ID)*ITEMS.IT_BA_Q*ITEMS.IT_ROLL_Q) AS [Coin Qty], (COUNT(TRACEABILITY_BATCH.TR_BA_ID)*ITEMS.IT_BA_Q*ITEMS.IT_ROLL_Q*ITEMS.IT_VALUE)  || \" Rp\" AS [Total value], ITEMS.IT_YEAR AS [Coin Year] "
                  "FROM "
-                    "ITEMS INNER JOIN "
+                    "((ITEMS INNER JOIN "
                         "(JOBORDER INNER JOIN "
-                            "((TRACEABILITY_PALLET INNER JOIN DELIVERY_LIST "
+                            "(TRACEABILITY_PALLET INNER JOIN DELIVERY_LIST "
                             "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID) "
-                                "INNER JOIN TRACEABILITY_BOX "
-                                "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
-                        "ON (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID)) "
-                    "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
-                 "GROUP BY TRACEABILITY_PALLET.PA_ID, ITEMS.IT_VALUE;";
+                        "ON JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
+                    "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID) "
+                    "INNER JOIN TRACEABILITY_BATCH ON JOBORDER.JO_ID = TRACEABILITY_BATCH.JO_ID) "
+                    "INNER JOIN TRACEABILITY_BOX ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (TRACEABILITY_BOX.BO_ID = TRACEABILITY_BATCH.BO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
+                 "GROUP BY TRACEABILITY_BOX.SCANNED, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.TR_BO_ID, ITEMS.IT_VALUE, ITEMS.IT_BA_Q, ITEMS.IT_ROLL_Q, ITEMS.IT_YEAR "
+                    "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1)) "
+                 "ORDER BY TRACEABILITY_BOX.TR_BO_ID;").arg(palletScanned);
     if(!query->exec(qry))
     {
         qDebug() << query->lastError().text();
     }
     Results->setQuery(*query);
     return Results;
+}
+
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+
+void DataBase::sendDBWindowInformations(int)
+{
+  m_DBWindow_filter->setText("PERSONALIZED SQL STATEMENT");
+  emit sendDBWindowTableData(getDBWindowFilter());
+}
+
+void DataBase::sendDBWindowNewFilter()
+{
+    emit sendDBWindowFilter(getDBWindowFilter());
+}
+
+void DataBase::sendDBWindowCheckFilter(QString)
+{
+    emit isDBWindowQueryValid(checkDBWindowFilter());
+}
+
+void DataBase::setDBWindowQueryValidLabel(bool valid)
+{
+    QPalette pal;
+    if (valid)
+    {
+        m_DBWindow_queryLabel->setText("QUERY OK");
+
+        pal = m_DBWindow_queryLabel  ->palette();
+        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::darkGreen);
+        m_DBWindow_queryLabel->setPalette(pal);
+    }
+    else
+    {
+        m_DBWindow_queryLabel->setText("QUERY NOT OK");
+
+        pal = m_DBWindow_queryLabel  ->palette();
+        pal.setColor(m_DBWindow_queryLabel->foregroundRole(),Qt::red);
+        m_DBWindow_queryLabel->setPalette(pal);
+    }
+}
+
+void DataBase::resetDBWindowFilter(bool reset)
+{
+    if (reset)
+    {
+        m_DBWindow_filter->clear();
+    }
+
 }
 
 QSqlQueryModel* DataBase::getDBWindowFilter()
@@ -1474,7 +1608,7 @@ bool DataBase::checkDBWindowFilter()
         //CSV_DELIVERY_LIST_NAME;
         qry = "SELECT "
                 "DELIVERY_LIST.DL_ID AS [ID], DELIVERY_LIST.DL_DE_ID AS [Delivery ID], "
-                    "DELIVERY_LIST.DL_PA_ID AS [Pallet ID], DELIVERY_LIST.DL_DATE AS [Date] "
+                    "DELIVERY_LIST.DL_PA_ID AS [Pallet ID], DATE(DELIVERY_LIST.DL_DATE) AS [Date] "
                      "FROM DELIVERY_LIST";
 
         break;
@@ -1487,3 +1621,19 @@ bool DataBase::checkDBWindowFilter()
     }
     return true;
 }
+
+void DataBase::resetProductNotFound()
+{
+  m_IdentifyPage_productNotFound->done(1);
+  m_IdentifyPage_BoxID        ->setText("");
+  resetIdentifyPage("");
+}
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+
+
+
+
+

@@ -49,15 +49,25 @@ class DataBase : public QObject
         bool fillDeliveryListTable();
         QString convertDate(QString date);
 
+        // Import Page
         const QString   getImportPageDeliveryName();
         const QString   getImportPagePalletQty();
         const QString   getImportPageBoxQty();
         const QString   getImportPagePackQty();
         QSqlQueryModel* getImportPageTableData();
 
+        // Identify page
         const QString   getIdentifyPagePalletId();
         const QString   getIdentifyPageBoxQtyOnPallet();
         const QString   getIdentifyPagePalletValue();
+
+        // Scan Page
+        QSqlQueryModel* getScanPageTableData();
+        // Intermediary repport page
+
+        // Final repport page
+
+        // Database view
 
         QSqlQueryModel* getDBWindowFilter();
         bool checkDBWindowFilter();
@@ -65,6 +75,9 @@ class DataBase : public QObject
     private slots:
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
+        void sendScanPageInformations();
+        //void sendIntRepportPageInformations();
+        //void sendFinRepportPageInformations();
         void resetIdentifyPage(QString);
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
@@ -93,6 +106,7 @@ class DataBase : public QObject
 
         //Related to Scan Page
         void sendScanPageTableData(QSqlQueryModel* data);
+        void hideScanPageTableColumn(int index);
 
         //Related to Intermediary Repport Page
 
