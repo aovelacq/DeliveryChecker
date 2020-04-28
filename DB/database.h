@@ -31,6 +31,8 @@
 #include "dataBaseWindow/databasewindow.h"
 #include "popUpWindows/ProductNotFound.h"
 
+class BackgroundColorDelegate;
+
 class DataBase : public QObject
 {
     Q_OBJECT
@@ -63,6 +65,8 @@ class DataBase : public QObject
 
         // Scan Page
         QSqlQueryModel* getScanPageTableData();
+        bool            scanPageCheckBoxExists(QString ref);
+        void            scanPageUpdateBoxScanned(QString ref);
         // Intermediary repport page
 
         // Final repport page
@@ -75,10 +79,11 @@ class DataBase : public QObject
     private slots:
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
+        void resetIdentifyPage(QString);
         void sendScanPageInformations();
+        void scanPageBoxScanned();
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
-        void resetIdentifyPage(QString);
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
         void sendDBWindowCheckFilter(QString);
@@ -140,6 +145,8 @@ class DataBase : public QObject
 
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
+        BackgroundColorDelegate *m_scanPageDeleguate;
+        QLineEdit       *m_ScanPage_BoxRef;
         int             palletScanned = 3;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
