@@ -10,6 +10,8 @@
 #include <QPixmap>
 
 #include "importPage/roundpushbutton.h"
+#include "popUpWindows/SureToCancel.h"
+#include "popUpWindows/SureToContinue.h"
 #include "SQLTable/sqlview.h"
 
 class ScanPage : public QWidget
@@ -39,8 +41,8 @@ class ScanPage : public QWidget
          RoundPushButton    *m_ContinueButton;
          QLabel             *m_ContinueButtonText;
 
-
-
+         SureToCancel       *m_sureToCancel;
+         SureToContinue     *m_sureToContinue;
 };
 
 #endif // SCANPAGE_H

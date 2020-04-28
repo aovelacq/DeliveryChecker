@@ -9,5 +9,6 @@
         <file>img/NewOn.png</file>
         <file>img/PlusOff.png</file>
         <file>img/PlusOn.png</file>
+        <file>img/Warning.png</file>
     </qresource>
 </RCC>

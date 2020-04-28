@@ -22,11 +22,13 @@ ScanPage::ScanPage(QWidget *parent)
     m_BoxRef                = new QLineEdit(this);
     m_Table                 = new SQLView(this);
     m_CancelButtonLayout    = new QVBoxLayout(this);
-    m_CancelButton          = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_CancelButton          = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
     m_CancelButtonText      = new QLabel("Cancel", this);
     m_ContinueButtonLayout  = new QVBoxLayout(this);
-    m_ContinueButton        = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_ContinueButton        = new RoundPushButton(":/img/img/ArrowOff.png",":/img/img/ArrowOn.png",this);
     m_ContinueButtonText    = new QLabel("Continue", this);
+    m_sureToCancel          = new SureToCancel(this);
+    m_sureToContinue        = new SureToContinue(this);
 
     m_layout                ->setObjectName("ScanPage_GridLayout_mainLayout");
     m_layoutTextQR          ->setObjectName("ScanPage_HBoxLayout_TextQR");
@@ -42,6 +44,8 @@ ScanPage::ScanPage(QWidget *parent)
     m_ContinueButtonLayout  ->setObjectName("ScanPage_VBoxLayout_ContinueLayout");
     m_ContinueButton        ->setObjectName("ScanPage_RoundPushButton_Continue");
     m_ContinueButtonText    ->setObjectName("ScanPage_Label_Continue");
+    m_sureToCancel          ->setObjectName("ScanPage_SureToCancel");
+    m_sureToContinue        ->setObjectName("ScanPage_SureToContinue");
 
     pal                 = m_TextQR->palette();
     pal.setColor(m_TextQR->foregroundRole(), MENU_BACKGROUND_COLOR);

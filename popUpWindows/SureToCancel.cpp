@@ -10,29 +10,31 @@ SureToCancel::SureToCancel(QWidget *parent)
     QFont font;
     QPalette pal;
     QString styleSheet;
+    QPixmap pix;
 
     this->setWindowModality ( Qt::WindowModal );
-    //this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
+    this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
 
     m_mainLayout        = new QVBoxLayout(this);
     QVBoxLayout *m_elementLayout = new QVBoxLayout(this);
 
-    m_warningImage      = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_warningImage      = new QLabel(this);
 
     QVBoxLayout *m_labelLayout = new QVBoxLayout(this);
     m_sureToCancel      = new QLabel("Are you sure to cancel ?",this);
     m_warningPalletLost = new QLabel("(Data of the current pallet will be lost)",this);
 
     QGridLayout *m_choiceLayout = new QGridLayout(this);
-    m_cancelNoButton    = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
-    m_cancelYesButton   = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_cancelNoButton    = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
+    m_cancelYesButton   = new RoundPushButton(":/img/img/ArrowOff.png",":/img/img/ArrowOn.png",this);
     m_cancelNoLabel     = new QLabel("No",this);
     m_cancelYesLabel    = new QLabel("Yes",this);
 
     QWidget * m_border  = new QWidget();
 
-    m_cancelNoButton    ->setObjectName("SureToCancel_RoundPushButton_m_continueNoButton");
-    m_cancelYesButton   ->setObjectName("SureToCancel_RoundPushButton_m_continueYesButton");
+    m_warningImage      ->setObjectName("SureToCancel_QLabel_WarningImage");
+    m_cancelNoButton    ->setObjectName("SureToCancel_RoundPushButton_CancelNoButton");
+    m_cancelYesButton   ->setObjectName("SureToCancel_RoundPushButton_CancelYesButton");
     m_border            ->setObjectName("SureToCancel_BackGroundRect");
 
 
@@ -43,7 +45,6 @@ SureToCancel::SureToCancel(QWidget *parent)
     m_warningPalletLost ->setPalette(pal);
     m_cancelNoLabel     ->setPalette(pal);
     m_cancelYesLabel    ->setPalette(pal);
-
 
     m_sureToCancel      ->setMinimumHeight(25);
     m_warningPalletLost ->setMinimumHeight(25);
@@ -56,11 +57,19 @@ SureToCancel::SureToCancel(QWidget *parent)
     m_sureToCancel      ->setFont(font);
     m_cancelNoLabel     ->setFont(font);
     m_cancelYesLabel    ->setFont(font);
-
-    //font = m_warningScan->font();
     font.setPointSize(12);
     m_warningPalletLost ->setFont(font);
 
+    //Warning Image
+    m_warningImage->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    m_warningImage->setContentsMargins(0,0,0,0);
+
+    if (pix.load(":/img/img/Warning.png"))
+    {
+        m_warningImage->setPixmap(pix);
+    }
+
+    //Border
     styleSheet = QString("#SureToCancel_BackGroundRect{ ")
                 + "border-style: solid;"
                 + "border-width: 10px;"
@@ -87,9 +96,9 @@ SureToCancel::SureToCancel(QWidget *parent)
     m_elementLayout ->addLayout(m_choiceLayout);
     m_elementLayout ->addStretch(1);
 
-    m_border          ->setLayout(m_elementLayout);
+    m_border        ->setLayout(m_elementLayout);
 
-    m_mainLayout      ->addWidget(m_border);
-    m_mainLayout->setMargin(0);
+    m_mainLayout    ->addWidget(m_border);
+    m_mainLayout    ->setMargin(0);
 
 }

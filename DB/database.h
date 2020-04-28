@@ -27,9 +27,12 @@
 #include "SQLTable/sqlview.h"
 #include "importPage/pillspushbutton.h"
 #include "importPage/roundpushbutton.h"
+#include "identifyPage/identifypage.h"
 #include "dataBaseWindow/ImprovedLineEdit.h"
 #include "dataBaseWindow/databasewindow.h"
 #include "popUpWindows/ProductNotFound.h"
+#include "popUpWindows/SureToCancel.h"
+#include "popUpWindows/SureToContinue.h"
 
 class DataBase : public QObject
 {
@@ -60,6 +63,7 @@ class DataBase : public QObject
         const QString   getIdentifyPagePalletId();
         const QString   getIdentifyPageBoxQtyOnPallet();
         const QString   getIdentifyPagePalletValue();
+        static void     setPalletScanned(int value);
 
         // Scan Page
         QSqlQueryModel* getScanPageTableData();
@@ -76,6 +80,7 @@ class DataBase : public QObject
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
+        void closeScanPagePopUp();
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
         void resetIdentifyPage(QString);
@@ -129,22 +134,33 @@ class DataBase : public QObject
         PillsPushButton *m_ImportPage_CheckBox;
 
         // Pointers to IdentifyPage elements
+        IdentifyPage    *m_IdentifyPage;
         QLineEdit       *m_IdentifyPage_PalletID;
         QLineEdit       *m_IdentifyPage_BoxID;
         QLineEdit       *m_IdentifyPage_TotalValue;
         QLineEdit       *m_IdentifyPage_BoxQty;
-        RoundPushButton *m_IdentifyPage_continueButton;
         QLabel          *m_IdentifyPage_continueLabel;
+        RoundPushButton *m_IdentifyPage_continueButton;
+        RoundPushButton *m_IdentifyPage_cancelButton;
         RoundPushButton *m_IdentifyPage_closePopUp;
         ProductNotFound *m_IdentifyPage_productNotFound;
 
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
-        int             palletScanned = 3;
+        SureToCancel    *m_ScanPage_sureToCancel;
+        SureToContinue  *m_ScanPage_sureToContinue;
+        RoundPushButton *m_ScanPage_cancel;
+        RoundPushButton *m_ScanPage_continue;
+        RoundPushButton *m_ScanPage_cancelNoButton;
+        RoundPushButton *m_ScanPage_cancelYesButton;
+        RoundPushButton *m_ScanPage_continueNoButton;
+        RoundPushButton *m_ScanPage_continueYesButton;
+        static int             palletScanned;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
         //Pointers to dataBaseWindow elements
+        DataBaseWindow  *m_DBWindow;
         SQLView         *m_DBWindow_Table;
         QComboBox       *m_DBWindow_selectTable;
         QPushButton     *m_DBWindow_okButton;

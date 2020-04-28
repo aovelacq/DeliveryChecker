@@ -10,7 +10,6 @@
 #include "globals/globals.h"
 #include "sideMenu/MenuButton.h"
 #include "importPage/roundpushbutton.h"
-#include "DB/database.h"
 #include "popUpWindows/ProductNotFound.h"
 
 class IdentifyPage : public QWidget
@@ -18,17 +17,19 @@ class IdentifyPage : public QWidget
     Q_OBJECT
 public:
     IdentifyPage(QWidget *parent = nullptr);
+    void clearIdentifyPage();
 
 private:
-     //QLabel *temp;
-
      QVBoxLayout         *m_layout;
+
+     QLabel              *m_scanText;
+     QLabel              *m_ImageQR;
+
      RoundPushButton     *m_cancelButton;
      QLabel              *m_cancelLabel;
      RoundPushButton     *m_continueButton;
      QLabel              *m_continueLabel;
-     QLabel              *m_scanText;
-     QLabel              *m_ImageQR;
+
      QLabel              *m_boxIdLabel;
      QLineEdit           *m_boxIdIO;
      QLabel              *m_palletIdLabel;

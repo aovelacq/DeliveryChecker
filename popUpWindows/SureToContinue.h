@@ -17,7 +17,7 @@ public:
     SureToContinue(QWidget *parent = nullptr);
 private:
     QVBoxLayout         *m_mainLayout;
-    RoundPushButton     *m_warningImage;
+    QLabel              *m_warningImage;
     QLabel              *m_warningScan;
     QLabel              *m_sureToContinue;
     QLabel              *m_warningOperation;

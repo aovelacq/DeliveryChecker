@@ -17,13 +17,13 @@ ProductNotFound::ProductNotFound(QWidget *parent)
 
     m_mainLayout         = new QVBoxLayout(this);
     QVBoxLayout *m_elementLayout = new QVBoxLayout(this);
-    m_errorProductButton = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_errorProductButton = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
     m_errorProductLabel  = new QLabel("Product not found !",this);
-    QWidget * m_rectangle = new QWidget();
+    QWidget * m_border = new QWidget();
 
     m_errorProductButton    ->setObjectName("ProductNotFound_RoundPushButton_errorProductButton");
     m_errorProductLabel     ->setObjectName("ProductNotFound_Label_errorProductLabel");
-    m_rectangle             ->setObjectName("BackGroundRect");
+    m_border                ->setObjectName("BackGroundRect");
 
     //Label Design
     pal = m_errorProductLabel->palette();
@@ -55,8 +55,8 @@ ProductNotFound::ProductNotFound(QWidget *parent)
     m_elementLayout   ->setAlignment(m_errorProductLabel,Qt::AlignCenter);
     m_elementLayout   ->setAlignment(m_errorProductButton,Qt::AlignCenter);
 
-    m_rectangle       ->setLayout(m_elementLayout);
+    m_border          ->setLayout(m_elementLayout);
 
-    m_mainLayout      ->addWidget(m_rectangle);
+    m_mainLayout      ->addWidget(m_border);
     m_mainLayout->setMargin(0);
 }

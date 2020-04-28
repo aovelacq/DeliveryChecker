@@ -18,7 +18,7 @@ public:
 
 private:
     QVBoxLayout         *m_mainLayout;
-    RoundPushButton     *m_warningImage;
+    QLabel              *m_warningImage;
     QLabel              *m_sureToCancel;
     QLabel              *m_warningPalletLost;
     RoundPushButton     *m_cancelNoButton;

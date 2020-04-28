@@ -1,4 +1,5 @@
 #include "identifypage.h"
+#include "DB/database.h"
 
 IdentifyPage::IdentifyPage(QWidget *parent)
     : QWidget(parent)
@@ -16,14 +17,14 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     // Creates all children
     m_layout        = new QVBoxLayout(this);
 
-    QGridLayout *m_layoutInstructions = new QGridLayout(this);
+    QHBoxLayout *m_layoutInstructions = new QHBoxLayout(this);
     m_scanText      = new QLabel("Scan the QR code on a box to identify the pallet",this);
-    m_ImageQR               = new QLabel(this);
+    m_ImageQR       = new QLabel(this);
 
     QGridLayout * m_layoutButton = new QGridLayout();
-    m_cancelButton  = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_cancelButton  = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
     m_cancelLabel   = new QLabel ("Cancel",this);
-    m_continueButton= new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_continueButton= new RoundPushButton(":/img/img/ArrowOff.png",":/img/img/ArrowOn.png",this);
     m_continueLabel = new QLabel ("Continue",this);
 
     QGridLayout * m_layoutPallet = new QGridLayout();
@@ -58,8 +59,27 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_totalValueLabel   ->setObjectName("IdentifyPage_Label_totalValueLabel");
     m_totalValueIO      ->setObjectName("IdentifyPage_LineEdit_totalValue");
 
+
+    //Instructions Layout Design
+    {m_ImageQR->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    m_ImageQR->setContentsMargins(0,0,0,0);
+
+    m_layoutInstructions  ->addWidget(m_scanText);
+    m_layoutInstructions  ->addSpacing(40);
+    m_layoutInstructions  ->addWidget(m_ImageQR);
+    m_layoutInstructions  ->setAlignment(m_scanText, Qt::AlignRight);
+    m_layoutInstructions  ->setAlignment(m_scanText, Qt::AlignVCenter);
+    m_layoutInstructions  ->setAlignment(m_ImageQR,  Qt::AlignLeft);
+
+    if (pix.load(":/img/img/label.png"))
+    {
+        //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
+        m_ImageQR->setPixmap(pix);
+    }
+    }
+
     //PalletInfo Design
-    pal.setColor(QPalette::Background, MENU_BACKGROUND_COLOR);
+    {pal.setColor(QPalette::Background, MENU_BACKGROUND_COLOR);
     m_rectangle->setAutoFillBackground(true);
     setPalette(pal);
 
@@ -137,7 +157,7 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_layoutPallet->setColumnStretch(2,28);
     m_layoutPallet->setColumnStretch(3,8);
     m_layoutPallet->setColumnStretch(4,28);
-
+    }
 
     //Design Buttons
     {pal.setColor(m_cancelLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
@@ -154,6 +174,8 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_continueLabel     ->setMinimumHeight(40);
     m_scanText          ->setMinimumHeight(40);
 
+    m_scanText          ->setAlignment(Qt::AlignRight);
+
     m_layoutButton->addWidget(m_cancelButton,   0, 0, 2, 1, Qt::AlignCenter);
     m_layoutButton->addWidget(m_cancelLabel,    2, 0, 1, 1, Qt::AlignCenter);
     m_layoutButton->addWidget(m_continueButton, 0, 4, 2, 1, Qt::AlignCenter);
@@ -167,25 +189,9 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 
     m_continueButton->setVisible(false);
     m_continueLabel ->setVisible(false);
-
-    m_ImageQR->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    m_ImageQR->setContentsMargins(0,0,0,0);
-
-    m_layoutInstructions  ->addWidget(m_ImageQR,                0, 1, 1, 1, Qt::AlignCenter);
-    m_layoutInstructions  ->addWidget(m_scanText,               0, 0, 1, 1, Qt::AlignCenter);
-
-    if (pix.load(":/img/img/label.png"))
-    {
-        //pix = pix.scaled(m_ImageQR->size(), Qt::KeepAspectRatio);
-        m_ImageQR->setPixmap(pix);
-    }
     }
 
-
-
-
-
-    // Layout management
+    // Main layout management
     m_rectangle     ->setLayout(m_layoutPallet);
     m_rectangle     ->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
@@ -202,3 +208,16 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 }
 
 
+void IdentifyPage::clearIdentifyPage()
+{
+    m_continueButton->setVisible(false);
+    m_continueLabel ->setVisible(false);
+
+    m_palletIdIO    ->clear();
+    m_boxQtyIO      ->clear();
+    m_totalValueIO  ->clear();
+
+    m_boxIdIO       ->setFocus();
+
+    DataBase::setPalletScanned(-1);
+}
