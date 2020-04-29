@@ -22,8 +22,10 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QDateTime>
+#include <QStyledItemDelegate>
 
 #include "globals/globals.h"
+#include "MainWindow.h"
 #include "SQLTable/sqlview.h"
 #include "importPage/pillspushbutton.h"
 #include "importPage/roundpushbutton.h"
@@ -33,6 +35,8 @@
 #include "popUpWindows/ProductNotFound.h"
 #include "popUpWindows/SureToCancel.h"
 #include "popUpWindows/SureToContinue.h"
+
+class BackgroundColorDelegate;
 
 class DataBase : public QObject
 {
@@ -67,6 +71,8 @@ class DataBase : public QObject
 
         // Scan Page
         QSqlQueryModel* getScanPageTableData();
+        bool            scanPageCheckBoxExists(QString ref);
+        void            scanPageUpdateBoxScanned(QString ref);
         // Intermediary repport page
 
         // Final repport page
@@ -80,6 +86,7 @@ class DataBase : public QObject
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
+        void scanPageBoxScanned();
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
         void sendDBWindowInformations(int);
@@ -144,15 +151,13 @@ class DataBase : public QObject
 
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
+        BackgroundColorDelegate *m_scanPageDeleguate;
+        QLineEdit       *m_ScanPage_BoxRef;
+        static int      palletScanned;
         SureToCancel    *m_ScanPage_sureToCancel;
         SureToContinue  *m_ScanPage_sureToContinue;
         RoundPushButton *m_ScanPage_cancel;
         RoundPushButton *m_ScanPage_continue;
-        RoundPushButton *m_ScanPage_cancelNoButton;
-        RoundPushButton *m_ScanPage_cancelYesButton;
-        RoundPushButton *m_ScanPage_continueNoButton;
-        RoundPushButton *m_ScanPage_continueYesButton;
-        static int             palletScanned;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
@@ -162,9 +167,6 @@ class DataBase : public QObject
         QPushButton     *m_DBWindow_okButton;
         ImprovedLineEdit*m_DBWindow_filter;
         QLabel          *m_DBWindow_queryLabel;
-
-
-
 };
 
 #endif // DATABASE_H
