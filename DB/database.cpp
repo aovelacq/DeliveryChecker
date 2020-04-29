@@ -196,14 +196,7 @@ DataBase::DataBase(QWidget *parent)
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
-  { QList<DataBaseWindow*> DataBaseWindowList = this->parent()->findChildren<DataBaseWindow*>();
-    for(int i = 0; i < DataBaseWindowList.size() ; ++i)
-    {
-        if (DataBaseWindowList.at(i)->objectName()=="DataBaseWindow")
-        {
-            m_DBWindow   = DataBaseWindowList.at(i);
-        }
-    }
+  {
     QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
@@ -261,6 +254,7 @@ DataBase::DataBase(QWidget *parent)
     MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
     if (0 != mainWindow)
     {
+        qDebug()<<"in";
         QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
         QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
         QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
@@ -270,9 +264,6 @@ DataBase::DataBase(QWidget *parent)
         QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
         QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
     }
-
-
-
 }
 
 bool DataBase::createConnection()
@@ -1260,6 +1251,7 @@ void DataBase::sendIdentifyPageInformations()
         emit sendIdentifyPageDone(true);
         setPalletScanned(m_IdentifyPage_PalletID->text().toInt(nullptr,10));
     }
+
 }
 
 const QString DataBase::getIdentifyPagePalletId()

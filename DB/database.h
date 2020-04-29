@@ -160,7 +160,6 @@ class DataBase : public QObject
         // Pointers to FinRepportPage elements
 
         //Pointers to dataBaseWindow elements
-        DataBaseWindow  *m_DBWindow;
         SQLView         *m_DBWindow_Table;
         QComboBox       *m_DBWindow_selectTable;
         QPushButton     *m_DBWindow_okButton;
