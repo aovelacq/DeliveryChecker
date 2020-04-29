@@ -19,7 +19,7 @@ class DataBaseWindow : public QDialog
     Q_OBJECT
 
 public:
-    DataBaseWindow(QWidget *parent = nullptr);
+    DataBaseWindow();
     //~DataBaseWindow();
 
     private:

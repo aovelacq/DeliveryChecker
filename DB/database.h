@@ -43,7 +43,7 @@ class DataBase : public QObject
     Q_OBJECT
 
     public:
-        explicit DataBase(QWidget *parent = nullptr);
+        explicit DataBase(QWidget *parent = nullptr, QDialog* DBWindow = nullptr);
         bool createConnection();
         bool fillTables();
         bool deleteAllData();
@@ -85,11 +85,8 @@ class DataBase : public QObject
     private slots:
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
-        void resetIdentifyPage(QString);
         void sendScanPageInformations();
         void scanPageBoxScanned();
-        void closeScanPagePopUp();
-
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
         void sendDBWindowInformations(int);
@@ -97,7 +94,6 @@ class DataBase : public QObject
         void sendDBWindowCheckFilter(QString);
         void setDBWindowQueryValidLabel(bool valid);
         void resetDBWindowFilter(bool reset);
-        void resetProductNotFound();
 
     signals:
         //Internal
@@ -162,15 +158,10 @@ class DataBase : public QObject
         SureToContinue  *m_ScanPage_sureToContinue;
         RoundPushButton *m_ScanPage_cancel;
         RoundPushButton *m_ScanPage_continue;
-//        RoundPushButton *m_ScanPage_cancelNoButton;
-//        RoundPushButton *m_ScanPage_cancelYesButton;
-//        RoundPushButton *m_ScanPage_continueNoButton;
-//        RoundPushButton *m_ScanPage_continueYesButton;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
         //Pointers to dataBaseWindow elements
-        DataBaseWindow  *m_DBWindow;
         SQLView         *m_DBWindow_Table;
         QComboBox       *m_DBWindow_selectTable;
         QPushButton     *m_DBWindow_okButton;

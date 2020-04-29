@@ -78,6 +78,24 @@ SureToCancel::SureToCancel(QWidget *parent)
     setStyleSheet( styleSheet.arg(MENU_BACKGROUND_COLOR.name()));
 
 
+    // Signal & slot connection;
+    QList<MenuButton *> menuButtons = this->parent()->parent()->findChildren<MenuButton *>();
+    MenuButton *identifyButton;
+    for(int i = 0; i < menuButtons.size() ; ++i)
+    {
+        if (menuButtons.at(i)->objectName()=="menuButton_Identify")
+        {
+            identifyButton = menuButtons.at(i);
+
+            QObject::connect(this,  SIGNAL(sureToCancel_yes()),    identifyButton,   SLOT(enable()));
+        }
+    }
+
+    QObject::connect(m_cancelNoButton,  SIGNAL(clicked()),    this,   SLOT(close()));
+    QObject::connect(m_cancelYesButton,  SIGNAL(clicked()),    this,   SLOT(close()));
+    QObject::connect(m_cancelYesButton,  SIGNAL(clicked()),    this,   SLOT(changePage()));
+    QObject::connect(this,  SIGNAL(sureToCancel_yes()),    this->parent()->parent(),   SLOT(setIdentifyPage()));
+
     //Layout management
 
     m_labelLayout   ->addWidget(m_sureToCancel,     1, Qt::AlignCenter);
@@ -101,4 +119,10 @@ SureToCancel::SureToCancel(QWidget *parent)
     m_mainLayout    ->addWidget(m_border);
     m_mainLayout    ->setMargin(0);
 
+}
+
+
+void SureToCancel::changePage()
+{
+    emit (sureToCancel_yes());
 }

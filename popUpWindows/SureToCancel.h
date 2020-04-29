@@ -8,13 +8,22 @@
 #include <QLabel>
 #include <QFont>
 
+#include <QDebug>
+
 #include "importPage/roundpushbutton.h"
+#include "sideMenu/MenuButton.h"
 
 class SureToCancel : public QDialog
 {
     Q_OBJECT
 public:
     SureToCancel(QWidget *parent = nullptr);
+
+private slots :
+    void changePage();
+
+signals :
+    void sureToCancel_yes();
 
 private:
     QVBoxLayout         *m_mainLayout;

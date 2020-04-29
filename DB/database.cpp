@@ -22,7 +22,7 @@ public:
 };
 
 
-DataBase::DataBase(QWidget *parent)
+DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
     :QObject(parent)
 {
     // Set element name
@@ -106,11 +106,6 @@ DataBase::DataBase(QWidget *parent)
         {
             m_IdentifyPage_cancelButton = IdentifyPageRoundPushButtonList.at(i);
         }
-        if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="ProductNotFound_RoundPushButton_errorProductButton")
-        {
-            m_IdentifyPage_closePopUp = IdentifyPageRoundPushButtonList.at(i);
-            QObject::connect(m_IdentifyPage_closePopUp, SIGNAL(clicked()), this, SLOT(resetProductNotFound()));
-        }
     }
     QList<QLabel*> IdentifyPageLabelList = this->parent()->findChildren<QLabel*>();
     for(int i = 0; i < IdentifyPageLabelList.size() ; ++i)
@@ -144,7 +139,7 @@ DataBase::DataBase(QWidget *parent)
         {
             m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
             QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendIdentifyPageInformations()));
-            QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
+            //QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
         }
     }}
 
@@ -197,41 +192,15 @@ DataBase::DataBase(QWidget *parent)
             m_ScanPage_continue = ScanPageRoundPushButtonList.at(i);
             QObject::connect(m_ScanPage_continue, SIGNAL(clicked()), m_ScanPage_sureToContinue, SLOT(exec()));
         }
-//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelNoButton")
-//        {
-//            m_ScanPage_cancelNoButton = ScanPageRoundPushButtonList.at(i);
-//            QObject::connect(m_ScanPage_cancelNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-//        }
-//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelYesButton")
-//        {
-//            m_ScanPage_cancelYesButton = ScanPageRoundPushButtonList.at(i);
-//            QObject::connect(m_ScanPage_cancelYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-//        }
-//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueNoButton")
-//        {
-//            m_ScanPage_continueNoButton = ScanPageRoundPushButtonList.at(i);
-//            QObject::connect(m_ScanPage_continueNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-//        }
-//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueYesButton")
-//        {
-//            m_ScanPage_continueYesButton = ScanPageRoundPushButtonList.at(i);
-//            QObject::connect(m_ScanPage_continueYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-//        }
+
     }
     }
     // Pointers to IntRepportPage elements
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
-  { QList<DataBaseWindow*> DataBaseWindowList = this->parent()->findChildren<DataBaseWindow*>();
-    for(int i = 0; i < DataBaseWindowList.size() ; ++i)
-    {
-        if (DataBaseWindowList.at(i)->objectName()=="DataBaseWindow")
-        {
-            m_DBWindow   = DataBaseWindowList.at(i);
-        }
-    }
-    QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+  {
+    QList<SQLView*> DataBaseWindowTableList = DBWindow->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
         if (DataBaseWindowTableList.at(i)->objectName()=="DataBaseWindow_SQLView_TableDataBase")
@@ -240,7 +209,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this, SIGNAL(sendDBWindowTableData(QSqlQueryModel*)), m_DBWindow_Table, SLOT(setResults(QSqlQueryModel*)));
         }
     }
-    QList<QComboBox*> DataBaseWindowComboBox = this->parent()->findChildren<QComboBox*>();
+    QList<QComboBox*> DataBaseWindowComboBox = DBWindow->findChildren<QComboBox*>();
     for(int i = 0; i < DataBaseWindowComboBox.size() ; ++i)
     {
         if (DataBaseWindowComboBox.at(i)->objectName()=="DataBaseWindow_ComboBox_TableIndex")
@@ -249,7 +218,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(m_DBWindow_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(sendDBWindowInformations(int)));
         }
     }
-    QList<ImprovedLineEdit*> DataBaseWindowImprovedLineEdit = this->parent()->findChildren<ImprovedLineEdit*>();
+    QList<ImprovedLineEdit*> DataBaseWindowImprovedLineEdit = DBWindow->findChildren<ImprovedLineEdit*>();
     for(int i = 0; i < DataBaseWindowImprovedLineEdit.size() ; ++i)
     {
         if (DataBaseWindowImprovedLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
@@ -259,7 +228,7 @@ DataBase::DataBase(QWidget *parent)
 
         }
     }
-    QList<QLabel*> DataBaseWindowLabel = this->parent()->findChildren<QLabel*>();
+    QList<QLabel*> DataBaseWindowLabel = DBWindow->findChildren<QLabel*>();
     for(int i = 0; i < DataBaseWindowLabel.size() ; ++i)
     {
         if (DataBaseWindowLabel.at(i)->objectName()=="DataBaseWindow_Label_FilterCheck")
@@ -269,7 +238,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this,  SIGNAL(isDBWindowQueryValid(bool)),    this,   SLOT(setDBWindowQueryValidLabel(bool)));
         }
     }
-    QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
+    QList<QPushButton*> DataBaseWindowPushButton = DBWindow->findChildren<QPushButton*>();
     for(int i = 0; i < DataBaseWindowPushButton.size() ; ++i)
     {
         if (DataBaseWindowPushButton.at(i)->objectName()=="DataBaseWindow_PushButton_okButton")
@@ -284,22 +253,6 @@ DataBase::DataBase(QWidget *parent)
 
 
     QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendImportPageInformations()));
-
-//    MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
-//    if (0 != mainWindow)
-//    {
-//        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
-//        QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
-//        QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
-//        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
-//        QObject::connect(m_ScanPage_continueYesButton,  SIGNAL(clicked()),  mainWindow,   SLOT(setIntRepportPage()));
-
-//        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
-//        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
-//    }
-
-
-
 }
 
 bool DataBase::createConnection()
@@ -1281,12 +1234,14 @@ void DataBase::sendIdentifyPageInformations()
     {
         emit sendIdentifyPageDone(false);
         m_IdentifyPage_productNotFound->exec();
+        m_IdentifyPage->clearIdentifyPage("");
     }
     else
     {
         emit sendIdentifyPageDone(true);
-        setPalletScanned(m_IdentifyPage_PalletID->text().toInt(nullptr,10));
+        setPalletScanned(m_IdentifyPage_PalletID->text().toInt());
     }
+
 }
 
 const QString DataBase::getIdentifyPagePalletId()
@@ -1371,19 +1326,6 @@ void DataBase::setPalletScanned (int scannedValue)
     palletScanned = scannedValue;
 }
 
-void DataBase::resetIdentifyPage(QString)
-{
-   m_IdentifyPage->clearIdentifyPage();
-
-}
-
-void DataBase::resetProductNotFound()
-{
-  m_IdentifyPage_productNotFound->done(1);
-  m_IdentifyPage_BoxID        ->setText("");
-}
-
-
 /////////////////////////////////////////////////////////
 
 void DataBase::sendScanPageInformations()
@@ -1391,12 +1333,6 @@ void DataBase::sendScanPageInformations()
     emit sendScanPageTableData(getScanPageTableData());
     emit hideScanPageTableColumn(1);
 
-}
-
-void DataBase::closeScanPagePopUp()
-{
-    m_ScanPage_sureToCancel->done(1);
-    m_ScanPage_sureToContinue->done(1);
 }
 
 QSqlQueryModel* DataBase::getScanPageTableData()

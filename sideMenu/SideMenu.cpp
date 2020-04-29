@@ -27,41 +27,6 @@ SideMenu::SideMenu(QWidget *parent)
     m_boutonIntRepport  -> setSizePolicy(QSizePolicy ::Minimum, QSizePolicy ::Fixed);
     m_boutonFinRepport  -> setSizePolicy(QSizePolicy ::Minimum, QSizePolicy ::Fixed);
 
-    //Connect buttons to setPage
-
-//    QList<RoundPushButton*> RoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
-//    for(int i = 0; i < RoundPushButtonList.size() ; ++i)
-//    {
-//        if (RoundPushButtonList.at(i)->objectName()=="IdentifyPage_RoundPushButton_continueButton")
-//        {
-//            m_IdentifyPage_continueButton = RoundPushButtonList.at(i);
-//        }
-//        if (RoundPushButtonList.at(i)->objectName()=="IdentifyPage_RoundPushButton_cancelButton")
-//        {
-//            m_IdentifyPage_cancelButton = RoundPushButtonList.at(i);
-//        }
-//    }
-//    QList<PillsPushButton*> PillsPushButtonList = this->parent()->findChildren<PillsPushButton*>();
-//    for(int i = 0; i < PillsPushButtonList.size() ; ++i)
-//    {
-//        if (PillsPushButtonList.at(i)->objectName()=="pillsButton_Check")
-//        {
-//            m_ImportPage_checkBox = PillsPushButtonList.at(i);
-//        }
-//    }
-
-//    QObject::connect(m_ImportPage_checkBox,         SIGNAL(clicked()),  m_boutonIdentify,   SLOT(enable()));
-//    QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  m_boutonScan,       SLOT(enable()));
-//    QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  m_boutonImport,     SLOT(enable()));
-
- /*   MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
-    if (0 != mainWindow)
-    {
-        QObject::connect(m_ImportPage_checkBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
-        QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
-        QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
-    }*/
-
     if (CLICK_SIDEMENU_ALLOWED)
     {
         QObject::connect(m_boutonImport,    SIGNAL(clicked()),  m_boutonImport,     SLOT(enable()));

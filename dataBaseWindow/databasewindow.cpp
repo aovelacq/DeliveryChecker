@@ -1,7 +1,7 @@
 #include "databasewindow.h"
 
-DataBaseWindow::DataBaseWindow(QWidget *parent)
-    : QDialog(parent)
+DataBaseWindow::DataBaseWindow()
+    : QDialog()
 {
     QPalette pal;
     QFont font;
@@ -43,7 +43,7 @@ DataBaseWindow::DataBaseWindow(QWidget *parent)
     m_filterCheck   ->setObjectName("DataBaseWindow_Label_FilterCheck");
     m_okButton      ->setObjectName("DataBaseWindow_PushButton_okButton");
 
-    m_selectTable->insertItem(0," -");
+    m_selectTable->insertItem(0," - ");
     m_selectTable->insertItem(1,CSV_ITEMS_NAME);
     m_selectTable->insertItem(2,CSV_JOBORDER_NAME);
     m_selectTable->insertItem(3,CSV_TRACEABILITY_BATCH_NAME);

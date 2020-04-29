@@ -109,4 +109,27 @@ SureToContinue::SureToContinue(QWidget *parent)
 
     m_mainLayout      ->addWidget(m_border);
     m_mainLayout->setMargin(0);
+
+    // Signal & slot connection;
+    QList<MenuButton *> menuButtons = this->parent()->parent()->findChildren<MenuButton *>();
+    MenuButton *intRepportButton;
+    for(int i = 0; i < menuButtons.size() ; ++i)
+    {
+        if (menuButtons.at(i)->objectName()=="menuButton_IntRepport")
+        {
+            intRepportButton = menuButtons.at(i);
+
+            QObject::connect(this,  SIGNAL(sureToContinue_yes()),    intRepportButton,   SLOT(enable()));
+        }
+    }
+
+    QObject::connect(m_continueNoButton,    SIGNAL(clicked()),    this,   SLOT(close()));
+    QObject::connect(m_continueYesButton,   SIGNAL(clicked()),    this,   SLOT(close()));
+    QObject::connect(m_continueYesButton,   SIGNAL(clicked()),    this,   SLOT(changePage()));
+    QObject::connect(this,  SIGNAL(sureToContinue_yes()),    this->parent()->parent(),   SLOT(setIntRepportPage()));
+}
+
+void SureToContinue::changePage()
+{
+    emit (sureToContinue_yes());
 }
