@@ -5,7 +5,7 @@
 
 int DataBase::palletScanned = -1;
 
-DataBase::DataBase(QWidget *parent)
+DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
     :QObject(parent)
 {
     // Set element name
@@ -177,7 +177,7 @@ DataBase::DataBase(QWidget *parent)
 
     //Pointers to DataBaseWindow elements
   {
-    QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+    QList<SQLView*> DataBaseWindowTableList = DBWindow->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
         if (DataBaseWindowTableList.at(i)->objectName()=="DataBaseWindow_SQLView_TableDataBase")
@@ -186,7 +186,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this, SIGNAL(sendDBWindowTableData(QSqlQueryModel*)), m_DBWindow_Table, SLOT(setResults(QSqlQueryModel*)));
         }
     }
-    QList<QComboBox*> DataBaseWindowComboBox = this->parent()->findChildren<QComboBox*>();
+    QList<QComboBox*> DataBaseWindowComboBox = DBWindow->findChildren<QComboBox*>();
     for(int i = 0; i < DataBaseWindowComboBox.size() ; ++i)
     {
         if (DataBaseWindowComboBox.at(i)->objectName()=="DataBaseWindow_ComboBox_TableIndex")
@@ -195,7 +195,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(m_DBWindow_selectTable,  SIGNAL(currentIndexChanged(int)),    this,   SLOT(sendDBWindowInformations(int)));
         }
     }
-    QList<ImprovedLineEdit*> DataBaseWindowImprovedLineEdit = this->parent()->findChildren<ImprovedLineEdit*>();
+    QList<ImprovedLineEdit*> DataBaseWindowImprovedLineEdit = DBWindow->findChildren<ImprovedLineEdit*>();
     for(int i = 0; i < DataBaseWindowImprovedLineEdit.size() ; ++i)
     {
         if (DataBaseWindowImprovedLineEdit.at(i)->objectName()=="DataBaseWindow_LineEdit_Filter")
@@ -205,7 +205,7 @@ DataBase::DataBase(QWidget *parent)
 
         }
     }
-    QList<QLabel*> DataBaseWindowLabel = this->parent()->findChildren<QLabel*>();
+    QList<QLabel*> DataBaseWindowLabel = DBWindow->findChildren<QLabel*>();
     for(int i = 0; i < DataBaseWindowLabel.size() ; ++i)
     {
         if (DataBaseWindowLabel.at(i)->objectName()=="DataBaseWindow_Label_FilterCheck")
@@ -215,7 +215,7 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(this,  SIGNAL(isDBWindowQueryValid(bool)),    this,   SLOT(setDBWindowQueryValidLabel(bool)));
         }
     }
-    QList<QPushButton*> DataBaseWindowPushButton = this->parent()->findChildren<QPushButton*>();
+    QList<QPushButton*> DataBaseWindowPushButton = DBWindow->findChildren<QPushButton*>();
     for(int i = 0; i < DataBaseWindowPushButton.size() ; ++i)
     {
         if (DataBaseWindowPushButton.at(i)->objectName()=="DataBaseWindow_PushButton_okButton")

@@ -39,7 +39,7 @@ class DataBase : public QObject
     Q_OBJECT
 
     public:
-        explicit DataBase(QWidget *parent = nullptr);
+        explicit DataBase(QWidget *parent = nullptr, QDialog* DBWindow = nullptr);
         bool createConnection();
         bool fillTables();
         bool deleteAllData();
