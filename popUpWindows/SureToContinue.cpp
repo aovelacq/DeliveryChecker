@@ -10,15 +10,16 @@ SureToContinue::SureToContinue(QWidget *parent)
     QFont font;
     QPalette pal;
     QString styleSheet;
+    QPixmap pix;
 
     this->setWindowModality ( Qt::WindowModal );
-    //this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
+    this->setWindowFlags ( windowFlags() | Qt::FramelessWindowHint  );
 
 
     m_mainLayout        = new QVBoxLayout(this);
     QVBoxLayout *m_elementLayout = new QVBoxLayout(this);
 
-    m_warningImage      = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+    m_warningImage      = new QLabel(this);
 
     QVBoxLayout *m_labelLayout = new QVBoxLayout(this);
     m_warningScan       = new QLabel("All Packs have not been scanned !",this);
@@ -26,15 +27,17 @@ SureToContinue::SureToContinue(QWidget *parent)
     m_warningOperation  = new QLabel("(This operation can not been canceled)",this);
 
     QGridLayout *m_choiceLayout = new QGridLayout(this);
-    m_continueNoButton  = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
-    m_continueYesButton = new RoundPushButton(":/img/img/PlusOff.png",":/img/img/PlusOn.png",this);
+
+    m_continueNoButton  = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
+    m_continueYesButton = new RoundPushButton(":/img/img/ArrowOff.png",":/img/img/ArrowOn.png",this);
     m_continueNoLabel   = new QLabel("No",this);
     m_continueYesLabel  = new QLabel("Yes",this);
 
     QWidget * m_border  = new QWidget();
 
-    m_continueNoButton    ->setObjectName("SureToContinue_RoundPushButton_m_continueNoButton");
-    m_continueYesButton   ->setObjectName("SureToContinue_RoundPushButton_m_continueYesButton");
+    m_warningImage          ->setObjectName("SureToContinue_QLabel_WarningImage");
+    m_continueNoButton    ->setObjectName("SureToContinue_RoundPushButton_ContinueNoButton");
+    m_continueYesButton   ->setObjectName("SureToContinue_RoundPushButton_ContinueYesButton");
     m_border              ->setObjectName("SureToContinue_BackGroundRect");
 
 
@@ -62,11 +65,19 @@ SureToContinue::SureToContinue(QWidget *parent)
     m_sureToContinue    ->setFont(font);
     m_continueNoLabel   ->setFont(font);
     m_continueYesLabel  ->setFont(font);
-
-    //font = m_warningScan->font();
     font.setPointSize(12);
     m_warningOperation  ->setFont(font);
 
+    //Warning Image
+    m_warningImage->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    m_warningImage->setContentsMargins(0,0,0,0);
+
+    if (pix.load(":/img/img/Warning.png"))
+    {
+        m_warningImage->setPixmap(pix);
+    }
+
+    //Border
     styleSheet = QString("#SureToContinue_BackGroundRect{ ")
                 + "border-style: solid;"
                 + "border-width: 10px;"

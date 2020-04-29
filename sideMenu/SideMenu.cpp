@@ -54,13 +54,13 @@ SideMenu::SideMenu(QWidget *parent)
     QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  m_boutonScan,       SLOT(enable()));
     QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  m_boutonImport,     SLOT(enable()));
 
-    MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
+ /*   MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
     if (0 != mainWindow)
     {
         QObject::connect(m_ImportPage_checkBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
         QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
         QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
-    }
+    }*/
 
     if (CLICK_SIDEMENU_ALLOWED)
     {

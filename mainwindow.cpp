@@ -51,32 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     stackedWidget->setCurrentIndex(0);
     m_windowDB->show();
-
-    m_popUp = new SureToCancel(this);
-    m_popUp->show();
-
-
-    //looking for QLineEdit in IdentifyPage
-    QList<QLineEdit*> IdentifyPageIOFieldsList = this->findChildren<QLineEdit*>();
-    for(int i = 0; i < IdentifyPageIOFieldsList.size() ; ++i)
-    {
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_palletID")
-        {
-            m_IdentifyPage_PalletID     = IdentifyPageIOFieldsList.at(i);
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxQtyOnPallet")
-        {
-            m_IdentifyPage_BoxQty       = IdentifyPageIOFieldsList.at(i);
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_totalValue")
-        {
-            m_IdentifyPage_TotalValue   = IdentifyPageIOFieldsList.at(i);
-        }
-        if (IdentifyPageIOFieldsList.at(i)->objectName()=="IdentifyPage_LineEdit_boxID")
-        {
-            m_IdentifyPage_BoxID        = IdentifyPageIOFieldsList.at(i);
-        }
-    }
 }
 
 MainWindow::~MainWindow()
@@ -103,11 +77,7 @@ void MainWindow::setIdentifyPage()
     {
         stackedWidget->setCurrentIndex(setIndex);
     }
-    m_IdentifyPage_PalletID->clear();
-    m_IdentifyPage_BoxID->clear();
-    m_IdentifyPage_TotalValue->clear();
-    m_IdentifyPage_BoxQty->clear();
-    m_IdentifyPage_BoxID->setFocus();
+    identifyPage->clearIdentifyPage();
 
 }
 

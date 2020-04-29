@@ -1,6 +1,6 @@
 #include "database.h"
-#include <QStyledItemDelegate>
-#include "popUpWindows/ProductNotFound.h"
+
+int DataBase::palletScanned=-1;
 
 class BackgroundColorDelegate : public QStyledItemDelegate {
 
@@ -20,6 +20,7 @@ public:
         option->backgroundBrush = QBrush(QColor(0,175,80));
     }
 };
+
 
 DataBase::DataBase(QWidget *parent)
     :QObject(parent)
@@ -75,8 +76,17 @@ DataBase::DataBase(QWidget *parent)
     }
 
     // Pointers to IdentifyPage elements
-   { QList<ProductNotFound*> IdentifyPageProductNotFoundList = this->parent()->findChildren<ProductNotFound*>();
-        for(int i = 0; i < IdentifyPageProductNotFoundList.size() ; ++i)
+   {
+    QList<IdentifyPage*> IdentifyPageList = this->parent()->findChildren<IdentifyPage*>();
+    for(int i = 0; i < IdentifyPageList.size() ; ++i)
+        {
+            if (IdentifyPageList.at(i)->objectName()=="IdentifyPage")
+            {
+                m_IdentifyPage = IdentifyPageList.at(i);
+            }
+        }
+    QList<ProductNotFound*> IdentifyPageProductNotFoundList = this->parent()->findChildren<ProductNotFound*>();
+    for(int i = 0; i < IdentifyPageProductNotFoundList.size() ; ++i)
         {
             if (IdentifyPageProductNotFoundList.at(i)->objectName()=="IdentifyPage_ProductNotFound")
             {
@@ -91,6 +101,10 @@ DataBase::DataBase(QWidget *parent)
             m_IdentifyPage_continueButton = IdentifyPageRoundPushButtonList.at(i);
             QObject::connect(this, SIGNAL(sendIdentifyPageDone(bool)), m_IdentifyPage_continueButton, SLOT(setVisible(bool)));
             QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()), this, SLOT(sendScanPageInformations()));
+        }
+        if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="IdentifyPage_RoundPushButton_cancelButton")
+        {
+            m_IdentifyPage_cancelButton = IdentifyPageRoundPushButtonList.at(i);
         }
         if (IdentifyPageRoundPushButtonList.at(i)->objectName()=="ProductNotFound_RoundPushButton_errorProductButton")
         {
@@ -135,7 +149,7 @@ DataBase::DataBase(QWidget *parent)
     }}
 
     // Pointers to ScanPage elements
-    QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
+   { QList<SQLView*> ScanPageTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < ScanPageTableList.size() ; ++i)
     {
         if (ScanPageTableList.at(i)->objectName()=="ScanPage_SQLView_Table")
@@ -154,11 +168,70 @@ DataBase::DataBase(QWidget *parent)
             QObject::connect(m_ScanPage_BoxRef, SIGNAL(returnPressed()), this, SLOT(scanPageBoxScanned()));
         }
     }
+    QList<SureToCancel*> ScanPageSureToCancelList = this->parent()->findChildren<SureToCancel*>();
+    for(int i = 0; i < ScanPageSureToCancelList.size() ; ++i)
+    {
+        if (ScanPageSureToCancelList.at(i)->objectName()=="ScanPage_SureToCancel")
+        {
+            m_ScanPage_sureToCancel   = ScanPageSureToCancelList.at(i);
+        }
+    }
+    QList<SureToContinue*> ScanPageSureToContinueList = this->parent()->findChildren<SureToContinue*>();
+    for(int i = 0; i < ScanPageSureToContinueList.size() ; ++i)
+    {
+        if (ScanPageSureToContinueList.at(i)->objectName()=="ScanPage_SureToContinue")
+        {
+            m_ScanPage_sureToContinue   = ScanPageSureToContinueList.at(i);
+        }
+    }
+    QList<RoundPushButton*> ScanPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
+    for(int i = 0; i < ScanPageRoundPushButtonList.size() ; ++i)
+    {
+        if (ScanPageRoundPushButtonList.at(i)->objectName()=="ScanPage_RoundPushButton_Cancel")
+        {
+            m_ScanPage_cancel = ScanPageRoundPushButtonList.at(i);
+            QObject::connect(m_ScanPage_cancel, SIGNAL(clicked()), m_ScanPage_sureToCancel, SLOT(exec()));
+        }
+        if (ScanPageRoundPushButtonList.at(i)->objectName()=="ScanPage_RoundPushButton_Continue")
+        {
+            m_ScanPage_continue = ScanPageRoundPushButtonList.at(i);
+            QObject::connect(m_ScanPage_continue, SIGNAL(clicked()), m_ScanPage_sureToContinue, SLOT(exec()));
+        }
+//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelNoButton")
+//        {
+//            m_ScanPage_cancelNoButton = ScanPageRoundPushButtonList.at(i);
+//            QObject::connect(m_ScanPage_cancelNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
+//        }
+//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelYesButton")
+//        {
+//            m_ScanPage_cancelYesButton = ScanPageRoundPushButtonList.at(i);
+//            QObject::connect(m_ScanPage_cancelYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
+//        }
+//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueNoButton")
+//        {
+//            m_ScanPage_continueNoButton = ScanPageRoundPushButtonList.at(i);
+//            QObject::connect(m_ScanPage_continueNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
+//        }
+//        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueYesButton")
+//        {
+//            m_ScanPage_continueYesButton = ScanPageRoundPushButtonList.at(i);
+//            QObject::connect(m_ScanPage_continueYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
+//        }
+    }
+    }
     // Pointers to IntRepportPage elements
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
-  { QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
+  { QList<DataBaseWindow*> DataBaseWindowList = this->parent()->findChildren<DataBaseWindow*>();
+    for(int i = 0; i < DataBaseWindowList.size() ; ++i)
+    {
+        if (DataBaseWindowList.at(i)->objectName()=="DataBaseWindow")
+        {
+            m_DBWindow   = DataBaseWindowList.at(i);
+        }
+    }
+    QList<SQLView*> DataBaseWindowTableList = this->parent()->findChildren<SQLView*>();
     for(int i = 0; i < DataBaseWindowTableList.size() ; ++i)
     {
         if (DataBaseWindowTableList.at(i)->objectName()=="DataBaseWindow_SQLView_TableDataBase")
@@ -211,6 +284,22 @@ DataBase::DataBase(QWidget *parent)
 
 
     QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendImportPageInformations()));
+
+//    MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
+//    if (0 != mainWindow)
+//    {
+//        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
+//        QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
+//        QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
+//        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
+//        QObject::connect(m_ScanPage_continueYesButton,  SIGNAL(clicked()),  mainWindow,   SLOT(setIntRepportPage()));
+
+//        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
+//        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
+//    }
+
+
+
 }
 
 bool DataBase::createConnection()
@@ -243,12 +332,12 @@ bool DataBase::createConnection()
     if(!query.exec("CREATE TABLE IF NOT EXISTS ITEMS ("
                    "IT_ID               INT             NOT NULL, "
 
-                   "IT_NAME             VARCHAR(40)     NOT NULL, " //
+                   "IT_NAME             VARCHAR(40)     NOT NULL, "
                    "IT_WEIGHT           REAL            NOT NULL, "
-                   "IT_VALUE            REAL            NOT NULL, " //
-                   "IT_ROLL_Q           INT             NOT NULL, " //Qty per roll
-                   "IT_BA_Q             INT             NOT NULL, " //Qty per pack
-                   "IT_BOX_Q            INT             NOT NULL, " //
+                   "IT_VALUE            REAL            NOT NULL, "
+                   "IT_ROLL_Q           INT             NOT NULL, "
+                   "IT_BA_Q             INT             NOT NULL, "
+                   "IT_BOX_Q            INT             NOT NULL, "
                    "IT_PALLET_Q         INT             NOT NULL, "
                    "IT_BA_WEIGHT        REAL            NOT NULL, "
                    "IT_BA_TO            REAL            NOT NULL, "
@@ -259,7 +348,7 @@ bool DataBase::createConnection()
                    "IT_BO_CFG           INT             NOT NULL, "
                    "IT_PA_CFG           INT             NOT NULL, "
                    "IT_LA_CFG           INT             NOT NULL, "
-                   "IT_YEAR             INT             NOT NULL, "//
+                   "IT_YEAR             INT             NOT NULL, "
 //                 "IT_DATE             DATETIME, "
                "PRIMARY KEY(IT_ID)"
                ")"))
@@ -277,9 +366,9 @@ bool DataBase::createConnection()
     // Create JOBORDER TABLE
     if(!query.exec("CREATE TABLE IF NOT EXISTS JOBORDER ("
                    "JO_ID               INT             NOT NULL, "
-                   "JO_NAME             VARCHAR(40)     NOT NULL, "//
+                   "JO_NAME             VARCHAR(40)     NOT NULL, "
                    "JO_IT_ID            INT             NOT NULL, "
-                   "JO_DESC             VARCHAR(80),              "//
+                   "JO_DESC             VARCHAR(80),              "
                    "JO_Q                LONG INT        NOT NULL, "
                    "JO_STATUS           SMALLINT,                 "
                    "JO_STATUS_S         VARCHAR(40),              "
@@ -1188,7 +1277,7 @@ void DataBase::sendIdentifyPageInformations()
     emit sendIdentifyPagePalletId(getIdentifyPagePalletId());
     emit sendIdentifyPageBoxQtyOnPallet(getIdentifyPageBoxQtyOnPallet());
     emit sendIdentifyPagePalletValue(getIdentifyPagePalletValue());
-    if ((getIdentifyPagePalletId()=="Error") || (getIdentifyPageBoxQtyOnPallet()=="Error") || (getIdentifyPagePalletValue()=="Error"))
+    if ((getIdentifyPagePalletId()=="") || (getIdentifyPageBoxQtyOnPallet()=="") || (getIdentifyPagePalletValue()==""))
     {
         emit sendIdentifyPageDone(false);
         m_IdentifyPage_productNotFound->exec();
@@ -1196,7 +1285,7 @@ void DataBase::sendIdentifyPageInformations()
     else
     {
         emit sendIdentifyPageDone(true);
-        palletScanned = m_IdentifyPage_PalletID->text().toInt(nullptr,10);
+        setPalletScanned(m_IdentifyPage_PalletID->text().toInt(nullptr,10));
     }
 }
 
@@ -1219,7 +1308,7 @@ const QString DataBase::getIdentifyPagePalletId()
         return "Error";
     }
     query.first();
-    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    return query.value(0).toString().length()<1?"":query.value(0).toString();
 }
 
 const QString DataBase::getIdentifyPageBoxQtyOnPallet()
@@ -1240,7 +1329,7 @@ const QString DataBase::getIdentifyPageBoxQtyOnPallet()
         return "Error";
     }
     query.first();
-    return query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    return query.value(0).toString().length()<1?"":query.value(0).toString();
 }
 
 const QString DataBase::getIdentifyPagePalletValue()
@@ -1264,29 +1353,36 @@ const QString DataBase::getIdentifyPagePalletValue()
     if(!query.exec(qry))
     {
         qDebug() << query.lastError().text();
-        return "Error";
+        return "";
     }
     query.first();
     if (query.value(0).toString().length()<1)
     {
-        return "Error";
+        return "";
     }
     else
     {
-        return QString::number(query.value(0).toString().toDouble(),'f',2);
+        return (QString::number(query.value(0).toString().toDouble(),'f',2)) + " Rp";
     }
+}
+
+void DataBase::setPalletScanned (int scannedValue)
+{
+    palletScanned = scannedValue;
 }
 
 void DataBase::resetIdentifyPage(QString)
 {
-   m_IdentifyPage_continueButton->setVisible(false);
-   m_IdentifyPage_continueLabel ->setVisible(false);
-
-   m_IdentifyPage_PalletID     ->setText("");
-   m_IdentifyPage_BoxQty       ->setText("");
-   m_IdentifyPage_TotalValue   ->setText("");
+   m_IdentifyPage->clearIdentifyPage();
 
 }
+
+void DataBase::resetProductNotFound()
+{
+  m_IdentifyPage_productNotFound->done(1);
+  m_IdentifyPage_BoxID        ->setText("");
+}
+
 
 /////////////////////////////////////////////////////////
 
@@ -1295,6 +1391,12 @@ void DataBase::sendScanPageInformations()
     emit sendScanPageTableData(getScanPageTableData());
     emit hideScanPageTableColumn(1);
 
+}
+
+void DataBase::closeScanPagePopUp()
+{
+    m_ScanPage_sureToCancel->done(1);
+    m_ScanPage_sureToContinue->done(1);
 }
 
 QSqlQueryModel* DataBase::getScanPageTableData()
@@ -1438,18 +1540,16 @@ QSqlQueryModel* DataBase::getDBWindowFilter()
         case 1:
         // CSV_ITEMS_NAME;
         qry = "SELECT "
-                "ITEMS.IT_NAME AS [Name], ITEMS.IT_WEIGHT || \" kg\" AS [Weight], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
-                        "ITEMS.IT_ROLL_Q AS [Roll Q], ITEMS.IT_BA_Q AS [Batch Q], ITEMS.IT_BOX_Q AS [Box Q], "
-                        "ITEMS.IT_COLOR AS [Color], ITEMS.IT_YEAR AS [Year] "
+                "ITEMS.IT_NAME AS [Name], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
+                        "ITEMS.IT_ROLL_Q AS [Qty per Roll], ITEMS.IT_BA_Q AS [Qty per Pack], ITEMS.IT_BOX_Q AS [Qty per Box], "
+                        "ITEMS.IT_YEAR AS [Year] "
                             "FROM ITEMS";
         break;
 
         case 2:
         //CSV_JOBORDER_NAME;
         qry = "SELECT "
-                "JOBORDER.JO_ID AS [ID], JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description], "
-                    "JOBORDER.JO_Q [Coin Qty], JOBORDER.JO_STATUS_S AS [Status], "
-                        "JOBORDER.JO_DATE_EDITION AS [Date Edition], JOBORDER.JO_DATE_START AS [Date Start], JOBORDER.JO_DATE_STOP AS [Date Stop] "
+                "JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description] "
                             "FROM JOBORDER";
         break;
 
@@ -1532,18 +1632,16 @@ bool DataBase::checkDBWindowFilter()
         case 1:
         // CSV_ITEMS_NAME;
         qry = "SELECT "
-                "ITEMS.IT_NAME AS [Name], ITEMS.IT_WEIGHT || \" kg\" AS [Weight], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
-                        "ITEMS.IT_ROLL_Q AS [Roll Q], ITEMS.IT_BA_Q AS [Batch Q], ITEMS.IT_BOX_Q AS [Box Q], "
-                        "ITEMS.IT_COLOR AS [Color], ITEMS.IT_YEAR AS [Year] "
+                "ITEMS.IT_NAME AS [Name], ITEMS.IT_VALUE || \" Rp\" AS [Value], "
+                        "ITEMS.IT_ROLL_Q AS [Qty per Roll], ITEMS.IT_BA_Q AS [Qty per Pack], ITEMS.IT_BOX_Q AS [Qty per Box], "
+                        "ITEMS.IT_YEAR AS [Year] "
                             "FROM ITEMS";
         break;
 
         case 2:
         //CSV_JOBORDER_NAME;
         qry = "SELECT "
-                "JOBORDER.JO_ID AS [ID], JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description], "
-                    "JOBORDER.JO_Q AS [Coin Qty], JOBORDER.JO_STATUS_S AS [Status], "
-                        "JOBORDER.JO_DATE_EDITION AS [Date Edition], JOBORDER.JO_DATE_START AS [Date Start], JOBORDER.JO_DATE_STOP AS [Date Stop] "
+                "JOBORDER.JO_NAME AS [Name], JOBORDER.JO_DESC AS [Description] "
                             "FROM JOBORDER";
         break;
 
@@ -1598,12 +1696,6 @@ bool DataBase::checkDBWindowFilter()
     return true;
 }
 
-void DataBase::resetProductNotFound()
-{
-  m_IdentifyPage_productNotFound->done(1);
-  m_IdentifyPage_BoxID        ->setText("");
-  resetIdentifyPage("");
-}
 /////////////////////////////////////////////////////////
 
 
