@@ -59,4 +59,6 @@ ProductNotFound::ProductNotFound(QWidget *parent)
 
     m_mainLayout      ->addWidget(m_border);
     m_mainLayout->setMargin(0);
+
+    QObject::connect(m_errorProductButton, SIGNAL(clicked()), this, SLOT(close()));
 }

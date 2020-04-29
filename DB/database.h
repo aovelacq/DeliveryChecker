@@ -80,16 +80,13 @@ class DataBase : public QObject
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
-        void closeScanPagePopUp();
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
-        void resetIdentifyPage(QString);
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
         void sendDBWindowCheckFilter(QString);
         void setDBWindowQueryValidLabel(bool valid);
         void resetDBWindowFilter(bool reset);
-        void resetProductNotFound();
 
     signals:
         //Internal

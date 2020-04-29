@@ -191,6 +191,29 @@ IdentifyPage::IdentifyPage(QWidget *parent)
     m_continueLabel ->setVisible(false);
     }
 
+
+    // Signal & slot connection
+    QList<MenuButton *> menuButtons = this->parent()->findChildren<MenuButton *>();
+    MenuButton *scanButton;
+    MenuButton *importButton;
+    for(int i = 0; i < menuButtons.size() ; ++i)
+    {
+        if (menuButtons.at(i)->objectName()=="menuButton_Scan")
+        {
+            scanButton = menuButtons.at(i);
+            QObject::connect(m_continueButton,  SIGNAL(clicked()),    scanButton,       SLOT(enable()));
+            QObject::connect(m_continueButton,  SIGNAL(clicked()),    this->parent(),   SLOT(setScanPage()));
+        }
+        if (menuButtons.at(i)->objectName()=="menuButton_Import")
+        {
+            importButton = menuButtons.at(i);
+            QObject::connect(m_cancelButton,  SIGNAL(clicked()),      importButton,     SLOT(enable()));
+            QObject::connect(m_cancelButton,  SIGNAL(clicked()),      this->parent(),   SLOT(setImportPage()));
+        }
+    }
+
+    QObject::connect(m_boxIdIO, SIGNAL(textEdited(const QString)), this, SLOT(clearIdentifyPage(const QString)));
+
     // Main layout management
     m_rectangle     ->setLayout(m_layoutPallet);
     m_rectangle     ->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -208,11 +231,13 @@ IdentifyPage::IdentifyPage(QWidget *parent)
 }
 
 
-void IdentifyPage::clearIdentifyPage()
+void IdentifyPage::clearIdentifyPage(const QString text)
 {
     m_continueButton->setVisible(false);
     m_continueLabel ->setVisible(false);
 
+    if (text.isEmpty())
+        m_boxIdIO       ->clear();
     m_palletIdIO    ->clear();
     m_boxQtyIO      ->clear();
     m_totalValueIO  ->clear();

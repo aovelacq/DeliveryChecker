@@ -17,7 +17,7 @@ class IdentifyPage : public QWidget
     Q_OBJECT
 public:
     IdentifyPage(QWidget *parent = nullptr);
-    void clearIdentifyPage();
+    void clearIdentifyPage(const QString);
 
 private:
      QVBoxLayout         *m_layout;

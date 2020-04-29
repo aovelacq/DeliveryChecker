@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("VELEC SYSTEMS - Delivery Checker - v1.0");
     setObjectName("MainWindow");
 
+    m_menu          = new SideMenu(this);
     m_infobar       = new InfoBar(this);
     importPage      = new ImportPage(this);
     identifyPage    = new IdentifyPage(this);
@@ -27,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget   = new QStackedWidget(this);
     m_windowDB      = new DataBaseWindow(this);
     DB              = new DataBase(this);
-    m_menu          = new SideMenu(this);
 
     if (!DB->createConnection()) return;
     stackedWidget->addWidget(importPage);
@@ -77,7 +77,7 @@ void MainWindow::setIdentifyPage()
     {
         stackedWidget->setCurrentIndex(setIndex);
     }
-    identifyPage->clearIdentifyPage();
+    identifyPage->clearIdentifyPage("");
 
 }
 

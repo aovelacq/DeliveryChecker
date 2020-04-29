@@ -125,7 +125,7 @@ DataBase::DataBase(QWidget *parent)
         {
             m_IdentifyPage_BoxID   = IdentifyPageIOFieldsList.at(i);
             QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(returnPressed()),    this,   SLOT(sendIdentifyPageInformations()));
-            QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
+            //QObject::connect(m_IdentifyPage_BoxID,  SIGNAL(textChanged(QString)),    this,   SLOT(resetIdentifyPage(QString)));
         }
     }}
 
@@ -168,26 +168,6 @@ DataBase::DataBase(QWidget *parent)
         {
             m_ScanPage_continue = ScanPageRoundPushButtonList.at(i);
             QObject::connect(m_ScanPage_continue, SIGNAL(clicked()), m_ScanPage_sureToContinue, SLOT(exec()));
-        }
-        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelNoButton")
-        {
-            m_ScanPage_cancelNoButton = ScanPageRoundPushButtonList.at(i);
-            QObject::connect(m_ScanPage_cancelNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-        }
-        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToCancel_RoundPushButton_CancelYesButton")
-        {
-            m_ScanPage_cancelYesButton = ScanPageRoundPushButtonList.at(i);
-            QObject::connect(m_ScanPage_cancelYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-        }
-        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueNoButton")
-        {
-            m_ScanPage_continueNoButton = ScanPageRoundPushButtonList.at(i);
-            QObject::connect(m_ScanPage_continueNoButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
-        }
-        if (ScanPageRoundPushButtonList.at(i)->objectName()=="SureToContinue_RoundPushButton_ContinueYesButton")
-        {
-            m_ScanPage_continueYesButton = ScanPageRoundPushButtonList.at(i);
-            QObject::connect(m_ScanPage_continueYesButton, SIGNAL(clicked()), this, SLOT(closeScanPagePopUp()));
         }
     }
     }
@@ -250,20 +230,6 @@ DataBase::DataBase(QWidget *parent)
 
 
     QObject::connect(this, SIGNAL(tableFillingDone()), this, SLOT(sendImportPageInformations()));
-
-    MainWindow *mainWindow = dynamic_cast<MainWindow *> (parent);
-    if (0 != mainWindow)
-    {
-        qDebug()<<"in";
-        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
-        QObject::connect(m_IdentifyPage_cancelButton,   SIGNAL(clicked()),  mainWindow,   SLOT(setImportPage()));
-        QObject::connect(m_IdentifyPage_continueButton, SIGNAL(clicked()),  mainWindow,   SLOT(setScanPage()));
-        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  mainWindow,   SLOT(setIdentifyPage()));
-        QObject::connect(m_ScanPage_continueYesButton,  SIGNAL(clicked()),  mainWindow,   SLOT(setIntRepportPage()));
-
-        QObject::connect(m_ImportPage_CheckBox,         SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
-        QObject::connect(m_ScanPage_cancelYesButton,    SIGNAL(clicked()),  m_IdentifyPage_BoxID,   SLOT(clear()));
-    }
 }
 
 bool DataBase::createConnection()
@@ -1245,11 +1211,12 @@ void DataBase::sendIdentifyPageInformations()
     {
         emit sendIdentifyPageDone(false);
         m_IdentifyPage_productNotFound->exec();
+        m_IdentifyPage->clearIdentifyPage("");
     }
     else
     {
         emit sendIdentifyPageDone(true);
-        setPalletScanned(m_IdentifyPage_PalletID->text().toInt(nullptr,10));
+        setPalletScanned(m_IdentifyPage_PalletID->text().toInt());
     }
 
 }
@@ -1336,19 +1303,6 @@ void DataBase::setPalletScanned (int scannedValue)
     palletScanned = scannedValue;
 }
 
-void DataBase::resetIdentifyPage(QString)
-{
-   m_IdentifyPage->clearIdentifyPage();
-
-}
-
-void DataBase::resetProductNotFound()
-{
-  m_IdentifyPage_productNotFound->done(1);
-  m_IdentifyPage_BoxID        ->setText("");
-}
-
-
 /////////////////////////////////////////////////////////
 
 void DataBase::sendScanPageInformations()
@@ -1356,12 +1310,6 @@ void DataBase::sendScanPageInformations()
     emit sendScanPageTableData(getScanPageTableData());
     emit hideScanPageTableColumn(0);
     emit hideScanPageTableColumn(1);
-}
-
-void DataBase::closeScanPagePopUp()
-{
-    m_ScanPage_sureToCancel->done(1);
-    m_ScanPage_sureToContinue->done(1);
 }
 
 QSqlQueryModel* DataBase::getScanPageTableData()
