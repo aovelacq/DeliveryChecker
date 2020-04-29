@@ -22,7 +22,6 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-
 class MainWindow : public QWidget
 {
     Q_OBJECT
