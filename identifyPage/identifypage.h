@@ -17,6 +17,8 @@ class IdentifyPage : public QWidget
     Q_OBJECT
 public:
     IdentifyPage(QWidget *parent = nullptr);
+
+public slots:
     void clearIdentifyPage(const QString);
 
 private:

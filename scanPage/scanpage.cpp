@@ -29,6 +29,8 @@ ScanPage::ScanPage(QWidget *parent)
     m_ContinueButtonText    = new QLabel("Continue", this);
     m_sureToCancel          = new SureToCancel(this);
     m_sureToContinue        = new SureToContinue(this);
+    m_productNotFound       = new ProductNotFound(this);
+
 
     m_layout                ->setObjectName("ScanPage_GridLayout_mainLayout");
     m_layoutTextQR          ->setObjectName("ScanPage_HBoxLayout_TextQR");
@@ -46,6 +48,7 @@ ScanPage::ScanPage(QWidget *parent)
     m_ContinueButtonText    ->setObjectName("ScanPage_Label_Continue");
     m_sureToCancel          ->setObjectName("ScanPage_SureToCancel");
     m_sureToContinue        ->setObjectName("ScanPage_SureToContinue");
+    m_productNotFound       ->setObjectName("ScanPage_ProductNotFound");
 
     pal                 = m_TextQR->palette();
     pal.setColor(m_TextQR->foregroundRole(), MENU_BACKGROUND_COLOR);

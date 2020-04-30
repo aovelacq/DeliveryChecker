@@ -91,9 +91,9 @@ SureToCancel::SureToCancel(QWidget *parent)
         }
     }
 
+    QObject::connect(m_cancelYesButton,  SIGNAL(clicked()),    this,   SLOT(changePage()));
     QObject::connect(m_cancelNoButton,  SIGNAL(clicked()),    this,   SLOT(close()));
     QObject::connect(m_cancelYesButton,  SIGNAL(clicked()),    this,   SLOT(close()));
-    QObject::connect(m_cancelYesButton,  SIGNAL(clicked()),    this,   SLOT(changePage()));
     QObject::connect(this,  SIGNAL(sureToCancel_yes()),    this->parent()->parent(),   SLOT(setIdentifyPage()));
 
     //Layout management

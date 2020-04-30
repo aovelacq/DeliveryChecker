@@ -169,6 +169,8 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
         if (ScanPageSureToCancelList.at(i)->objectName()=="ScanPage_SureToCancel")
         {
             m_ScanPage_sureToCancel   = ScanPageSureToCancelList.at(i);
+            QObject::connect(m_ScanPage_sureToCancel, SIGNAL(sureToCancel_yes()), this, SLOT(scanPageClearData()));
+            QObject::connect(m_ScanPage_sureToCancel, SIGNAL(sureToCancel_yes()), this, SLOT(scanPageCancelScanning()));
         }
     }
     QList<SureToContinue*> ScanPageSureToContinueList = this->parent()->findChildren<SureToContinue*>();
@@ -177,6 +179,7 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
         if (ScanPageSureToContinueList.at(i)->objectName()=="ScanPage_SureToContinue")
         {
             m_ScanPage_sureToContinue   = ScanPageSureToContinueList.at(i);
+            QObject::connect(m_ScanPage_sureToContinue, SIGNAL(sureToContinue_yes()), this, SLOT(scanPageSetPalletDone()));
         }
     }
     QList<RoundPushButton*> ScanPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
@@ -190,12 +193,22 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
         if (ScanPageRoundPushButtonList.at(i)->objectName()=="ScanPage_RoundPushButton_Continue")
         {
             m_ScanPage_continue = ScanPageRoundPushButtonList.at(i);
-            QObject::connect(m_ScanPage_continue, SIGNAL(clicked()), m_ScanPage_sureToContinue, SLOT(exec()));
+            QObject::connect(m_ScanPage_continue, SIGNAL(clicked()), this, SLOT(scanPageEndScanning()));
         }
 
+    }   
+    QList<ProductNotFound*> ScanPageProductNotFoundList = this->parent()->findChildren<ProductNotFound*>();
+    for(int i = 0; i < ScanPageProductNotFoundList.size() ; ++i)
+        {
+            if (ScanPageProductNotFoundList.at(i)->objectName()=="ScanPage_ProductNotFound")
+            {
+                m_ScanPage_productNotFound = ScanPageProductNotFoundList.at(i);
+            }
+        }
     }
-    }
+
     // Pointers to IntRepportPage elements
+
     // Pointers to FinRepportPage elements
 
     //Pointers to DataBaseWindow elements
@@ -1262,12 +1275,15 @@ const QString DataBase::getIdentifyPagePalletId()
         qDebug() << query.lastError().text();
         return "Error";
     }
-    query.first();
+    if (!query.first()) return "";
+
     return query.value(0).toString().length()<1?"":query.value(0).toString();
 }
 
 const QString DataBase::getIdentifyPageBoxQtyOnPallet()
 {
+    if (m_IdentifyPage_PalletID->text().isEmpty()) return "";
+
     QSqlQuery query;
     QString qry = "SELECT Count(TRACEABILITY_BOX.BO_ID) AS CompteDeBO_ID "
                     "FROM "
@@ -1289,6 +1305,7 @@ const QString DataBase::getIdentifyPageBoxQtyOnPallet()
 
 const QString DataBase::getIdentifyPagePalletValue()
 {
+    if (m_IdentifyPage_PalletID->text().isEmpty()) return "";
     QSqlQuery query;
     QString qry = "SELECT Sum(ITEMS.IT_ROLL_Q*ITEMS.IT_BA_Q*ITEMS.IT_VALUE) AS Total "
                     "FROM "
@@ -1362,12 +1379,17 @@ QSqlQueryModel* DataBase::getScanPageTableData()
 
 void DataBase::scanPageBoxScanned()
 {
-    if(!scanPageCheckBoxExists(m_ScanPage_BoxRef->text())) return;
+    qDebug() << "pallet scanned : " << palletScanned;
+    if(!scanPageCheckBoxExists(m_ScanPage_BoxRef->text()))
+    {
+        m_ScanPage_productNotFound->exec();
+        m_ScanPage_BoxRef->clear();
+        return;
+    }
     scanPageUpdateBoxScanned(m_ScanPage_BoxRef->text());
     emit sendScanPageTableData(getScanPageTableData());
-    QAbstractItemModel *model = m_ScanPage_Table->model();
-    QModelIndexList res = model->match(model->index(0,2),Qt::DisplayRole, m_ScanPage_BoxRef->text(), 1, Qt::MatchStartsWith);
-    m_ScanPage_Table->scrollTo(res.at(0));
+
+    m_ScanPage_Table->scrollTo(m_ScanPage_Table->model()->match(m_ScanPage_Table->model()->index(0,2),Qt::DisplayRole, m_ScanPage_BoxRef->text(), 1, Qt::MatchStartsWith).at(0));
     m_ScanPage_BoxRef->clear();
     m_ScanPage_Table->setItemDelegate(m_scanPageDeleguate);
 }
@@ -1375,9 +1397,9 @@ void DataBase::scanPageBoxScanned()
 bool DataBase::scanPageCheckBoxExists(QString ref)
 {
     QSqlQuery query;
-    QString qry = "SELECT COUNT(TRACEABILITY_BOX.BO_ID) "
+    QString qry = QString("SELECT COUNT(TRACEABILITY_BOX.BO_ID) "
                   "FROM TRACEABILITY_BOX "
-                  "WHERE (((TRACEABILITY_BOX.TR_BO_ID)=\"" + ref +"\"));";
+                  "WHERE (((TRACEABILITY_BOX.TR_BO_ID)=\"" + ref +"\") AND ((TRACEABILITY_BOX.PA_ID)= %1 ));").arg(palletScanned);
 
     if(!query.exec(qry))
     {
@@ -1385,7 +1407,6 @@ bool DataBase::scanPageCheckBoxExists(QString ref)
         return false;
     }
     query.first();
-    qDebug() << "nb of matcing rows : " << query.value(0).toInt();
     if (query.value(0).toInt() != 1) return  false;
     return true;
 }
@@ -1393,7 +1414,6 @@ bool DataBase::scanPageCheckBoxExists(QString ref)
 void DataBase::scanPageUpdateBoxScanned(QString ref)
 {
     QSqlQuery query;
-    // UPDATE products SET Qty=41 WHERE product_id=102;
     QString qry = "UPDATE TRACEABILITY_BOX "
                   "SET SCANNED = \"OK\" "
                   "WHERE TR_BO_ID=\"" + ref +"\";";
@@ -1404,6 +1424,89 @@ void DataBase::scanPageUpdateBoxScanned(QString ref)
         return;
     }
 }
+
+void DataBase::scanPageClearData()
+{
+    m_ScanPage_BoxRef->clear();
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    Results->clear();
+    emit sendScanPageTableData(Results);
+    DataBase::setPalletScanned(-1);
+}
+
+void DataBase::scanPageCancelScanning()
+{
+    QSqlQuery query;
+    QString qry = QString("UPDATE TRACEABILITY_BOX "
+                  "SET SCANNED = \"\" "
+                  "WHERE PA_ID = %1 ;").arg(palletScanned);
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return;
+    }
+}
+
+void DataBase::scanPageEndScanning()
+{
+    int TotalBox = 0, BoxScanned=0;
+    QSqlQuery query;
+    QString qry;
+    qry = QString("SELECT COUNT(TRACEABILITY_BOX.BO_ID) "
+                  "FROM TRACEABILITY_BOX "
+                  "WHERE (((TRACEABILITY_BOX.SCANNED)=\"OK\") AND ((TRACEABILITY_BOX.PA_ID)= %1 ));").arg(palletScanned);
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return;
+    }
+    query.first();
+    BoxScanned = query.value(0).toInt();
+
+    qry = QString("SELECT COUNT(TRACEABILITY_BOX.BO_ID) "
+                  "FROM TRACEABILITY_BOX "
+                  "WHERE (((TRACEABILITY_BOX.PA_ID)= %1 ));").arg(palletScanned);
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return;
+    }
+    query.first();
+    TotalBox = query.value(0).toInt();
+
+    if (TotalBox > BoxScanned)
+        m_ScanPage_sureToContinue->exec();
+    else
+    {
+        scanPageSetPalletDone();
+        QList<MenuButton *> menuButtons = this->parent()->findChildren<MenuButton *>();
+        MenuButton *intRepportButton;
+        for(int i = 0; i < menuButtons.size() ; ++i)
+        {
+            if (menuButtons.at(i)->objectName()=="menuButton_IntRepport")
+            {
+                intRepportButton = menuButtons.at(i);
+                intRepportButton->enable();
+                static_cast<MainWindow*>(this->parent())->setIntRepportPage();
+            }
+        }
+    }
+}
+
+bool DataBase::scanPageSetPalletDone()
+{
+    QSqlQuery query;
+    QString qry = QString("UPDATE TRACEABILITY_PALLET "
+                          "SET SCANNED = \"OK\" "
+                          "WHERE PA_ID = %1 ;").arg(palletScanned);
+    if(!query.exec(qry))
+    {
+        qDebug() << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 /////////////////////////////////////////////////////////
 
 

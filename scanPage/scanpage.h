@@ -12,6 +12,7 @@
 #include "importPage/roundpushbutton.h"
 #include "popUpWindows/SureToCancel.h"
 #include "popUpWindows/SureToContinue.h"
+#include "popUpWindows/ProductNotFound.h"
 #include "SQLTable/sqlview.h"
 
 class ScanPage : public QWidget
@@ -43,6 +44,7 @@ class ScanPage : public QWidget
 
          SureToCancel       *m_sureToCancel;
          SureToContinue     *m_sureToContinue;
+         ProductNotFound    *m_productNotFound;
 };
 
 #endif // SCANPAGE_H

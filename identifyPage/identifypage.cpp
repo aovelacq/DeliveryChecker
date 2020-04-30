@@ -244,5 +244,5 @@ void IdentifyPage::clearIdentifyPage(const QString text)
 
     m_boxIdIO       ->setFocus();
 
-    DataBase::setPalletScanned(-1);
+    //DataBase::setPalletScanned(-1);
 }

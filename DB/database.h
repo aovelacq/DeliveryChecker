@@ -87,6 +87,10 @@ class DataBase : public QObject
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
         void scanPageBoxScanned();
+        void scanPageClearData();
+        void scanPageEndScanning();
+        void scanPageCancelScanning();
+        bool scanPageSetPalletDone();
         //void sendIntRepportPageInformations();
         //void sendFinRepportPageInformations();
         void sendDBWindowInformations(int);
@@ -158,6 +162,7 @@ class DataBase : public QObject
         SureToContinue  *m_ScanPage_sureToContinue;
         RoundPushButton *m_ScanPage_cancel;
         RoundPushButton *m_ScanPage_continue;
+        ProductNotFound *m_ScanPage_productNotFound;
         // Pointers to IntRepportPage elements
         // Pointers to FinRepportPage elements
 
