@@ -17,6 +17,7 @@ ImportPage::ImportPage(QWidget *parent)
     m_addButton     = new PillsPushButton("Import\nData", this, "Add");
     m_deliveryInfo  = new DeliveryInfo(this);
     m_checkBox      = new PillsPushButton("Check boxes", this, "Check");
+    Loading         = new LoadAnim(this);
     QSizePolicy sp_retain = m_checkBox->sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
     m_checkBox->setSizePolicy(sp_retain);
@@ -48,28 +49,28 @@ ImportPage::ImportPage(QWidget *parent)
     m_layout        ->setAlignment(m_deliveryInfo, Qt::AlignHCenter);
     m_layout        ->setAlignment(m_checkBox, Qt::AlignHCenter);
     setLayout(m_layout);
+
+
 }
 
 bool ImportPage::getData()
 {
     bool success = false;
-    do
+    getPath();
+    if (!checkFilesExists()) return false;
+    Loading->start();
+    QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
+    if (dataBase.count()!=1)
     {
-        getPath();
-        if (!checkFilesExists()) return false;
-        QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
-        if (dataBase.count()!=1)
-        {
-            QMessageBox::critical(nullptr, QObject::tr("Database error"),
-                                  QObject::tr("Unable to access database\n"
-                                              "CODE : 12345\n\n"
-                                              "Click OK to exit."), QMessageBox::Ok);
-            return false;
-        }
-        success = dataBase.first()->fillTables();
-    } while (!success);
+        QMessageBox::critical(nullptr, QObject::tr("Database error"),
+                              QObject::tr("Unable to access database\n"
+                                          "CODE : 12345\n\n"
+                                          "Click OK to exit."), QMessageBox::Ok);
+        return false;
+    }
+    success = dataBase.first()->fillTables();
+    Loading->stop();
     
-
     return true;
 }
 

@@ -15,9 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     MainWindow::appendLogFile(LOG_PATH,"blblbl. CODE 12345");
     MainWindow::appendLogFile(LOG_PATH,"Unable to create ITEMS table. CODE : 12345");
 
-    setWindowTitle("VELEC SYSTEMS - Delivery Checker - v1.0");
+    setWindowTitle("VELEC SYSTEMS - Delivery Checker");
     setObjectName("MainWindow");
 
+    Loading         = new LoadAnim(this);
     m_menu          = new SideMenu(this);
     m_infobar       = new InfoBar(this);
     importPage      = new ImportPage(this);
@@ -59,6 +60,22 @@ MainWindow::~MainWindow()
     delete m_mainLayout;
 }
 
+void MainWindow::paintEvent(QPaintEvent *e)
+{
+    QPainter painter(this);
+    QPixmap logo;
+    int Xpos = 0;
+    int Ypos = 0;
+    if (this->width()<1850) logo.load(":/img/img/icone.png");
+    else logo.load(":/img/img/velec.png");
+
+    Xpos = this->width() - logo.width() - 10;
+    Ypos = 10;
+
+    painter.drawPixmap(Xpos, Ypos, logo);
+    QWidget::paintEvent(e);
+}
+
 void MainWindow::setImportPage()
 {
     int currentIndex = stackedWidget->currentIndex();
@@ -78,7 +95,6 @@ void MainWindow::setIdentifyPage()
         stackedWidget->setCurrentIndex(setIndex);
     }
     identifyPage->clearIdentifyPage("");
-
 }
 
 void MainWindow::setScanPage()

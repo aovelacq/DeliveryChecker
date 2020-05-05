@@ -10,7 +10,7 @@
 #include "finRepport/finrepportpage.h"
 #include "DB/database.h"
 #include "dataBaseWindow/databasewindow.h"
-
+#include "loadAnim/loadanim.h"
 #include "popUpWindows/SureToCancel.h"
 
 #include <QPushButton>
@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QPainter>
 
 class MainWindow : public QWidget
 {
@@ -31,6 +32,7 @@ class MainWindow : public QWidget
         ~MainWindow();
         bool createLogFile(const QString);
         static void appendLogFile (const QString path, const QString data);
+        LoadAnim            *Loading;
 
     public slots:
         void setImportPage();
@@ -61,6 +63,10 @@ class MainWindow : public QWidget
         QLineEdit           *m_IdentifyPage_BoxID;
         QLineEdit           *m_IdentifyPage_TotalValue;
         QLineEdit           *m_IdentifyPage_BoxQty;
+
+
+    protected:
+        void paintEvent(QPaintEvent *event);
 
 };
 

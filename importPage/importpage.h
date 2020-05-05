@@ -16,6 +16,7 @@
 #include "roundpushbutton.h"
 #include "pillspushbutton.h"
 #include "deliveryinfo.h"
+#include "loadAnim/loadanim.h"
 
 class DataBase;
 
@@ -38,6 +39,7 @@ class ImportPage : public QWidget
         PillsPushButton     *m_addButton;
         DeliveryInfo        *m_deliveryInfo;
         PillsPushButton     *m_checkBox;
+        LoadAnim            *Loading;
 };
 
 #endif // IMPORTPAGE_H

@@ -32,6 +32,7 @@ SOURCES += \
     importPage/roundpushbutton.cpp \
     info/infobar.cpp \
     intRepport/intrepportpage.cpp \
+    loadAnim/loadanim.cpp \
     main.cpp \
     MainWindow.cpp \
     globals/globals.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     importPage/roundpushbutton.h \
     info/infobar.h \
     intRepport/intrepportpage.h \
+    loadAnim/loadanim.h \
     popUpWindows/ProductNotFound.h \
     popUpWindows/SureToCancel.h \
     popUpWindows/SureToContinue.h \

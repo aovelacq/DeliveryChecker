@@ -10,7 +10,7 @@ DataBaseWindow::DataBaseWindow()
     setMinimumWidth(1100);
     setMinimumHeight(300);
 
-    setWindowTitle("DataBase");
+    setWindowTitle("VELEC SYSTEMS - Database Viewer");
     setObjectName("DataBaseWindow");
 
     //WindowFlags

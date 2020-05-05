@@ -10,5 +10,8 @@
         <file>img/PlusOff.png</file>
         <file>img/PlusOn.png</file>
         <file>img/Warning.png</file>
+        <file>img/velec.png</file>
+        <file>img/icone.png</file>
+        <file>img/load.gif</file>
     </qresource>
 </RCC>

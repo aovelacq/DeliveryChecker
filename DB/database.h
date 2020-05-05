@@ -36,7 +36,7 @@
 #include "popUpWindows/SureToCancel.h"
 #include "popUpWindows/SureToContinue.h"
 
-class BackgroundColorDelegate;
+class OKColorDelegate;
 
 class DataBase : public QObject
 {
@@ -73,7 +73,15 @@ class DataBase : public QObject
         QSqlQueryModel* getScanPageTableData();
         bool            scanPageCheckBoxExists(QString ref);
         void            scanPageUpdateBoxScanned(QString ref);
+
         // Intermediary repport page
+        const QString   getIntReportPagePalletId();
+        const QString   getIntReportPageTotalBox();
+        const QString   getIntReportPageBoxScanned();
+        const QString   getIntReportPageBoxMissing();
+        const QString   getIntReportPageTotalValue();
+        const QString   getIntReportPageScannedValue();
+        const QString   getIntReportPageMissingValue();
 
         // Final repport page
 
@@ -86,13 +94,15 @@ class DataBase : public QObject
         void sendImportPageInformations();
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
+        void sendIntRepportPageInformations();
         void scanPageBoxScanned();
         void scanPageClearData();
         void scanPageEndScanning();
         void scanPageCancelScanning();
-        bool scanPageSetPalletDone();
-        //void sendIntRepportPageInformations();
+        bool IntRepportPageSetPalletDone();
+
         //void sendFinRepportPageInformations();
+        void resetPalletScanned();
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
         void sendDBWindowCheckFilter(QString);
@@ -122,6 +132,13 @@ class DataBase : public QObject
         void hideScanPageTableColumn(int index);
 
         //Related to Intermediary Repport Page
+        void sendIntReportPagePalletId(const QString dat);
+        void sendIntReportPageTotalBox(const QString dat);
+        void sendIntReportPageBoxScanned(const QString dat);
+        void sendIntReportPageBoxMissing(const QString dat);
+        void sendIntReportPageTotalValue(const QString dat);
+        void sendIntReportPageScannedValue(const QString dat);
+        void sendIntReportPageMissingValue(const QString dat);
 
         //Related to Final Repport Page
 
@@ -155,7 +172,7 @@ class DataBase : public QObject
 
         // Pointers to ScanPage elements
         SQLView         *m_ScanPage_Table;
-        BackgroundColorDelegate *m_scanPageDeleguate;
+        OKColorDelegate *m_scanPageDeleguate;
         QLineEdit       *m_ScanPage_BoxRef;
         static int      palletScanned;
         SureToCancel    *m_ScanPage_sureToCancel;
@@ -163,7 +180,21 @@ class DataBase : public QObject
         RoundPushButton *m_ScanPage_cancel;
         RoundPushButton *m_ScanPage_continue;
         ProductNotFound *m_ScanPage_productNotFound;
+
         // Pointers to IntRepportPage elements
+
+        QLineEdit       *m_IntReportPage_PalletID;
+        QLineEdit       *m_IntReportPage_TotalBox;
+        QLineEdit       *m_IntReportPage_BoxScanned;
+        QLineEdit       *m_IntReportPage_BoxMissing;
+        QLineEdit       *m_IntReportPage_TotalValue;
+        QLineEdit       *m_IntReportPage_ValueScanned;
+        QLineEdit       *m_IntReportPage_ValueMissing;
+        RoundPushButton *m_IntReportPage_Cancel;
+        RoundPushButton *m_IntReportPage_Rescan;
+        RoundPushButton *m_IntReportPage_Continue;
+        SureToCancel    *m_IntReportPage_SureToCancel;
+
         // Pointers to FinRepportPage elements
 
         //Pointers to dataBaseWindow elements

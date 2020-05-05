@@ -3,7 +3,7 @@
 // Debug //
 bool    CONSOLE_DEBUG           = true;
 bool    GRAPHICAL_DEBUG         = false;
-bool    CLICK_SIDEMENU_ALLOWED  = false;
+bool    CLICK_SIDEMENU_ALLOWED  = true;
 
 // Colors //
 QColor  MAIN_BACKGROUND_COLOR   (0,130,200);
