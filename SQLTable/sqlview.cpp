@@ -9,7 +9,7 @@ SQLView::SQLView(QWidget *parent)
 {
     QFont ft;
     QString styleSheet;
-    //setAttribute(Qt::WA_TransparentForMouseEvents);
+
     ft = font();
     ft.setPointSize(12);
     setFont(ft);
