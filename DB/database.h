@@ -84,6 +84,9 @@ class DataBase : public QObject
         const QString   getIntReportPageMissingValue();
 
         // Final repport page
+        QSqlQueryModel* getFinReportPagePalletTableData();
+        QSqlQueryModel* getFinReportPageBoxScannedTableData(unsigned int palletID);
+        QSqlQueryModel* getFinReportPageBoxMissingTableData(unsigned int palletID);
 
         // Database view
 
@@ -95,13 +98,14 @@ class DataBase : public QObject
         void sendIdentifyPageInformations();
         void sendScanPageInformations();
         void sendIntRepportPageInformations();
+        void sendFinRepportPageInformations();
+
         void scanPageBoxScanned();
         void scanPageClearData();
         void scanPageEndScanning();
         void scanPageCancelScanning();
         bool IntRepportPageSetPalletDone();
-
-        //void sendFinRepportPageInformations();
+        void FinReportPagePalletSelected(const QModelIndex &current, const QModelIndex &previous);
         void resetPalletScanned();
         void sendDBWindowInformations(int);
         void sendDBWindowNewFilter();
@@ -141,6 +145,9 @@ class DataBase : public QObject
         void sendIntReportPageMissingValue(const QString dat);
 
         //Related to Final Repport Page
+        void sendFinReportPagePalletTableData(QSqlQueryModel* data);
+        void sendFinReportPageBoxScannedTableData(QSqlQueryModel* data);
+        void sendFinReportPageBoxMissingTableData(QSqlQueryModel* data);
 
         //Related to DataBaseWindow
         void sendDBWindowTableData(QSqlQueryModel* data);
@@ -196,6 +203,9 @@ class DataBase : public QObject
         SureToCancel    *m_IntReportPage_SureToCancel;
 
         // Pointers to FinRepportPage elements
+        SQLView         *m_FinReportPage_PalletView;
+        SQLView         *m_FinReportPage_BoxScannedView;
+        SQLView         *m_FinReportPage_BoxMissingView;
 
         //Pointers to dataBaseWindow elements
         SQLView         *m_DBWindow_Table;

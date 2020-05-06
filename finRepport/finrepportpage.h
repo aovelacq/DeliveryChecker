@@ -32,7 +32,6 @@ class FinRepportPage : public QWidget
          QLabel             *m_SaveLabel;
          RoundPushButton    *m_SaveButton;
 
-
 };
 
 #endif // FINREPPORTPAGE_H

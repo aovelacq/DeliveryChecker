@@ -21,6 +21,45 @@ public:
     }
 };
 
+class NOKColorDelegate : public QStyledItemDelegate {
+
+public:
+    NOKColorDelegate(QObject *parent = 0)
+        : QStyledItemDelegate(parent)
+    {
+    }
+
+    void initStyleOption(QStyleOptionViewItem *option,
+                         const QModelIndex &index) const
+    {
+        QStyledItemDelegate::initStyleOption(option, index);
+
+        if (index.data().toString()=="")
+
+        option->backgroundBrush = QBrush(QColor(255,0,0));
+    }
+};
+
+class OKNOKColorDelegate : public QStyledItemDelegate {
+
+public:
+    OKNOKColorDelegate(QObject *parent = 0)
+        : QStyledItemDelegate(parent)
+    {
+    }
+
+    void initStyleOption(QStyleOptionViewItem *option,
+                         const QModelIndex &index) const
+    {
+        QStyledItemDelegate::initStyleOption(option, index);
+
+        if (index.data().toString()=="")
+            option->backgroundBrush = QBrush(QColor(255,0,0));
+        else if (index.data().toString()=="OK")
+            option->backgroundBrush = QBrush(QColor(0,175,80));
+    }
+};
+
 
 DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
     :QObject(parent)
@@ -278,14 +317,33 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
             m_IntReportPage_Continue = IntReportPageRoundPushButtonList.at(i);
             QObject::connect(m_IntReportPage_Continue, SIGNAL(clicked()), this, SLOT(IntRepportPageSetPalletDone()));
             QObject::connect(m_IntReportPage_Continue, SIGNAL(clicked()), this, SLOT(resetPalletScanned()));
-            //QObject::connect(m_IntReportPage_Continue, SIGNAL(clicked()), this, SLOT(sendFinRepportPageInformations()));
+            QObject::connect(m_IntReportPage_Continue, SIGNAL(clicked()), this, SLOT(sendFinRepportPageInformations()));
         }
     }
 
     }
 
     // Pointers to FinRepportPage elements
+    QList<SQLView*> FinRepportPageTableList = this->parent()->findChildren<SQLView*>();
+    for(int i = 0; i < FinRepportPageTableList.size() ; ++i)
+    {
+        if (FinRepportPageTableList.at(i)->objectName()=="FinReportPage_SQLView_palletView")
+        {
+            m_FinReportPage_PalletView = FinRepportPageTableList.at(i);
+            QObject::connect(this, SIGNAL(sendFinReportPagePalletTableData(QSqlQueryModel*)), m_FinReportPage_PalletView, SLOT(setResults(QSqlQueryModel*)));
 
+        }
+        if (FinRepportPageTableList.at(i)->objectName()=="FinReportPage_SQLView_boxScanned")
+        {
+            m_FinReportPage_BoxScannedView = FinRepportPageTableList.at(i);
+            QObject::connect(this, SIGNAL(sendFinReportPageBoxScannedTableData(QSqlQueryModel*)), m_FinReportPage_BoxScannedView, SLOT(setResults(QSqlQueryModel*)));
+        }
+        if (FinRepportPageTableList.at(i)->objectName()=="FinReportPage_SQLView_boxMissing")
+        {
+            m_FinReportPage_BoxMissingView = FinRepportPageTableList.at(i);
+            QObject::connect(this, SIGNAL(sendFinReportPageBoxMissingTableData(QSqlQueryModel*)), m_FinReportPage_BoxMissingView, SLOT(setResults(QSqlQueryModel*)));
+        }
+    }
     //Pointers to DataBaseWindow elements
   {
     QList<SQLView*> DataBaseWindowTableList = DBWindow->findChildren<SQLView*>();
@@ -1706,8 +1764,93 @@ bool DataBase::IntRepportPageSetPalletDone()
     }
     return true;
 }
+
 /////////////////////////////////////////////////////////
 
+void DataBase::sendFinRepportPageInformations()
+{
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    Results->clear();
+    OKNOKColorDelegate *Delegate = new OKNOKColorDelegate(this);
+    emit sendFinReportPagePalletTableData(getFinReportPagePalletTableData());
+    QObject::connect(m_FinReportPage_PalletView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(FinReportPagePalletSelected(const QModelIndex &, const QModelIndex &)));
+    m_FinReportPage_PalletView->setItemDelegate(Delegate);
+    emit sendFinReportPageBoxScannedTableData(Results);
+    emit sendFinReportPageBoxMissingTableData(Results);
+}
+
+void DataBase::FinReportPagePalletSelected(const QModelIndex &current, const QModelIndex &previous)
+{
+    OKColorDelegate *OKDelegate = new OKColorDelegate(this);
+    NOKColorDelegate *NOKDelegate = new NOKColorDelegate(this);
+    Q_UNUSED(previous)
+    unsigned int palletID = m_FinReportPage_PalletView->model()->index(current.row(),1).data().toUInt();
+    emit sendFinReportPageBoxScannedTableData(getFinReportPageBoxScannedTableData(palletID));
+    emit sendFinReportPageBoxMissingTableData(getFinReportPageBoxMissingTableData(palletID));
+    m_FinReportPage_BoxScannedView->setItemDelegate(OKDelegate);
+    m_FinReportPage_BoxMissingView->setItemDelegate(NOKDelegate);
+}
+
+QSqlQueryModel* DataBase::getFinReportPagePalletTableData()
+{
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry = "SELECT TRACEABILITY_PALLET.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID AS [Pallet ID], Count(TRACEABILITY_BOX.BO_ID) AS [Box Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination "//, Count(TRACEABILITY_BOX.SCANNED) AS [Box Scanned], ((Count(TRACEABILITY_BOX.BO_ID))-(Count(TRACEABILITY_BOX.SCANNED))) AS [Box Missing] "
+                  "FROM "
+                    "(ITEMS INNER JOIN JOBORDER ON ITEMS.IT_ID = JOBORDER.JO_IT_ID) "
+                        "INNER JOIN (TRACEABILITY_PALLET INNER JOIN TRACEABILITY_BOX ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                        "ON (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
+                  "GROUP BY TRACEABILITY_PALLET.SCANNED, TRACEABILITY_PALLET.PA_ID, ITEMS.IT_VALUE "
+                  "ORDER BY TRACEABILITY_PALLET.PA_ID;";
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    return Results;
+}
+
+QSqlQueryModel* DataBase::getFinReportPageBoxScannedTableData(unsigned int palletID)
+{
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
+                          "FROM "
+                            "ITEMS INNER JOIN "
+                                "(JOBORDER INNER JOIN "
+                                    "(TRACEABILITY_PALLET INNER JOIN TRACEABILITY_BOX "
+                                    "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                                "ON (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID)) "
+                            "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
+                          "WHERE (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)=\"OK\"));").arg(palletID);
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    return Results;
+}
+
+QSqlQueryModel* DataBase::getFinReportPageBoxMissingTableData(unsigned int palletID)
+{
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
+                          "FROM "
+                            "ITEMS INNER JOIN "
+                                "(JOBORDER INNER JOIN "
+                                    "(TRACEABILITY_PALLET INNER JOIN TRACEABILITY_BOX "
+                                    "ON TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) "
+                                "ON (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID)) "
+                            "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID "
+                          "WHERE (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)=\"\"));").arg(palletID);
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    return Results;
+}
 
 /////////////////////////////////////////////////////////
 

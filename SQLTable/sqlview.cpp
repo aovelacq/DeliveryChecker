@@ -27,6 +27,9 @@ SQLView::SQLView(QWidget *parent)
 
     this->verticalHeader()->setVisible(false);
 
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+
 }
 
 void SQLView::setResults(QSqlQueryModel *Results)

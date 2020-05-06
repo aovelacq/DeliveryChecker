@@ -89,6 +89,8 @@ ScanPage::ScanPage(QWidget *parent)
     m_CancelButtonText->setAlignment(Qt::AlignHCenter);
     m_ContinueButtonText->setAlignment(Qt::AlignHCenter);
 
+    m_Table -> setSelectionMode(QAbstractItemView::NoSelection);
+
     m_layout              ->addWidget(m_TextQR,                 0, 1, 1, 1);
     m_layout              ->addWidget(m_ImageQR,                0, 2, 2, 1);
     m_layout              ->addWidget(m_TextIO,                 1, 0, 1, 1);
