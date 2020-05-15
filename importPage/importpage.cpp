@@ -58,7 +58,7 @@ bool ImportPage::getData()
     bool success = false;
     getPath();
     if (!checkFilesExists()) return false;
-    Loading->start();
+    //Loading->start();
     QList<DataBase *> dataBase = this->parent()->parent()->findChildren<DataBase *>();
     if (dataBase.count()!=1)
     {

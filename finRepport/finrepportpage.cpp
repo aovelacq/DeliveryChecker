@@ -14,10 +14,11 @@ FinRepportPage::FinRepportPage(QWidget *parent)
     m_BoxScannedView    = new SQLView(this);
     m_BoxMissingLabel   = new QLabel("Box missing", this);
     m_BoxMissingView    = new SQLView(this);
-    m_CancelLabel       = new QLabel("Cancel", this);
-    m_CancelButton      = new RoundPushButton("","", this);
+    m_ExitLabel         = new QLabel("Exit", this);
+    m_ExitButton        = new RoundPushButton(":/img/img/BackOff.png",":/img/img/BackOn.png",this);
     m_SaveLabel         = new QLabel("Save", this);
-    m_SaveButton        = new RoundPushButton("","", this);
+    m_SaveButton        = new RoundPushButton(":/img/img/DownloadOff.png",":/img/img/DownloadOn.png", this);
+    m_Report            = new PdfReport(this);
 
     QVBoxLayout * m_layoutInfo      = new QVBoxLayout();
     QGridLayout * m_layoutButton    = new QGridLayout();
@@ -31,10 +32,11 @@ FinRepportPage::FinRepportPage(QWidget *parent)
     m_BoxScannedView    ->setObjectName("FinReportPage_SQLView_boxScanned");
     m_BoxMissingLabel   ->setObjectName("FinReportPage_Label_boxMissing");
     m_BoxMissingView    ->setObjectName("FinReportPage_SQLView_boxMissing");
-    m_CancelLabel       ->setObjectName("FinReportPage_Label_cancelButton");
-    m_CancelButton      ->setObjectName("FinReportPage_RoundPushButton_cancelButton");
+    m_ExitLabel         ->setObjectName("FinReportPage_Label_exitButton");
+    m_ExitButton        ->setObjectName("FinReportPage_RoundPushButton_exitButton");
     m_SaveLabel         ->setObjectName("FinReportPage_Label_saveButton");
     m_SaveButton        ->setObjectName("FinReportPage_RoundPushButton_saveButton");
+    m_Report            ->setObjectName("PDFReport");
 
     pal.setColor(QPalette::Background, MENU_BACKGROUND_COLOR);
     m_rectangle->setAutoFillBackground(true);
@@ -89,23 +91,23 @@ FinRepportPage::FinRepportPage(QWidget *parent)
 
     m_rectangle->setLayout(m_layoutInfo);
 
-    pal.setColor(m_CancelLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
-    m_CancelLabel       ->setPalette(pal);
+    pal.setColor(m_ExitLabel->foregroundRole(), MENU_BACKGROUND_COLOR);
+    m_ExitLabel         ->setPalette(pal);
     m_SaveLabel         ->setPalette(pal);
 
-    font = m_CancelLabel->font();
+    font = m_ExitLabel->font();
     font.setPointSize(16);
-    m_CancelLabel       ->setFont(font);
+    m_ExitLabel         ->setFont(font);
     m_SaveLabel         ->setFont(font);
 
-    m_CancelLabel       ->setMinimumHeight(40);
+    m_ExitLabel         ->setMinimumHeight(40);
     m_SaveLabel         ->setMinimumHeight(40);
 
-    m_CancelLabel       ->setAlignment(Qt::AlignCenter);
+    m_ExitLabel         ->setAlignment(Qt::AlignCenter);
     m_SaveLabel         ->setAlignment(Qt::AlignCenter);
 
-    m_layoutButton      ->addWidget(m_CancelButton, 0, 0, 2, 1, Qt::AlignCenter);
-    m_layoutButton      ->addWidget(m_CancelLabel,  2, 0, 1, 1, Qt::AlignCenter);
+    m_layoutButton      ->addWidget(m_ExitButton, 0, 0, 2, 1, Qt::AlignCenter);
+    m_layoutButton      ->addWidget(m_ExitLabel,  2, 0, 1, 1, Qt::AlignCenter);
     m_layoutButton      ->addWidget(m_SaveButton,   0, 4, 2, 1, Qt::AlignCenter);
     m_layoutButton      ->addWidget(m_SaveLabel,    2, 4, 1, 1, Qt::AlignCenter);
 
@@ -121,6 +123,8 @@ FinRepportPage::FinRepportPage(QWidget *parent)
     m_Layout            ->addLayout(m_layoutButton);
 
     setLayout(m_Layout);
+
+    QObject::connect(m_ExitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 }
 
 

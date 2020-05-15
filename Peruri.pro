@@ -1,6 +1,7 @@
 QT       += core
 QT       += gui
 QT       += sql
+QT       += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4):   QT += widgets
 
@@ -8,12 +9,13 @@ CONFIG += c++11
 
 TARGET = VelecSystems.DeliveryChecker
 QMAKE_TARGET_DESCRIPTION = VELEC SYSTEMS - Delivery Checker
-
+VERSION = 1.0.1.0
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -21,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    SQLTable/pdftableview.cpp \
     SQLTable/sqlview.cpp \
     dataBaseWindow/ImprovedLineEdit.cpp \
     dataBaseWindow/databasewindow.cpp \
@@ -36,6 +39,8 @@ SOURCES += \
     main.cpp \
     MainWindow.cpp \
     globals/globals.cpp \
+    pdf/barcode128.cpp \
+    pdf/pdfreport.cpp \
     popUpWindows/ProductNotFound.cpp \
     popUpWindows/SureToCancel.cpp \
     popUpWindows/SureToContinue.cpp \
@@ -46,6 +51,7 @@ SOURCES += \
 
 HEADERS += \
     MainWindow.h \
+    SQLTable/pdftableview.h \
     SQLTable/sqlview.h \
     dataBaseWindow/ImprovedLineEdit.h \
     dataBaseWindow/databasewindow.h \
@@ -59,6 +65,8 @@ HEADERS += \
     info/infobar.h \
     intRepport/intrepportpage.h \
     loadAnim/loadanim.h \
+    pdf/barcode128.h \
+    pdf/pdfreport.h \
     popUpWindows/ProductNotFound.h \
     popUpWindows/SureToCancel.h \
     popUpWindows/SureToContinue.h \

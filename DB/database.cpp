@@ -344,6 +344,39 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
             QObject::connect(this, SIGNAL(sendFinReportPageBoxMissingTableData(QSqlQueryModel*)), m_FinReportPage_BoxMissingView, SLOT(setResults(QSqlQueryModel*)));
         }
     }
+    QList<PdfReport*> FinRepportPagePDFReportList = this->parent()->findChildren<PdfReport*>();
+    for(int i = 0; i < FinRepportPagePDFReportList.size() ; ++i)
+    {
+        if (FinRepportPagePDFReportList.at(i)->objectName()=="PDFReport")
+        {
+            qDebug() << "PDFREPORT CONNECTED";
+            m_FinReportPage_PDFReport = FinRepportPagePDFReportList.at(i);
+            QObject::connect(this, SIGNAL(sendPDFInformationDone()), m_FinReportPage_PDFReport, SLOT(createDocument()));
+        }
+    }
+    QList<RoundPushButton*> FinRepportPageRoundPushButtonList = this->parent()->findChildren<RoundPushButton*>();
+    for(int i = 0; i < FinRepportPageRoundPushButtonList.size() ; ++i)
+    {
+        if (FinRepportPageRoundPushButtonList.at(i)->objectName()=="FinReportPage_RoundPushButton_saveButton")
+        {
+            m_FinReportPage_Save = FinRepportPageRoundPushButtonList.at(i);
+            QObject::connect(m_FinReportPage_Save, SIGNAL(clicked()), this, SLOT(sendPDFInformations()));
+        }
+    }
+
+    //Pointers to PDF elements
+    {
+        QList<PDFTableView*> PDFTableList = this->parent()->findChildren<PDFTableView*>();
+        for(int i = 0; i < PDFTableList.size() ; ++i)
+        {
+            if (PDFTableList.at(i)->objectName()=="tabletemp")
+            {
+                m_PDF_DeliveryTable = PDFTableList.at(i);
+                qDebug() << "Connected";
+            }
+        }
+    }
+
     //Pointers to DataBaseWindow elements
   {
     QList<SQLView*> DataBaseWindowTableList = DBWindow->findChildren<SQLView*>();
@@ -1769,14 +1802,15 @@ bool DataBase::IntRepportPageSetPalletDone()
 
 void DataBase::sendFinRepportPageInformations()
 {
-    QSqlQueryModel *Results = new QSqlQueryModel();
-    Results->clear();
+    QSqlQueryModel *Empty = new QSqlQueryModel();
+    Empty->clear();
     OKNOKColorDelegate *Delegate = new OKNOKColorDelegate(this);
     emit sendFinReportPagePalletTableData(getFinReportPagePalletTableData());
     QObject::connect(m_FinReportPage_PalletView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(FinReportPagePalletSelected(const QModelIndex &, const QModelIndex &)));
     m_FinReportPage_PalletView->setItemDelegate(Delegate);
-    emit sendFinReportPageBoxScannedTableData(Results);
-    emit sendFinReportPageBoxMissingTableData(Results);
+    emit sendFinReportPageBoxScannedTableData(Empty);
+    emit sendFinReportPageBoxMissingTableData(Empty);
+
 }
 
 void DataBase::FinReportPagePalletSelected(const QModelIndex &current, const QModelIndex &previous)
@@ -1852,6 +1886,14 @@ QSqlQueryModel* DataBase::getFinReportPageBoxMissingTableData(unsigned int palle
     return Results;
 }
 
+/////////////////////////////////////////////////////////
+
+void DataBase::sendPDFInformations()
+{
+    m_PDF_DeliveryTable->setModel(getFinReportPagePalletTableData());
+
+    emit sendPDFInformationDone();
+}
 /////////////////////////////////////////////////////////
 
 void DataBase::sendDBWindowInformations(int)

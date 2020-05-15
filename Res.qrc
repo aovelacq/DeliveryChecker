@@ -13,5 +13,8 @@
         <file>img/velec.png</file>
         <file>img/icone.png</file>
         <file>img/load.gif</file>
+        <file>img/DownloadOff.png</file>
+        <file>img/DownloadOn.png</file>
+        <file>img/logopdf.png</file>
     </qresource>
 </RCC>

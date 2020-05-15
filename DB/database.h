@@ -35,6 +35,8 @@
 #include "popUpWindows/ProductNotFound.h"
 #include "popUpWindows/SureToCancel.h"
 #include "popUpWindows/SureToContinue.h"
+#include "pdf/pdfreport.h"
+#include "SQLTable/pdftableview.h"
 
 class OKColorDelegate;
 
@@ -99,6 +101,7 @@ class DataBase : public QObject
         void sendScanPageInformations();
         void sendIntRepportPageInformations();
         void sendFinRepportPageInformations();
+        void sendPDFInformations();
 
         void scanPageBoxScanned();
         void scanPageClearData();
@@ -148,6 +151,9 @@ class DataBase : public QObject
         void sendFinReportPagePalletTableData(QSqlQueryModel* data);
         void sendFinReportPageBoxScannedTableData(QSqlQueryModel* data);
         void sendFinReportPageBoxMissingTableData(QSqlQueryModel* data);
+
+        //Related to PDF
+        void sendPDFInformationDone();
 
         //Related to DataBaseWindow
         void sendDBWindowTableData(QSqlQueryModel* data);
@@ -206,6 +212,12 @@ class DataBase : public QObject
         SQLView         *m_FinReportPage_PalletView;
         SQLView         *m_FinReportPage_BoxScannedView;
         SQLView         *m_FinReportPage_BoxMissingView;
+        RoundPushButton *m_FinReportPage_Exit;
+        RoundPushButton *m_FinReportPage_Save;
+        PdfReport       *m_FinReportPage_PDFReport;
+
+        // Pointers to PDF elements
+        PDFTableView      *m_PDF_DeliveryTable;
 
         //Pointers to dataBaseWindow elements
         SQLView         *m_DBWindow_Table;
