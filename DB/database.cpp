@@ -349,8 +349,9 @@ DataBase::DataBase(QWidget *parent, QDialog* DBWindow)
     {
         if (FinRepportPagePDFReportList.at(i)->objectName()=="PDFReport")
         {
-            qDebug() << "PDFREPORT CONNECTED";
             m_FinReportPage_PDFReport = FinRepportPagePDFReportList.at(i);
+            QObject::connect(this, SIGNAL(sendPDFDeliveryInfo(DeliveryInformations)), m_FinReportPage_PDFReport, SLOT(getDeliveryInformations(DeliveryInformations)));
+            QObject::connect(this, SIGNAL(sendPDFPalletInfo(PalletInformations)), m_FinReportPage_PDFReport, SLOT(getPalletInformation(PalletInformations)));
             QObject::connect(this, SIGNAL(sendPDFInformationDone()), m_FinReportPage_PDFReport, SLOT(createDocument()));
         }
     }
@@ -1667,57 +1668,57 @@ void DataBase::scanPageEndScanning()
 
 void DataBase::sendIntRepportPageInformations()
 {
-    emit sendIntReportPagePalletId(getIntReportPagePalletId());
-    emit sendIntReportPageTotalBox(getIntReportPageTotalBox());
-    emit sendIntReportPageBoxScanned(getIntReportPageBoxScanned());
-    emit sendIntReportPageBoxMissing(getIntReportPageBoxMissing());
-    emit sendIntReportPageTotalValue(getIntReportPageTotalValue());
-    emit sendIntReportPageScannedValue(getIntReportPageScannedValue());
-    emit sendIntReportPageMissingValue(getIntReportPageMissingValue());
+    emit sendIntReportPagePalletId(getIntReportPagePalletId(palletScanned));
+    emit sendIntReportPageTotalBox(getIntReportPageTotalBox(palletScanned));
+    emit sendIntReportPageBoxScanned(getIntReportPageBoxScanned(palletScanned));
+    emit sendIntReportPageBoxMissing(getIntReportPageBoxMissing(palletScanned));
+    emit sendIntReportPageTotalValue(getIntReportPageTotalValue(palletScanned));
+    emit sendIntReportPageScannedValue(getIntReportPageScannedValue(palletScanned));
+    emit sendIntReportPageMissingValue(getIntReportPageMissingValue(palletScanned));
 }
 
-const QString   DataBase::getIntReportPagePalletId()
+const QString   DataBase::getIntReportPagePalletId(unsigned int palletID)
 {
-    return QString("%1").arg(palletScanned);
+    return QString("%1").arg(palletID);
 }
 
-const QString   DataBase::getIntReportPageTotalBox()
+const QString   DataBase::getIntReportPageTotalBox(unsigned int palletID)
 {
     QSqlQuery query;
     QString qry = QString("SELECT COUNT(TR_BO_ID) "
                           "FROM TRACEABILITY_BOX "
-                          "WHERE PA_ID = %1;").arg(palletScanned);
+                          "WHERE PA_ID = %1;").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString   DataBase::getIntReportPageBoxScanned()
+const QString   DataBase::getIntReportPageBoxScanned(unsigned int palletID)
 {
     QSqlQuery query;
     QString qry = QString("SELECT COUNT(TR_BO_ID) "
                           "FROM TRACEABILITY_BOX "
-                          "WHERE PA_ID = %1 AND SCANNED = \"OK\";").arg(palletScanned);
+                          "WHERE PA_ID = %1 AND SCANNED = \"OK\";").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     return query.value(0).toString().length()<1?"Error":query.value(0).toString();
 }
 
-const QString   DataBase::getIntReportPageBoxMissing()
+const QString   DataBase::getIntReportPageBoxMissing(unsigned int palletID)
 {
     int BoxTotal = 0, BoxScanned = 0;
     QSqlQuery query;
     QString qry;
     qry = QString("SELECT COUNT(TR_BO_ID) "
                   "FROM TRACEABILITY_BOX "
-                  "WHERE PA_ID = %1;").arg(palletScanned);
+                  "WHERE PA_ID = %1;").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     BoxTotal = query.value(0).toInt();
 
     qry = QString("SELECT COUNT(TR_BO_ID) "
                   "FROM TRACEABILITY_BOX "
-                  "WHERE PA_ID = %1 AND SCANNED = \"OK\";").arg(palletScanned);
+                  "WHERE PA_ID = %1 AND SCANNED = \"OK\";").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     BoxScanned = query.value(0).toInt();
@@ -1725,7 +1726,7 @@ const QString   DataBase::getIntReportPageBoxMissing()
     return QString("%1").arg(BoxTotal-BoxScanned);
 }
 
-const QString   DataBase::getIntReportPageTotalValue()
+const QString   DataBase::getIntReportPageTotalValue(unsigned int palletID)
 {
     QSqlQuery query;
     QString qry = QString("SELECT SUM(ITEMS.IT_VALUE*ITEMS.IT_ROLL_Q*ITEMS.IT_BA_Q*ITEMS.IT_BOX_Q) || \" Rp\" "
@@ -1734,13 +1735,13 @@ const QString   DataBase::getIntReportPageTotalValue()
                                 "INNER JOIN TRACEABILITY_BOX ON JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
                                     "INNER JOIN TRACEABILITY_PALLET ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
                           "GROUP BY TRACEABILITY_PALLET.PA_ID "
-                          "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1));").arg(palletScanned);
+                          "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1));").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     return query.value(0).toString();
 }
 
-const QString   DataBase::getIntReportPageScannedValue()
+const QString   DataBase::getIntReportPageScannedValue(unsigned int palletID)
 {
     QSqlQuery query;
     QString qry = QString("SELECT SUM(ITEMS.IT_VALUE*ITEMS.IT_ROLL_Q*ITEMS.IT_BA_Q*ITEMS.IT_BOX_Q) || \" Rp\" "
@@ -1749,13 +1750,13 @@ const QString   DataBase::getIntReportPageScannedValue()
                                 "INNER JOIN TRACEABILITY_BOX ON JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
                                     "INNER JOIN TRACEABILITY_PALLET ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
                           "GROUP BY TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.SCANNED "
-                          "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)= \"OK\"));").arg(palletScanned);
+                          "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)= \"OK\"));").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
-    return query.value(0).toString();
+    return query.value(0).toString().isEmpty()?"0 Rp":query.value(0).toString();
 }
 
-const QString   DataBase::getIntReportPageMissingValue()
+const QString   DataBase::getIntReportPageMissingValue(unsigned int palletID)
 {
     double ValueTotal = 0, ValueScanned = 0;
     QSqlQuery query;
@@ -1766,7 +1767,7 @@ const QString   DataBase::getIntReportPageMissingValue()
                   "INNER JOIN TRACEABILITY_BOX ON JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
                   "INNER JOIN TRACEABILITY_PALLET ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
                   "GROUP BY TRACEABILITY_PALLET.PA_ID "
-                  "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1));").arg(palletScanned);
+                  "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1));").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     ValueTotal = query.value(0).toDouble();
@@ -1777,7 +1778,7 @@ const QString   DataBase::getIntReportPageMissingValue()
                   "INNER JOIN TRACEABILITY_BOX ON JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
                   "INNER JOIN TRACEABILITY_PALLET ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
                   "GROUP BY TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.SCANNED "
-                  "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)=\"OK\"));").arg(palletScanned);
+                  "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1) AND ((TRACEABILITY_BOX.SCANNED)=\"OK\"));").arg(palletID);
     if(!query.exec(qry)) return "Error";
     query.first();
     ValueScanned = query.value(0).toDouble();
@@ -1848,7 +1849,7 @@ QSqlQueryModel* DataBase::getFinReportPageBoxScannedTableData(unsigned int palle
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
-    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID AS [Pallet ID], TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
                           "FROM "
                             "ITEMS INNER JOIN "
                                 "(JOBORDER INNER JOIN "
@@ -1869,7 +1870,7 @@ QSqlQueryModel* DataBase::getFinReportPageBoxMissingTableData(unsigned int palle
 {
     QSqlQuery *query = new QSqlQuery;
     QSqlQueryModel *Results = new QSqlQueryModel();
-    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS Status, TRACEABILITY_PALLET.PA_ID AS [Pallet ID], TRACEABILITY_BOX.BO_ID AS [Box ID], ITEMS.IT_BOX_Q AS [Pack Qty], (IT_BA_Q*(ITEMS.IT_BOX_Q)) AS [Roll Qty], (IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q))) AS [Coin Qty], ITEMS.IT_VALUE || \" Rp\" AS Denomination, (ITEMS.IT_VALUE*(IT_ROLL_Q*(IT_BA_Q*(ITEMS.IT_BOX_Q)))) || \" Rp\" AS [Value], ITEMS.IT_YEAR AS [Year] "
                           "FROM "
                             "ITEMS INNER JOIN "
                                 "(JOBORDER INNER JOIN "
@@ -1890,10 +1891,116 @@ QSqlQueryModel* DataBase::getFinReportPageBoxMissingTableData(unsigned int palle
 
 void DataBase::sendPDFInformations()
 {
-    m_PDF_DeliveryTable->setModel(getFinReportPagePalletTableData());
 
+    emit sendPDFDeliveryInfo(getDeliveryInformations());
     emit sendPDFInformationDone();
 }
+
+DeliveryInformations DataBase::getDeliveryInformations()
+{
+    DeliveryInformations deliveryInfo;
+    QSqlQuery query;
+    QString qry;
+    int deliveryID = 0;
+    int palletTotal = 0;
+    int palletScanned = 0;
+    int palletMissing = 0;
+    int boxTotal = 0;
+    int boxScanned = 0;
+    int boxMissing = 0;
+    double valueTotal = 0;
+    double valueScanned = 0;
+    double valueMissing = 0;
+    unsigned int palletID;
+
+    deliveryInfo.model = getFinReportPagePalletTableData();
+
+    qry = "SELECT DE_ID "
+          "FROM DELIVERY;";
+    if(!query.exec(qry)) return  deliveryInfo;
+    query.first();
+    deliveryInfo.deliveryID = query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    deliveryID = query.value(0).toString().length()<1?0:query.value(0).toInt();
+
+    qry = "SELECT COUNT(DL_PA_ID) "
+          "FROM DELIVERY_LIST;";
+    if(!query.exec(qry)) return  deliveryInfo;
+    query.first();
+    deliveryInfo.palletTotal = query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    palletTotal = query.value(0).toString().length()<1?0:query.value(0).toInt();
+
+    qry = "SELECT COUNT(PA_ID) "
+          "FROM TRACEABILITY_PALLET "
+          "WHERE SCANNED = \"OK\";";
+    if(!query.exec(qry)) return  deliveryInfo;
+    query.first();
+    deliveryInfo.palletScanned = query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    palletScanned = query.value(0).toString().length()<1?0:query.value(0).toInt();
+
+    qry = "SELECT COUNT(PA_ID) "
+          "FROM TRACEABILITY_PALLET "
+          "WHERE SCANNED = \"\";";
+    if(!query.exec(qry)) return  deliveryInfo;
+    query.first();
+    deliveryInfo.palletMissing = query.value(0).toString().length()<1?"Error":query.value(0).toString();
+    palletMissing = query.value(0).toString().length()<1?0:query.value(0).toInt();
+
+    for (int i = 0; i< deliveryInfo.model->rowCount(); i++)
+    {
+        palletID = deliveryInfo.model->index(i,1).data().toInt();
+        boxTotal += getIntReportPageTotalBox(palletID).toInt();
+        boxScanned += getIntReportPageBoxScanned(palletID).toInt();
+        boxMissing += getIntReportPageBoxMissing(palletID).toInt();
+        valueTotal += getIntReportPageTotalValue(palletID).split(" ")[0].toDouble();
+        valueScanned += getIntReportPageScannedValue(palletID).split(" ")[0].toDouble();
+        valueMissing += getIntReportPageMissingValue(palletID).split(" ")[0].toDouble();
+        emit sendPDFPalletInfo(getPalletInformations(palletID));
+    }
+    deliveryInfo.boxTotal = QString("%1").arg(boxTotal);
+    deliveryInfo.boxScanned = QString("%1").arg(boxScanned);
+    deliveryInfo.boxMissing = QString("%1").arg(boxMissing);
+    deliveryInfo.valueTotal = QString("%1 Rp").arg(QString::number(valueTotal, 'g', 10));
+    deliveryInfo.valueScanned = QString("%1 Rp").arg(QString::number(valueScanned, 'g', 10));
+    deliveryInfo.valueMissing = QString("%1 Rp").arg(QString::number(valueMissing, 'g', 10));
+    return  deliveryInfo;
+}
+
+PalletInformations DataBase::getPalletInformations(unsigned int palletID)
+{
+    PalletInformations palletInfo;
+
+    QSqlQuery *query = new QSqlQuery;
+    QSqlQueryModel *Results = new QSqlQueryModel();
+    QString qry = QString("SELECT TRACEABILITY_BOX.SCANNED AS [Status], TRACEABILITY_BOX.TR_BO_ID AS [Box Reference], ITEMS.IT_VALUE || \" Rp\" AS Denomination, COUNT(TRACEABILITY_BATCH.TR_BA_ID) AS [Pack Qty], (COUNT(TRACEABILITY_BATCH.TR_BA_ID)*ITEMS.IT_BA_Q*ITEMS.IT_ROLL_Q*ITEMS.IT_VALUE)  || \" Rp\" AS [Total value], ITEMS.IT_YEAR AS [Coin Year] "
+                 "FROM "
+                    "((ITEMS INNER JOIN "
+                        "(JOBORDER INNER JOIN "
+                            "(TRACEABILITY_PALLET INNER JOIN DELIVERY_LIST "
+                            "ON TRACEABILITY_PALLET.PA_ID = DELIVERY_LIST.DL_PA_ID) "
+                        "ON JOBORDER.JO_ID = TRACEABILITY_PALLET.JO_ID) "
+                    "ON ITEMS.IT_ID = JOBORDER.JO_IT_ID) "
+                    "INNER JOIN TRACEABILITY_BATCH ON JOBORDER.JO_ID = TRACEABILITY_BATCH.JO_ID) "
+                    "INNER JOIN TRACEABILITY_BOX ON (TRACEABILITY_PALLET.PA_ID = TRACEABILITY_BOX.PA_ID) AND (TRACEABILITY_BOX.BO_ID = TRACEABILITY_BATCH.BO_ID) AND (JOBORDER.JO_ID = TRACEABILITY_BOX.JO_ID) "
+                 "GROUP BY TRACEABILITY_BOX.SCANNED, TRACEABILITY_PALLET.PA_ID, TRACEABILITY_BOX.TR_BO_ID, ITEMS.IT_VALUE, ITEMS.IT_BA_Q, ITEMS.IT_ROLL_Q, ITEMS.IT_YEAR "
+                    "HAVING (((TRACEABILITY_PALLET.PA_ID)=%1)) "
+                 "ORDER BY TRACEABILITY_BOX.SCANNED, TRACEABILITY_BOX.TR_BO_ID;").arg(palletID);
+    if(!query->exec(qry))
+    {
+        qDebug() << query->lastError().text();
+    }
+    Results->setQuery(*query);
+    palletInfo.model = Results;
+    palletInfo.palletID = QString("%1").arg(palletID);
+    palletInfo.boxTotal = getIntReportPageTotalBox(palletID);
+    palletInfo.boxScanned = getIntReportPageBoxScanned(palletID);
+    palletInfo.boxMissing = getIntReportPageBoxMissing(palletID);
+    palletInfo.valueTotal = getIntReportPageTotalValue(palletID);
+    palletInfo.valueScanned = getIntReportPageScannedValue(palletID);
+    palletInfo.valueMissing = getIntReportPageMissingValue(palletID);
+
+    return palletInfo;
+}
+
 /////////////////////////////////////////////////////////
 
 void DataBase::sendDBWindowInformations(int)

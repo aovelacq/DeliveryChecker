@@ -77,18 +77,22 @@ class DataBase : public QObject
         void            scanPageUpdateBoxScanned(QString ref);
 
         // Intermediary repport page
-        const QString   getIntReportPagePalletId();
-        const QString   getIntReportPageTotalBox();
-        const QString   getIntReportPageBoxScanned();
-        const QString   getIntReportPageBoxMissing();
-        const QString   getIntReportPageTotalValue();
-        const QString   getIntReportPageScannedValue();
-        const QString   getIntReportPageMissingValue();
+        const QString   getIntReportPagePalletId(unsigned int palletID);
+        const QString   getIntReportPageTotalBox(unsigned int palletID);
+        const QString   getIntReportPageBoxScanned(unsigned int palletID);
+        const QString   getIntReportPageBoxMissing(unsigned int palletID);
+        const QString   getIntReportPageTotalValue(unsigned int palletID);
+        const QString   getIntReportPageScannedValue(unsigned int palletID);
+        const QString   getIntReportPageMissingValue(unsigned int palletID);
 
         // Final repport page
         QSqlQueryModel* getFinReportPagePalletTableData();
         QSqlQueryModel* getFinReportPageBoxScannedTableData(unsigned int palletID);
         QSqlQueryModel* getFinReportPageBoxMissingTableData(unsigned int palletID);
+
+        // PDF
+        DeliveryInformations getDeliveryInformations();
+        PalletInformations getPalletInformations(unsigned int palletID);
 
         // Database view
 
@@ -154,6 +158,8 @@ class DataBase : public QObject
 
         //Related to PDF
         void sendPDFInformationDone();
+        void sendPDFDeliveryInfo(DeliveryInformations delInfo);
+        void sendPDFPalletInfo(PalletInformations palInfo);
 
         //Related to DataBaseWindow
         void sendDBWindowTableData(QSqlQueryModel* data);
@@ -218,6 +224,7 @@ class DataBase : public QObject
 
         // Pointers to PDF elements
         PDFTableView      *m_PDF_DeliveryTable;
+
 
         //Pointers to dataBaseWindow elements
         SQLView         *m_DBWindow_Table;
